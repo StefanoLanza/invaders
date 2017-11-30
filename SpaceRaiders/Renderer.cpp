@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "MessageLog.h"
 #include "Image.h"
+#include "Images.h"
 #include <cassert>
 #include <algorithm>
 #define NOMINMAX
@@ -145,7 +146,7 @@ void Renderer::Update(const RenderItemList& sprites, const Game& game, const Mes
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);
 
-	FillCanvas(RaiderSprites::backgroundTile, Color::black);
+	FillCanvas(Color::black);
 	if (game.GetState() == Game::State::start)
 	{
 		DisplayStartMenu();
@@ -196,11 +197,11 @@ void Renderer::DisplayScores(const Game& game)
 }
 
 
-void Renderer::FillCanvas(RaiderSprites sprite, Color color)
+void Renderer::FillCanvas(Color color)
 {
 	CHAR_INFO* curCanvas = canvas.data();
 	CHAR_INFO ch; 
-	ch.Char.UnicodeChar = static_cast<WCHAR>(sprite);
+	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
 	ch.Attributes = charColors[(int)color];
 	for (int i = 0, ei = (int)canvas.size(); i != ei; ++i)
 	{
@@ -221,7 +222,7 @@ void Renderer::ClearLine(int row)
 {
 	CHAR_INFO* curCanvas = canvas.data() + row * renderBounds.x;
 	CHAR_INFO ch; 
-	ch.Char.UnicodeChar = static_cast<WCHAR>(RaiderSprites::backgroundTile);
+	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
 	ch.Attributes = charColors[(int)Color::black];
 	for (int x = 0, ex = renderBounds.x; x != ex; ++x)
 	{
@@ -243,8 +244,8 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color)
 
 void Renderer::DisplayStartMenu()
 {
-	DrawImage(ikaImg, 0, 0, Color::greenIntense, Alignment::centered);
-	DrawImage(raidersImg, 0, 7, Color::greenIntense, Alignment::centered);
+	DrawImage(ikaImg, 0, 0, Color::greenIntense, Alignment::centered, Alignment::top);
+	DrawImage(raidersImg, 0, 7, Color::greenIntense, Alignment::centered,  Alignment::top);
 
 	static const char* str[] =
 	{
@@ -273,6 +274,7 @@ void Renderer::DisplayStartMenu()
 
 void Renderer::DisplayIntro()
 {
+	DrawImage(*GetImage(ImageId::planet), 0, 8, Color::white, Alignment::centered,  Alignment::top);
 	static const char* str[] =
 	{
 		"",
@@ -356,24 +358,16 @@ void Renderer::DisplayGameOver()
 
 void Renderer::DrawSprites(const RenderItemList& sprites)
 {
-	CHAR_INFO* const curCanvas = canvas.data();
-
 	for (const auto& ri : sprites)
 	{
-		const int x = (int)std::floor(ri.pos.x);
-		const int y = (int)std::floor(ri.pos.y);
-		if (ri.image)
+		int x = (int)std::floor(ri.pos.x);
+		int y = (int)std::floor(ri.pos.y);
+		const Image* image = GetImage(ri.visual.imageId);
+		if (image)
 		{
-			DrawImage(*ri.image, x, y, ri.color, Alignment::left);
-		}
-		else
-		{
-			if (x >= 0 && x < renderBounds.x && y >= 0 && y < renderBounds.y)
-			{
-				auto& c = curCanvas[x + (y + hudRows) * renderBounds.x];
-				c.Char.UnicodeChar = static_cast<CHAR>(ri.sprite);
-				c.Attributes = charColors[(int)ri.color];
-			}
+			x -= image->width / 2;
+			y -= image->height / 2;
+			DrawImage(*image, x, y, ri.visual.color, Alignment::left,  Alignment::top);
 		}
 	}
 }
@@ -390,16 +384,24 @@ void Renderer::DisplayMessages(const MessageLog& messageLog)
 }
 
 
-void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignment alignment)
+void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignment hAlignment, Alignment vAlignment)
 {
 	CHAR_INFO* const dst = canvas.data();
-	if (alignment == Alignment::centered)
+	if (hAlignment == Alignment::centered)
 	{
 		x0 = (renderBounds.x - image.width) / 2 + x0;
 	}
-	else if (alignment == Alignment::right)
+	else if (hAlignment == Alignment::right)
 	{
 		x0 = renderBounds.x - image.width + x0;
+	}
+	if (vAlignment == Alignment::centered)
+	{
+		y0 = (renderBounds.y - image.height) / 2 + y0;
+	}
+	else if (vAlignment == Alignment::bottom)
+	{
+		y0 = renderBounds.y- image.height + y0;
 	}
 	// Clip
 	const int l = std::max(0, x0);
@@ -413,8 +415,11 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 		{
 			auto& c = dst[x + (y + hudRows) * renderBounds.x];
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
-			c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
-			c.Attributes = charColors[(int)color];
+			if (image.img[s] != ' ')
+			{
+				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
+				c.Attributes = charColors[(int)color];
+			}
 		}
 	}
 }

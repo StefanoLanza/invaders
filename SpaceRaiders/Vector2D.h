@@ -31,16 +31,3 @@ struct IVector2D
 	int y;
 };
 
-
-// Collision area is a rectangle defined by the current and previous position, plus a fixed radius of 0.5
-// OK for this game, not for more accurate collisions and oblique trajectories. In that case we'd need collision routines
-// for circles, swept circles, rectangles, rays etc
-struct CollisionArea
-{
-	Vector2D v0;
-	Vector2D v1;
-	float    radius;
-};
-
-
-bool Intersect(const CollisionArea& a, const CollisionArea& b);

@@ -13,17 +13,13 @@ GameConfig::GameConfig()
 	maxAlienLasers = 10;
 	maxPlayerLasers = 4;
 	// Player
-	playerVelocity = 25.f;
 	playerFireRate = 0.3f;
 	// Alien
 	alienUpdateRate = 0.01f;
 	alienTransformEnergy = 1.f;
 	alienTransformRate = 0.005f;
-	alienHealth = 1.f;
-	alienVelocity = 10.f;
 	alienDownVelocity = 0.5f;
 	alienFireRate = 1.0f;
-	betterAlienAcceleration = 2.f;
 	betterAlienFireRate = 0.75f;
 	// Explosions
 	explosionTimer = 0.25f;
@@ -32,8 +28,8 @@ GameConfig::GameConfig()
 	powerUpVelocity = 8.f;
 	powerUpInvulnerabilityTime = 10.f;
 	// Lasers
-	alienLaserVelocity = 20.f;
-	playerLaserVelocity = 40.f;
+	alienLaserVelocity = 30.f;
+	playerLaserVelocity = 50.f;
 	// Walls
 	wallMaxHits = 2;
 

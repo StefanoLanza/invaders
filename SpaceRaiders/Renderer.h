@@ -28,11 +28,13 @@ private:
 	{
 		left,
 		centered, 
-		right
+		right,
+		top,
+		bottom
 	};
 
 	// Fills whole canvas array with sprite
-	void FillCanvas(RaiderSprites sprite, Color color);
+	void FillCanvas(Color color);
 
 	// Prints canvas char array on console
 	void DrawCanvas();
@@ -47,7 +49,7 @@ private:
 	void DisplayScores(const Game& game);
 	void DrawSprites(const RenderItemList& sprites);
 	void DisplayMessages(const MessageLog& messageLog);
-	void DrawImage(const Image& image, int x, int y, Color color, Alignment alignment);
+	void DrawImage(const Image& image, int x, int y, Color color, Alignment hAlignment, Alignment vAlignment);
 
 private:
 

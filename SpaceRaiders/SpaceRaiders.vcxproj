@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Alien.h" />
     <ClInclude Include="AlienLaser.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConfig.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="PlayerLaser.h" />
     <ClInclude Include="PlayField.h" />
     <ClInclude Include="PowerUp.h" />
+    <ClInclude Include="Prefabs.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderItem.h" />
@@ -167,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienLaser.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameConfig.cpp" />
@@ -178,6 +181,7 @@
     <ClCompile Include="PlayerLaser.cpp" />
     <ClCompile Include="PlayField.cpp" />
     <ClCompile Include="PowerUp.cpp" />
+    <ClCompile Include="Prefabs.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SpaceRaiders.cpp" />
