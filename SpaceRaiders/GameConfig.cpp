@@ -6,7 +6,7 @@
 GameConfig::GameConfig()
 {
 	// Console
-	fontSize = 12;
+	fontSize = 10;
 	// World
 	worldWidth = 160;
 	worldHeight = 54;

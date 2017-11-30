@@ -149,6 +149,7 @@
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConfig.h" />
+    <ClInclude Include="GameEvents.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Images.h" />
     <ClInclude Include="Input.h" />

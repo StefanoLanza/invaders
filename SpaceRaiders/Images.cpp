@@ -76,9 +76,9 @@ LR"(
 
 const wchar_t laserStr[] =
 LR"(
-▄
-█
-█
+║
+║
+║
 )";
 
 const wchar_t laserLeftStr[] =
@@ -153,8 +153,8 @@ LR"(
 )";
 const wchar_t brittleWallStr[] = 
 LR"(
-▄ ▄ 
- ▀ ▀
+░░░░
+░░░░
 )";
 
 
