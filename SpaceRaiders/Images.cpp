@@ -7,26 +7,52 @@ namespace
 {
 
 
-const wchar_t alien0Str[2 + 8 * 3] = 
+const wchar_t alien0_0Str[2 + 8 * 4] = 
 LR"(
  ▀▄▄▄▀ 
 ▄▀▀█▀▀▄
 ▀▀█▀█▀▀
+  ▀ ▀  
 )";
 
-const wchar_t alien1Str[2 + 8 * 3] = 
+const wchar_t alien0_1Str[2 + 8 * 4] = 
+LR"(
+ ▀▄▄▄▀ 
+▄▀▀█▀▀▄
+▀▀█▀█▀▀
+ ▀   ▀ 
+)";
+
+const wchar_t alien1_0Str[2 + 8 * 4] = 
 LR"(
  ▄▄█▄▄ 
 █▀▀█▀▀█
  ▀█▀█▀ 
+  ▀ ▀  
 )";
 
-const wchar_t alien2Str[2 + 8 * 4] = 
+const wchar_t alien1_1Str[2 + 8 * 4] = 
+LR"(
+ ▄▄█▄▄ 
+█▀▀█▀▀█
+ ▀█▀█▀ 
+ ▀   ▀ 
+)";
+
+const wchar_t alien2_0Str[2 + 8 * 4] = 
 LR"(
   ▄▄▄  
 █▀▀█▀▀█
 ▀▀█▀█▀▀
- ▀ ▀ ▀ 
+  ▀ ▀  
+)";
+
+const wchar_t alien2_1Str[2 + 8 * 4] = 
+LR"(
+  ▄▄▄  
+█▀▀█▀▀█
+▀▀█▀█▀▀
+ ▀   ▀ 
 )";
 
 const wchar_t alien3Str[2 + 8 * 4] = 
@@ -37,14 +63,31 @@ LR"(
   ▀▀▀  
 )";
 
+const wchar_t alien4Str[2 + 8 * 4] = 
+LR"(
+ ▀▄▄▄▀ 
+▄▀▀█▀▀▄
+▀█████▀
+  ▀▀▀  
+)";
 
-const wchar_t boss0Str[] = 
+
+const wchar_t boss0_0Str[] = 
 LR"(
   ▀▄   ▄▀  
- ▄█▀███▀█▄ 
+ ▄█▀▀█▀▀█▄ 
 █▀███████▀█
 █ █▀▀▀▀▀█ █
    ▀▀ ▀▀   
+)";
+
+const wchar_t boss0_1Str[] = 
+LR"(
+▄ ▀▄   ▄▀ ▄ 
+█▄█▀▀█▀▀█▄█ 
+▀█████████▀
+  █▀▀▀▀▀█  
+ ▀       ▀ 
 )";
 
 const wchar_t boss1Str[] = 
@@ -179,23 +222,43 @@ const Image planetImg =
 	10
 };
 
-const Image alien0Img =
+const Image alien0_0Img =
 {
-	alien0Str,
+	alien0_0Str,
 	7,
-	3
+	4
+};
+const Image alien0_1Img =
+{
+	alien0_1Str,
+	7,
+	4
 };
 
-const Image alien1Img =
+const Image alien1_0Img =
 {
-	alien1Str,
+	alien1_0Str,
 	7,
-	3
+	4
 };
 
-const Image alien2Img =
+const Image alien1_1Img =
 {
-	alien2Str,
+	alien1_1Str,
+	7,
+	4
+};
+
+const Image alien2_0Img =
+{
+	alien2_0Str,
+	7,
+	4
+};
+
+const Image alien2_1Img =
+{
+	alien2_1Str,
 	7,
 	4
 };
@@ -208,16 +271,23 @@ const Image alien3Img =
 };
 
 
-const Image boss0Img =
+const Image boss00Img =
 {
-	boss0Str,
+	boss0_0Str,
+	11,
+	5
+};
+
+const Image boss01Img =
+{
+	boss0_1Str,
 	11,
 	5
 };
 
 const Image boss1Img =
 {
-	boss0Str,
+	boss1Str,
 	11,
 	5
 };
@@ -317,11 +387,15 @@ const Image* images[(int)ImageId::count] =
 {
 	nullptr,
 	&planetImg,
-	&alien0Img,
-	&alien1Img,
-	&alien2Img,
+	&alien0_0Img,
+	&alien0_1Img,
+	&alien1_0Img,
+	&alien1_1Img,
+	&alien2_0Img,
+	&alien2_1Img,
 	&alien3Img,
-	&boss0Img,
+	&boss00Img,
+	&boss01Img,
 	&boss1Img,
 	&boss2Img,
 	&boss3Img,

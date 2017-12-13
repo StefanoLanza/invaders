@@ -185,6 +185,7 @@
     <ClCompile Include="Prefabs.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderItem.cpp" />
     <ClCompile Include="SpaceRaiders.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
