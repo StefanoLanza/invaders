@@ -31,5 +31,6 @@ int Random::Next()
 			break;
 		}
 	}
+	history[v]++;
 	return v;
 }

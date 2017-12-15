@@ -17,23 +17,24 @@ enum class ImageId
 	boss0_1,
 	boss1,
 	boss2,
-	boss3,
 	playerLaser,
 	playerLaserLeft,
 	playerLaserRight,
 	alienLaser,
 	player,
 	explosion,
+	dPowerUp,
 	tPowerUp,
 	sPowerUp,
 	fPowerUp,
 	iPowerUp,
 	solidWall,
 	brittleWall,
+	bomb,
 	count
 };
 
-const Image* GetImage(ImageId imageId);
+const Image& GetImage(ImageId imageId);
 
 struct Vector2D;
 Vector2D GetImageSize(ImageId imageId);

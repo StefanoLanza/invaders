@@ -1,27 +1,37 @@
 #pragma once
 
+#include "Base.h"
 #include "Vector2D.h"
 
 
-enum class CollisionShape
+enum class CollisionId : uint8
 {
-	circle,
-	rectangle,
-	line
+	player,
+	alien,
+	playerLaser,
+	alienLaser,
+	powerUp,
+	wall
 };
 
-struct CollisionArea
+struct Collider
 {
-	Vector2D v0;
-	Vector2D v1;
-	Vector2D size;
+	Vector2D    v0;
+	Vector2D    v1;
+	Vector2D    size;
+	void*       userData;
+	CollisionId id;
 };
+
 
 struct CollisionInfo
 {
-	Vector2D point;
-	Vector2D normal;
-	bool     valid;
+//	Vector2D point;
+//	Vector2D normal;
+	void*       ud0;
+	void*       ud1;
+	CollisionId id0;
+	CollisionId id1;
 };
 
 struct Rectangle
@@ -33,4 +43,4 @@ struct Rectangle
 
 Vector2D ComputeClosestNormal(const Vector2D& v);
 
-bool Intersect(const CollisionArea& a, const CollisionArea& b);
+bool Intersect(const Collider& a, const Collider& b);

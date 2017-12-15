@@ -35,19 +35,7 @@ Vector2D ComputeClosestNormal(const Vector2D& v)
 }
 
 
-CollisionInfo SphereVSSphere(const Vector2D& c0, float r0, const Vector2D& c1, float r1)
-{
-	Vector2D d = Sub(c1, c0);
-	float r2 = Dot(d, d);
-	CollisionInfo ci;
-	ci.valid = false;
-	if (r2 < r0 * r0 + r1 * r2)
-	{
-		ci.valid = true;
-	}
-	return ci;
-}
-
+/*
 CollisionInfo RectVSRect(const Rectangle& a, const Rectangle& b)
 {
 	Vector2D aMin = { std::min(a.v0.x, a.v1.x), std::min(a.v0.y, a.v1.y) };
@@ -57,10 +45,10 @@ CollisionInfo RectVSRect(const Rectangle& a, const Rectangle& b)
 	CollisionInfo ci;
 	ci.valid = (aMax.x >= bMin.x && bMax.x >= aMin.x && aMax.y >= bMin.y && bMax.y >= aMin.y);
 	return ci;
-}
+}*/
 
 
-bool Intersect(const CollisionArea& a, const CollisionArea& b)
+bool Intersect(const Collider& a, const Collider& b)
 {
 	Vector2D aMin = { std::min(a.v0.x, a.v1.x), std::min(a.v0.y, a.v1.y) };
 	Vector2D aMax = { std::max(a.v0.x, a.v1.x), std::max(a.v0.y, a.v1.y) };

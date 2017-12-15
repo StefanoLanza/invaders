@@ -146,10 +146,13 @@
     <ClInclude Include="Alien.h" />
     <ClInclude Include="AlienLaser.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="CollisionSpace.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConfig.h" />
     <ClInclude Include="GameEvents.h" />
+    <ClInclude Include="Handle.h" />
+    <ClInclude Include="HandleManager.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Images.h" />
     <ClInclude Include="Input.h" />
@@ -165,16 +168,19 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Vector2D.h" />
+    <ClInclude Include="VisualManager.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />
     <ClCompile Include="AlienLaser.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionSpace.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameConfig.cpp" />
     <ClCompile Include="GameEvents.cpp" />
+    <ClCompile Include="HandleManager.cpp" />
     <ClCompile Include="Images.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="MessageLog.cpp" />
@@ -194,6 +200,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Vector2D.cpp" />
+    <ClCompile Include="VisualManager.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

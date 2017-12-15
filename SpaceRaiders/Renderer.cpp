@@ -57,7 +57,10 @@ bool InitConsole(SHORT x, SHORT y, SHORT fontSize, HANDLE h)
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
 	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
-	SetCurrentConsoleFontEx(h, FALSE, &cfi);
+	if (!SetCurrentConsoleFontEx(h, TRUE, &cfi))
+	{
+		return false;
+	}
 
 	// If either dimension is greater than the largest console window we can have,
 	// there is no point in attempting the change.
@@ -160,8 +163,8 @@ Renderer::Renderer(const IVector2D& bounds, int fontSize) :
 
 	if (consoleHandle)
 	{
-		CenterWindow( GetConsoleWindow() );
 		InitConsole((SHORT)consoleWidth, (SHORT)consoleHeight, (SHORT)fontSize, consoleHandle);
+		CenterWindow( GetConsoleWindow());
 	}
 }
 
@@ -310,7 +313,7 @@ void Renderer::DisplayStartMenu()
 
 void Renderer::DisplayIntro()
 {
-	DrawImage(*GetImage(ImageId::planet), 0, 8, Color::white, Alignment::centered,  Alignment::top);
+	DrawImage(GetImage(ImageId::planet), 0, 8, Color::white, Alignment::centered,  Alignment::top);
 	static const char* str[] =
 	{
 		"",
@@ -398,12 +401,12 @@ void Renderer::DrawSprites(const RenderItemList& sprites)
 	{
 		int x = (int)std::floor(ri.pos.x);
 		int y = (int)std::floor(ri.pos.y);
-		const Image* image = GetImage(ri.visual.imageId);
-		if (image)
+		const Image& image = GetImage(ri.visual.imageId);
+		if (image.img)
 		{
-			x -= image->width / 2;
-			y -= image->height / 2;
-			DrawImage(*image, x, y, ri.visual.color, Alignment::left,  Alignment::top);
+			x -= image.width / 2;
+			y -= image.height / 2;
+			DrawImage(image, x, y, ri.visual.color, Alignment::left,  Alignment::top);
 		}
 	}
 }
