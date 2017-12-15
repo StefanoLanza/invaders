@@ -8,6 +8,7 @@
 #include "Images.h"
 #include <cassert>
 #include <algorithm>
+#include <iostream>
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -46,7 +47,7 @@ constexpr WORD charColors[(int)Color::count] =
 
 
 // Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
-bool InitConsole(SHORT x, SHORT y, SHORT fontSize, HANDLE h)
+bool InitConsole(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 {
 
 	CONSOLE_FONT_INFOEX cfi;
@@ -57,51 +58,35 @@ bool InitConsole(SHORT x, SHORT y, SHORT fontSize, HANDLE h)
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
 	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
-	if (!SetCurrentConsoleFontEx(h, TRUE, &cfi))
+	if (!SetCurrentConsoleFontEx(handle, TRUE, &cfi))
 	{
 		return false;
 	}
 
-	// If either dimension is greater than the largest console window we can have,
-	// there is no point in attempting the change.
-	const COORD largestSize = GetLargestConsoleWindowSize(h);
-	x = std::min(x, largestSize.X);
-	y = std::min(y, largestSize.Y);
-
-	CONSOLE_SCREEN_BUFFER_INFO bufferInfo;
-	if (!GetConsoleScreenBufferInfo(h, &bufferInfo))
+	CONSOLE_SCREEN_BUFFER_INFOEX bufferInfo;
+	bufferInfo.cbSize = sizeof(bufferInfo);
+	if (!GetConsoleScreenBufferInfoEx(handle, &bufferInfo))
 	{
+		std::cout << "GetConsoleScreenBufferInfo error: " << GetLastError() << std::endl;
 		return false;
 	}
 
-    const SMALL_RECT& winInfo = bufferInfo.srWindow;
-    const COORD windowSize = { winInfo.Right - winInfo.Left + 1, winInfo.Bottom - winInfo.Top + 1};
+	const COORD largestSize = GetLargestConsoleWindowSize(handle);
+	const COORD bufferSize = { cols, rows };
 
-	if (windowSize.X > x || windowSize.Y > y)
+	BOOL success;
+
+	bufferInfo.dwSize = bufferSize;
+	bufferInfo.dwMaximumWindowSize  = bufferSize;
+	if (!SetConsoleScreenBufferInfoEx(handle, &bufferInfo))
 	{
-		// window size needs to be adjusted before the buffer size can be reduced.
-		const SMALL_RECT info = 
-		{ 
-			0, 
-			0, 
-			x < windowSize.X ? x-1 : windowSize.X-1, 
-			y < windowSize.Y ? y-1 : windowSize.Y-1 
-		};
-
-		if (!SetConsoleWindowInfo(h, TRUE, &info))
-		{
-			return false;
-		}
-	}
-
-	if (!SetConsoleScreenBufferSize(h, { x, y } ))
-	{
+		std::cout << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
 		return false;
 	}
-
-    const SMALL_RECT info = { 0, 0, x - 1, y - 1 };
-    if (!SetConsoleWindowInfo(h, TRUE, &info))
+	SMALL_RECT newWindowRect = { 0, 0, cols - 1, rows - 1};
+	if (!SetConsoleWindowInfo(handle, TRUE, &newWindowRect))
 	{
+		std::cout << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
 		return false;
 	}
 
@@ -150,9 +135,9 @@ BOOL CenterWindow(HWND hwndWindow)
 const int Renderer::hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer(const IVector2D& bounds, int fontSize) :
-	renderBounds {bounds},
-	consoleHandle { GetStdHandle(STD_OUTPUT_HANDLE) }
+Renderer::Renderer(const IVector2D& bounds) :
+	bounds {bounds},
+	consoleHandle { nullptr }
 {
 	assert(bounds.x > 0);
 	assert(bounds.y > 0);
@@ -160,16 +145,31 @@ Renderer::Renderer(const IVector2D& bounds, int fontSize) :
 	const int consoleHeight = bounds.y + hudRows;
 	const size_t canvasSize = consoleWidth * consoleHeight;
 	canvas.resize(canvasSize);
-
-	if (consoleHandle)
-	{
-		InitConsole((SHORT)consoleWidth, (SHORT)consoleHeight, (SHORT)fontSize, consoleHandle);
-		CenterWindow( GetConsoleWindow());
-	}
 }
 
 
 Renderer::~Renderer() = default;
+
+
+bool Renderer::InitializeConsole(int fontSize)
+{
+	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	const int consoleWidth = bounds.x;
+	const int consoleHeight = bounds.y + hudRows;
+	if (! consoleHandle)
+	{
+		return false;
+	}
+	if (! InitConsole((SHORT)consoleWidth, (SHORT)consoleHeight, (SHORT)fontSize, consoleHandle))
+	{
+		return false;
+	}
+	//if (!CenterWindow(GetConsoleWindow()))
+	{
+	//	return false;
+	}
+	return true;
+}
 
 
 void Renderer::Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog)
@@ -252,18 +252,18 @@ void Renderer::FillCanvas(Color color)
 void Renderer::DrawCanvas()
 {
 	const CHAR_INFO* curCanvas = canvas.data();
-	SMALL_RECT writeRegion = { 0, 0, (SHORT)renderBounds.x - 1, (SHORT)(renderBounds.y - 1 + hudRows) };
-	WriteConsoleOutputW(consoleHandle, curCanvas, COORD { (SHORT)renderBounds.x, (SHORT)(renderBounds.y + hudRows) }, COORD { 0, 0 }, &writeRegion);
+	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
+	WriteConsoleOutputW(consoleHandle, curCanvas, COORD { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, COORD { 0, 0 }, &writeRegion);
 }
 
 
 void Renderer::ClearLine(int row)
 {
-	CHAR_INFO* curCanvas = canvas.data() + row * renderBounds.x;
+	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	CHAR_INFO ch; 
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
 	ch.Attributes = charColors[(int)Color::black];
-	for (int x = 0, ex = renderBounds.x; x != ex; ++x)
+	for (int x = 0, ex = bounds.x; x != ex; ++x)
 	{
 		curCanvas[x] = ch;
 	}
@@ -272,7 +272,7 @@ void Renderer::ClearLine(int row)
 
 void Renderer::DisplayText(const char* str, int col, int row, Color color)
 {
-	CHAR_INFO* curCanvas = canvas.data() + row * renderBounds.x;
+	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	for (int i = 0; str[i] != 0; ++i)
 	{
 		curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
@@ -302,7 +302,7 @@ void Renderer::DisplayStartMenu()
 	};
 	constexpr int numRows = _countof(str);
 	const int row = 16;
-	const int col = (renderBounds.x - (int)strlen(str[3])) / 2;
+	const int col = (bounds.x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)
 	{
 		ClearLine(row + r);
@@ -323,8 +323,8 @@ void Renderer::DisplayIntro()
 		""
 	};
 	constexpr int numRows = _countof(str);
-	const int row = (renderBounds.y - numRows) / 2; // centered
-	const int col = (renderBounds.x - (int)strlen(str[2])) / 2;
+	const int row = (bounds.y - numRows) / 2; // centered
+	const int col = (bounds.x - (int)strlen(str[2])) / 2;
 	for (int r = 0; r < numRows; ++r)
 	{
 		ClearLine(row + r);
@@ -343,8 +343,8 @@ void Renderer::DisplayPauseMenu()
 		""
 	};
 	constexpr int numRows = _countof(str);
-	const int row = (renderBounds.y - numRows) / 2; // centered
-	const int col = (renderBounds.x - (int)strlen(str[1])) / 2;
+	const int row = (bounds.y - numRows) / 2; // centered
+	const int col = (bounds.x - (int)strlen(str[1])) / 2;
 	for (int r = 0; r < numRows; ++r)
 	{
 		ClearLine(row + r);
@@ -364,8 +364,8 @@ void Renderer::DisplayVictory()
 		""
 	};
 	constexpr int numRows = _countof(str);
-	const int row = (renderBounds.y - numRows) / 2; // centered
-	const int col = (renderBounds.x - (int)strlen(str[3])) / 2;
+	const int row = (bounds.y - numRows) / 2; // centered
+	const int col = (bounds.x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)
 	{
 		ClearLine(row + r);
@@ -385,8 +385,8 @@ void Renderer::DisplayGameOver()
 		""
 	};
 	constexpr int numRows = _countof(str);
-	const int row = (renderBounds.y - numRows) / 2; // centered
-	const int col = (renderBounds.x - (int)strlen(str[3])) / 2;
+	const int row = (bounds.y - numRows) / 2; // centered
+	const int col = (bounds.x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)
 	{
 		ClearLine(row + r);
@@ -417,7 +417,7 @@ void Renderer::DisplayMessages(const MessageLog& messageLog)
 	for (int i = 0; i < std::min(hudRows, messageLog.GetNumMessages()); ++i)
 	{
 		const auto msg = messageLog.GetMessage(i);
-		const int x =  (renderBounds.x - (int)strlen(msg.first)) / 2; // centered
+		const int x =  (bounds.x - (int)strlen(msg.first)) / 2; // centered
 		DisplayText(msg.first, x, 0 + i, msg.second);
 	}
 }
@@ -428,31 +428,31 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 	CHAR_INFO* const dst = canvas.data();
 	if (hAlignment == Alignment::centered)
 	{
-		x0 = (renderBounds.x - image.width) / 2 + x0;
+		x0 = (bounds.x - image.width) / 2 + x0;
 	}
 	else if (hAlignment == Alignment::right)
 	{
-		x0 = renderBounds.x - image.width + x0;
+		x0 = bounds.x - image.width + x0;
 	}
 	if (vAlignment == Alignment::centered)
 	{
-		y0 = (renderBounds.y - image.height) / 2 + y0;
+		y0 = (bounds.y - image.height) / 2 + y0;
 	}
 	else if (vAlignment == Alignment::bottom)
 	{
-		y0 = renderBounds.y- image.height + y0;
+		y0 = bounds.y- image.height + y0;
 	}
 	// Clip
 	const int l = std::max(0, x0);
-	const int r = std::min(renderBounds.x, x0 + image.width);
+	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
-	const int t = std::min(renderBounds.y, y0 + image.height);
+	const int t = std::min(bounds.y, y0 + image.height);
 
 	for (int y = b; y < t; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + (y + hudRows) * renderBounds.x];
+			auto& c = dst[x + (y + hudRows) * bounds.x];
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{

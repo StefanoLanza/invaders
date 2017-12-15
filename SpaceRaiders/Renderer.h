@@ -16,9 +16,10 @@ class Renderer
 {
 public:
 
-	Renderer(const IVector2D& bounds, int fontSize);
+	Renderer(const IVector2D& bounds);
 	~Renderer();
 
+	bool InitializeConsole(int fontSize);
 	// Display all game objects, score, game over message
 	void Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog);
 
@@ -55,7 +56,7 @@ private:
 
 	static const int hudRows;
 
-	IVector2D renderBounds;
+	IVector2D bounds;
 	// Double buffering is not necessary when using WriteConsoleOutput
 	std::vector<CHAR_INFO> canvas;
 	void* consoleHandle;
