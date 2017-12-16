@@ -31,14 +31,7 @@ int CollisionSpace::Execute(CollisionInfo collisionInfo[], int maxCollisions) co
 			// FIXME Collision matrix
 			if (c0->id != c1->id && Intersect(*c0, *c1))
 			{
-				if (c0->id <= c1->id)
-				{
-					collisionInfo[nci] = { c0->userData, c1->userData, c0->id, c1->id };
-				}
-				else
-				{
-					collisionInfo[nci] = { c1->userData, c0->userData, c1->id, c0->id };
-				}
+				collisionInfo[nci] = { c0->userData, c1->userData, c0->id, c1->id };
 				nci++;
 				if (nci >= maxCollisions)
 				{

@@ -1,11 +1,10 @@
 #include "stdafx.h"
-#include <vector>
-#include "Vector2D.h"
 #include "Renderer.h"
 #include "Game.h"
 #include "MessageLog.h"
 #include "Image.h"
 #include "Images.h"
+#include "Console.h"
 #include <cassert>
 #include <algorithm>
 #include <iostream>
@@ -46,98 +45,15 @@ constexpr WORD charColors[(int)Color::count] =
 };
 
 
-// Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
-bool InitConsole(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
-{
-
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof(cfi);
-	cfi.nFont = 0;
-	cfi.dwFontSize.X = 0;                   // Width of each character in the font
-	cfi.dwFontSize.Y = fontSize;                  // Height
-	cfi.FontFamily = FF_DONTCARE;
-	cfi.FontWeight = FW_NORMAL;
-	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
-	if (!SetCurrentConsoleFontEx(handle, TRUE, &cfi))
-	{
-		return false;
-	}
-
-	CONSOLE_SCREEN_BUFFER_INFOEX bufferInfo;
-	bufferInfo.cbSize = sizeof(bufferInfo);
-	if (!GetConsoleScreenBufferInfoEx(handle, &bufferInfo))
-	{
-		std::cout << "GetConsoleScreenBufferInfo error: " << GetLastError() << std::endl;
-		return false;
-	}
-
-	const COORD largestSize = GetLargestConsoleWindowSize(handle);
-	const COORD bufferSize = { cols, rows };
-
-	BOOL success;
-
-	bufferInfo.dwSize = bufferSize;
-	bufferInfo.dwMaximumWindowSize  = bufferSize;
-	if (!SetConsoleScreenBufferInfoEx(handle, &bufferInfo))
-	{
-		std::cout << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
-		return false;
-	}
-	SMALL_RECT newWindowRect = { 0, 0, cols - 1, rows - 1};
-	if (!SetConsoleWindowInfo(handle, TRUE, &newWindowRect))
-	{
-		std::cout << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
-		return false;
-	}
-
-	return true;
-}
-
-
-BOOL CenterWindow(HWND hwndWindow)
-{
-     HWND hwndParent;
-     RECT rectWindow, rectParent;
- 
-     // make the window relative to its parent
-     if ((hwndParent = GetAncestor(hwndWindow, GA_PARENT)) != NULL)
-     {
-         GetWindowRect(hwndWindow, &rectWindow);
-         GetWindowRect(hwndParent, &rectParent);
- 
-         int nWidth = rectWindow.right - rectWindow.left;
-         int nHeight = rectWindow.bottom - rectWindow.top;
- 
-         int nX = ((rectParent.right - rectParent.left) - nWidth) / 2 + rectParent.left;
-         int nY = ((rectParent.bottom - rectParent.top) - nHeight) / 2 + rectParent.top;
- 
-         int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-         int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
- 
-         // make sure that the dialog box never moves outside of the screen
-         if (nX < 0) nX = 0;
-         if (nY < 0) nY = 0;
-         if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
-         if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
- 
-         MoveWindow(hwndWindow, nX, nY, nWidth, nHeight, FALSE);
- 
-         return TRUE;
-     }
- 
-     return FALSE;
-}
-
-
 }
 
 
 const int Renderer::hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer(const IVector2D& bounds) :
-	bounds {bounds},
-	consoleHandle { nullptr }
+Renderer::Renderer(const IVector2D& bounds_, Console& console_) :
+	console {console_},
+	bounds {bounds_}
 {
 	assert(bounds.x > 0);
 	assert(bounds.y > 0);
@@ -153,38 +69,14 @@ Renderer::~Renderer() = default;
 
 bool Renderer::InitializeConsole(int fontSize)
 {
-	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	const int consoleWidth = bounds.x;
 	const int consoleHeight = bounds.y + hudRows;
-	if (! consoleHandle)
-	{
-		return false;
-	}
-	if (! InitConsole((SHORT)consoleWidth, (SHORT)consoleHeight, (SHORT)fontSize, consoleHandle))
-	{
-		return false;
-	}
-	//if (!CenterWindow(GetConsoleWindow()))
-	{
-	//	return false;
-	}
-	return true;
+	return console.Resize(consoleWidth, consoleHeight, fontSize);
 }
 
 
 void Renderer::Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog)
 {
-	if (consoleHandle == INVALID_HANDLE_VALUE)
-	{
-		return;
-	}
-
-	// Hide cursor
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = FALSE;
-	SetConsoleCursorInfo(consoleHandle, &info);
-
 	FillCanvas(Color::black);
 	if (game.GetState() == Game::State::start)
 	{
@@ -253,7 +145,7 @@ void Renderer::DrawCanvas()
 {
 	const CHAR_INFO* curCanvas = canvas.data();
 	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
-	WriteConsoleOutputW(consoleHandle, curCanvas, COORD { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, COORD { 0, 0 }, &writeRegion);
+	WriteConsoleOutputW(console.GetHandle(), curCanvas, { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, { 0, 0 }, &writeRegion);
 }
 
 

@@ -147,6 +147,7 @@
     <ClInclude Include="AlienLaser.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionSpace.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameConfig.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="AlienLaser.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionSpace.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameConfig.cpp" />

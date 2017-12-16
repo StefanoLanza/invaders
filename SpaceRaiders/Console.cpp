@@ -1,0 +1,153 @@
+#include "stdafx.h"
+#include "Console.h"
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <cassert>
+
+
+namespace
+{
+	bool ResizeConsole(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
+	bool CenterWindow(HWND hwndWindow);
+}
+
+
+Console::Console() :
+	handle { GetStdHandle(STD_OUTPUT_HANDLE) }
+{}
+
+
+bool Console::IsValid() const
+{
+	return (handle != INVALID_HANDLE_VALUE);
+}
+
+
+bool Console::Resize(int cols, int rows, int fontSize)
+{
+	assert (handle != INVALID_HANDLE_VALUE);
+	return ResizeConsole((SHORT)cols, (SHORT)rows, (SHORT)fontSize, handle);
+}
+
+
+bool Console::CenterOnDesktop()
+{
+	assert (handle != INVALID_HANDLE_VALUE);
+	return CenterWindow(GetConsoleWindow());
+}
+
+
+void Console::HideCursor()
+{
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(handle, &info);
+}
+
+
+void Console::ShowCursor()
+{
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(handle, &info);
+}
+
+
+void* Console::GetHandle() const
+{
+	return handle;
+}
+
+
+namespace
+{
+
+
+// Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
+bool ResizeConsole(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
+{
+
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = 0;                   // Width of each character in the font
+	cfi.dwFontSize.Y = fontSize;                  // Height
+	cfi.FontFamily = FF_DONTCARE;
+	cfi.FontWeight = FW_NORMAL;
+	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
+	if (!SetCurrentConsoleFontEx(handle, TRUE, &cfi))
+	{
+		return false;
+	}
+
+	CONSOLE_SCREEN_BUFFER_INFOEX bufferInfo;
+	bufferInfo.cbSize = sizeof(bufferInfo);
+	if (!GetConsoleScreenBufferInfoEx(handle, &bufferInfo))
+	{
+		std::cout << "GetConsoleScreenBufferInfo error: " << GetLastError() << std::endl;
+		return false;
+	}
+
+	const COORD largestSize = GetLargestConsoleWindowSize(handle);
+	const COORD bufferSize = { cols, rows };
+
+	bufferInfo.dwSize = bufferSize;
+	bufferInfo.dwMaximumWindowSize  = bufferSize;
+	if (!SetConsoleScreenBufferInfoEx(handle, &bufferInfo))
+	{
+		std::cout << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
+		return false;
+	}
+	SMALL_RECT newWindowRect = { 0, 0, cols - 1, rows - 1};
+	if (!SetConsoleWindowInfo(handle, TRUE, &newWindowRect))
+	{
+		std::cout << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+
+bool CenterWindow(HWND hwndWindow)
+{
+	HWND hwndParent;
+	RECT rectWindow, rectParent;
+ 
+	// make the window relative to its parent
+	if ((hwndParent = GetAncestor(hwndWindow, GA_PARENT)) != NULL)
+	{
+		GetWindowRect(hwndWindow, &rectWindow);
+		GetWindowRect(hwndParent, &rectParent);
+ 
+		int nWidth = rectWindow.right - rectWindow.left;
+		int nHeight = rectWindow.bottom - rectWindow.top;
+ 
+		int nX = ((rectParent.right - rectParent.left) - nWidth) / 2 + rectParent.left;
+		int nY = ((rectParent.bottom - rectParent.top) - nHeight) / 2 + rectParent.top;
+ 
+		int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+ 
+		// make sure that the dialog box never moves outside of the screen
+		if (nX < 0) nX = 0;
+		if (nY < 0) nY = 0;
+		if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
+		if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
+ 
+		SetWindowPos(hwndWindow, nullptr, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW || SWP_NOSIZE);
+ 
+		return true;
+	}
+
+	return false;
+}
+
+
+}

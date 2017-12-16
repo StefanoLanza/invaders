@@ -10,13 +10,14 @@ typedef std::vector<RenderItem> RenderItemList;
 class Game;
 class MessageLog;
 struct Image;
+class Console;
 
 
 class Renderer
 {
 public:
 
-	Renderer(const IVector2D& bounds);
+	Renderer(const IVector2D& bounds, Console& console);
 	~Renderer();
 
 	bool InitializeConsole(int fontSize);
@@ -56,9 +57,9 @@ private:
 
 	static const int hudRows;
 
+	Console& console;
 	IVector2D bounds;
 	// Double buffering is not necessary when using WriteConsoleOutput
 	std::vector<CHAR_INFO> canvas;
-	void* consoleHandle;
 };
 

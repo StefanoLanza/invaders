@@ -54,8 +54,6 @@ bool Intersect(const Collider& a, const Collider& b)
 	Vector2D aMax = { std::max(a.v0.x, a.v1.x), std::max(a.v0.y, a.v1.y) };
 	Vector2D bMin = { std::min(b.v0.x, b.v1.x), std::min(b.v0.y, b.v1.y) };
 	Vector2D bMax = { std::max(b.v0.x, b.v1.x), std::max(b.v0.y, b.v1.y) };
-	// 
-	const float radius = 0.5f;
 	aMin.x -= a.size.x * 0.5f;
 	aMax.x += a.size.x * 0.5f;
 	bMin.x -= b.size.x * 0.5f;
