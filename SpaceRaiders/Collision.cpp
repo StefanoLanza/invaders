@@ -48,21 +48,9 @@ CollisionInfo RectVSRect(const Rectangle& a, const Rectangle& b)
 }*/
 
 
-bool Intersect(const Collider& a, const Collider& b)
+bool Intersect(const Rectangle& a, const Rectangle& b)
 {
-	Vector2D aMin = { std::min(a.v0.x, a.v1.x), std::min(a.v0.y, a.v1.y) };
-	Vector2D aMax = { std::max(a.v0.x, a.v1.x), std::max(a.v0.y, a.v1.y) };
-	Vector2D bMin = { std::min(b.v0.x, b.v1.x), std::min(b.v0.y, b.v1.y) };
-	Vector2D bMax = { std::max(b.v0.x, b.v1.x), std::max(b.v0.y, b.v1.y) };
-	aMin.x -= a.size.x * 0.5f;
-	aMax.x += a.size.x * 0.5f;
-	bMin.x -= b.size.x * 0.5f;
-	bMax.x += b.size.x * 0.5f;
-	aMin.y -= a.size.y * 0.5f;
-	aMax.y += a.size.y * 0.5f;;
-	bMin.y -= b.size.y * 0.5f;;
-	bMax.y += b.size.y * 0.5f;;
 	// Poor-man continuous collision detection
 	// Here we assume a collision area that includes the current and previous position of a game object
-	return (aMax.x >= bMin.x && bMax.x >= aMin.x && aMax.y >= bMin.y && bMax.y >= aMin.y);
+	return (a.v1.x >= b.v0.x && b.v1.x >= a.v0.x && a.v1.y >= b.v0.y && b.v1.y >= a.v0.y);
 }

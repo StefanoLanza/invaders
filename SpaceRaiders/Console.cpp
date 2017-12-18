@@ -121,7 +121,7 @@ bool CenterWindow(HWND hwndWindow)
 	RECT rectWindow, rectParent;
  
 	// make the window relative to its parent
-	if ((hwndParent = GetAncestor(hwndWindow, GA_PARENT)) != NULL)
+	if ((hwndParent =GetDesktopWindow()) != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
 	{
 		GetWindowRect(hwndWindow, &rectWindow);
 		GetWindowRect(hwndParent, &rectParent);

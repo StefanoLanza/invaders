@@ -4,7 +4,7 @@
 #include "Vector2D.h"
 
 
-enum class CollisionId : uint8
+enum class ColliderId : uint8
 {
 	player,
 	alien,
@@ -14,13 +14,19 @@ enum class CollisionId : uint8
 	wall
 };
 
+
+struct ColliderData
+{
+	void*      userData;
+	ColliderId id;
+};
+
 struct Collider
 {
-	Vector2D    v0;
-	Vector2D    v1;
-	Vector2D    size;
-	void*       userData;
-	CollisionId id;
+	ColliderData data;
+	Vector2D     v0;
+	Vector2D     v1;
+	Vector2D     size;
 };
 
 
@@ -30,8 +36,8 @@ struct CollisionInfo
 //	Vector2D normal;
 	void*       ud0;
 	void*       ud1;
-	CollisionId id0;
-	CollisionId id1;
+	ColliderId id0;
+	ColliderId id1;
 };
 
 struct Rectangle
@@ -43,4 +49,4 @@ struct Rectangle
 
 Vector2D ComputeClosestNormal(const Vector2D& v);
 
-bool Intersect(const Collider& a, const Collider& b);
+bool Intersect(const Rectangle& a, const Rectangle& b);

@@ -17,5 +17,6 @@ public:
 
 private:
 
-	std::vector<Collider> colliders;
+	std::vector<Rectangle>    rectangles;
+	std::vector<ColliderData> colliderData;
 };

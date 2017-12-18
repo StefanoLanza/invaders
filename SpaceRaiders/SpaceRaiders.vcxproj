@@ -144,7 +144,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Alien.h" />
-    <ClInclude Include="AlienLaser.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionSpace.h" />
     <ClInclude Include="Console.h" />
@@ -159,7 +158,7 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="MessageLog.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerLaser.h" />
+    <ClInclude Include="Laser.h" />
     <ClInclude Include="PlayField.h" />
     <ClInclude Include="PowerUp.h" />
     <ClInclude Include="Prefabs.h" />
@@ -174,7 +173,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Alien.cpp" />
-    <ClCompile Include="AlienLaser.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionSpace.cpp" />
     <ClCompile Include="Console.cpp" />
@@ -187,7 +185,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="MessageLog.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerLaser.cpp" />
+    <ClCompile Include="Laser.cpp" />
     <ClCompile Include="PlayField.cpp" />
     <ClCompile Include="PowerUp.cpp" />
     <ClCompile Include="Prefabs.cpp" />

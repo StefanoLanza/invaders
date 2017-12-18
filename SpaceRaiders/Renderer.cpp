@@ -71,7 +71,9 @@ bool Renderer::InitializeConsole(int fontSize)
 {
 	const int consoleWidth = bounds.x;
 	const int consoleHeight = bounds.y + hudRows;
-	return console.Resize(consoleWidth, consoleHeight, fontSize);
+	bool r = console.Resize(consoleWidth, consoleHeight, fontSize);
+	r = r && console.CenterOnDesktop();
+	return r;
 }
 
 
