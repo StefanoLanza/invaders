@@ -12,5 +12,9 @@ enum class Color
 	black,
 	white,
 	whiteIntense,
+	lightBlue,
+	lightBlueIntense,
+	violet,
+	violetIntense,
 	count
 };

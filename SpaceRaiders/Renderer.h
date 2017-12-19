@@ -10,21 +10,20 @@ typedef std::vector<RenderItem> RenderItemList;
 class Game;
 class MessageLog;
 struct Image;
-class Console;
+struct Console;
 
 
 class Renderer
 {
 public:
 
-	Renderer(const IVector2D& bounds, Console& console);
+	Renderer(const IVector2D& bounds, Console& consoleC);
 	~Renderer();
 
+	const IVector2D& GetBounds() const;
 	bool InitializeConsole(int fontSize);
 	// Display all game objects, score, game over message
 	void Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog);
-
-private:
 
 	enum class Alignment
 	{
@@ -43,17 +42,12 @@ private:
 
 	void ClearLine(int row);
 	void DisplayText(const char* str, int col, int row, Color color);
-	void DisplayStartMenu();
-	void DisplayIntro();
-	void DisplayPauseMenu();
-	void DisplayVictory();
-	void DisplayGameOver();
-	void DisplayScores(const Game& game);
-	void DrawSprites(const RenderItemList& sprites);
 	void DisplayMessages(const MessageLog& messageLog);
 	void DrawImage(const Image& image, int x, int y, Color color, Alignment hAlignment, Alignment vAlignment);
+	void DisplayScores(const Game& game);
+	void DrawSprites(const RenderItemList& sprites);
 
-private:
+public:
 
 	static const int hudRows;
 

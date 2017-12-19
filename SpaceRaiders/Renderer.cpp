@@ -5,6 +5,7 @@
 #include "Image.h"
 #include "Images.h"
 #include "Console.h"
+#include "GameStates.h"
 #include <cassert>
 #include <algorithm>
 #include <iostream>
@@ -12,19 +13,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #undef GetMessage
+#undef WriteConsoleOutput
 
-
-// Images
-const wchar_t ikaLogo[] =
-{
-	#include "IKA.txt"
-};
-const wchar_t raidersTxt[] =
-{
-	#include "raiders.txt"
-};
-const Image ikaImg = { ikaLogo, 25, 6 };
-const Image raidersImg = { raidersTxt, 46, 6 };
 
 namespace
 {
@@ -41,7 +31,11 @@ constexpr WORD charColors[(int)Color::count] =
 	FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
 	0,
 	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN,
-	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY
+	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
+	FOREGROUND_BLUE | FOREGROUND_GREEN,
+	FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
+	FOREGROUND_RED | FOREGROUND_BLUE,
+	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 };
 
 
@@ -51,8 +45,8 @@ constexpr WORD charColors[(int)Color::count] =
 const int Renderer::hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer(const IVector2D& bounds_, Console& console_) :
-	console {console_},
+Renderer::Renderer(const IVector2D& bounds_, Console& consoleC_) :
+	console {consoleC_},
 	bounds {bounds_}
 {
 	assert(bounds.x > 0);
@@ -67,12 +61,18 @@ Renderer::Renderer(const IVector2D& bounds_, Console& console_) :
 Renderer::~Renderer() = default;
 
 
+const IVector2D& Renderer::GetBounds() const
+{
+	return bounds;
+}
+
+
 bool Renderer::InitializeConsole(int fontSize)
 {
 	const int consoleWidth = bounds.x;
 	const int consoleHeight = bounds.y + hudRows;
-	bool r = console.Resize(consoleWidth, consoleHeight, fontSize);
-	r = r && console.CenterOnDesktop();
+	bool r = console.resize(console.handle, consoleWidth, consoleHeight, fontSize);
+	r = r && console.centerOnDesktop();
 	return r;
 }
 
@@ -80,31 +80,31 @@ bool Renderer::InitializeConsole(int fontSize)
 void Renderer::Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog)
 {
 	FillCanvas(Color::black);
-	if (game.GetState() == Game::State::start)
+	if (game.GetState() == GameStateId::start)
 	{
-		DisplayStartMenu();
+		DrawGameState(GameStateId::start, *this);
 	}
-	else if (game.GetState() == Game::State::intro)
+	else if (game.GetState() == GameStateId::intro)
 	{
-		DisplayIntro();
+		DrawGameState(GameStateId::intro, *this);
 	}
-	else if (game.GetState() == Game::State::paused)
+	else if (game.GetState() == GameStateId::paused)
 	{
 		DrawSprites(sprites);
 		DisplayScores(game);
-		DisplayPauseMenu();
+		DrawGameState(GameStateId::paused, *this);
 	}
-	else if (game.GetState() == Game::State::victory)
+	else if (game.GetState() == GameStateId::victory)
 	{
 		DrawSprites(sprites);
 		DisplayScores(game);
-		DisplayVictory();
+		DrawGameState(GameStateId::victory, *this);
 	}
-	else if (game.GetState() == Game::State::over)
+	else if (game.GetState() == GameStateId::over)
 	{
 		DrawSprites(sprites);
 		DisplayScores(game);
-		DisplayGameOver();
+		DrawGameState(GameStateId::over, *this);
 	}
 	else
 	{
@@ -145,9 +145,7 @@ void Renderer::FillCanvas(Color color)
 
 void Renderer::DrawCanvas()
 {
-	const CHAR_INFO* curCanvas = canvas.data();
-	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
-	WriteConsoleOutputW(console.GetHandle(), curCanvas, { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, { 0, 0 }, &writeRegion);
+	console.writeOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
 }
 
 
@@ -171,120 +169,6 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color)
 	{
 		curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
 		curCanvas[i + col].Attributes = charColors[(int)color];
-	}
-}
-
-
-void Renderer::DisplayStartMenu()
-{
-	DrawImage(ikaImg, 0, 0, Color::greenIntense, Alignment::centered, Alignment::top);
-	DrawImage(raidersImg, 0, 7, Color::greenIntense, Alignment::centered,  Alignment::top);
-
-	static const char* str[] =
-	{
-		"",
-		"Single Player",
-		"  Press 1 to start one player game",
-		"  Press 2 to start one CPU game",
-		"",
-		"Multi Player",
-		"  Press 3 to start two players game",
-		"  Press 4 to start player and CPU game",
-		"  Press 5 to start two CPUs game",
-		"",
-		"Press ESC to quit"
-	};
-	constexpr int numRows = _countof(str);
-	const int row = 16;
-	const int col = (bounds.x - (int)strlen(str[3])) / 2;
-	for (int r = 0; r < numRows; ++r)
-	{
-		ClearLine(row + r);
-		DisplayText(str[r], col, row + r, Color::white);
-	}
-}
-
-
-void Renderer::DisplayIntro()
-{
-	DrawImage(GetImage(ImageId::planet), 0, 8, Color::white, Alignment::centered,  Alignment::top);
-	static const char* str[] =
-	{
-		"",
-		"Planet IKA is under attack!",
-		"Destroy the alien invaders before they reach the ground",
-		"Save the planet and earn eternal glory",
-		""
-	};
-	constexpr int numRows = _countof(str);
-	const int row = (bounds.y - numRows) / 2; // centered
-	const int col = (bounds.x - (int)strlen(str[2])) / 2;
-	for (int r = 0; r < numRows; ++r)
-	{
-		ClearLine(row + r);
-		DisplayText(str[r], col, row + r, r == 0 ? Color::greenIntense : Color::white);
-	}
-}
-
-
-void Renderer::DisplayPauseMenu()
-{
-	static const char* str[] =
-	{
-		"",
-		"Press ENTER to continue game",
-		"Press ESC to go back to main menu",
-		""
-	};
-	constexpr int numRows = _countof(str);
-	const int row = (bounds.y - numRows) / 2; // centered
-	const int col = (bounds.x - (int)strlen(str[1])) / 2;
-	for (int r = 0; r < numRows; ++r)
-	{
-		ClearLine(row + r);
-		DisplayText(str[r], col, row + r, Color::white);
-	}
-}
-
-
-void Renderer::DisplayVictory()
-{
-	static const char* str[] =
-	{
-		"",
-		"You saved the planet!",
-		"",
-		"Press any key to continue",
-		""
-	};
-	constexpr int numRows = _countof(str);
-	const int row = (bounds.y - numRows) / 2; // centered
-	const int col = (bounds.x - (int)strlen(str[3])) / 2;
-	for (int r = 0; r < numRows; ++r)
-	{
-		ClearLine(row + r);
-		DisplayText(str[r], col, row + r, Color::white);
-	}
-}
-
-
-void Renderer::DisplayGameOver()
-{
-	static const char* str[] =
-	{
-		"",
-		"Game Over",
-		"",
-		"Press any key to continue",
-		""
-	};
-	constexpr int numRows = _countof(str);
-	const int row = (bounds.y - numRows) / 2; // centered
-	const int col = (bounds.x - (int)strlen(str[3])) / 2;
-	for (int r = 0; r < numRows; ++r)
-	{
-		ClearLine(row + r);
-		DisplayText(str[r], col, row + r, Color::white);
 	}
 }
 

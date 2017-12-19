@@ -18,11 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Win32Console.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{C395EFFE-F4FD-43CA-BF2A-62486D536E0A}</ProjectGuid>
+    <ProjectGuid>{6D2B70CE-588A-4106-86C5-8ABBFB6B1C4C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>SpaceRaiders</RootNamespace>
+    <RootNamespace>Win32Console</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -40,13 +43,13 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -97,15 +100,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <CompileAsWinRT>false</CompileAsWinRT>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <MinimalRebuild>false</MinimalRebuild>
-      <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +139,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
-      <CompileAsManaged>false</CompileAsManaged>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,71 +147,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Alien.h" />
-    <ClInclude Include="Collision.h" />
-    <ClInclude Include="CollisionSpace.h" />
-    <ClInclude Include="Console.h" />
-    <ClInclude Include="DLL.h" />
-    <ClInclude Include="Explosion.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameConfig.h" />
-    <ClInclude Include="GameEvents.h" />
-    <ClInclude Include="GameStates.h" />
-    <ClInclude Include="Handle.h" />
-    <ClInclude Include="HandleManager.h" />
-    <ClInclude Include="Image.h" />
-    <ClInclude Include="Images.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="MessageLog.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Laser.h" />
-    <ClInclude Include="PlayField.h" />
-    <ClInclude Include="PowerUp.h" />
-    <ClInclude Include="Prefabs.h" />
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RenderItem.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Vector2D.h" />
-    <ClInclude Include="VisualManager.h" />
-    <ClInclude Include="Wall.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Alien.cpp" />
-    <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="CollisionSpace.cpp" />
-    <ClCompile Include="Console.cpp" />
-    <ClCompile Include="DLL.cpp" />
-    <ClCompile Include="Explosion.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameConfig.cpp" />
-    <ClCompile Include="GameEvents.cpp" />
-    <ClCompile Include="GameStates.cpp" />
-    <ClCompile Include="HandleManager.cpp" />
-    <ClCompile Include="Images.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="MessageLog.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Laser.cpp" />
-    <ClCompile Include="PlayField.cpp" />
-    <ClCompile Include="PowerUp.cpp" />
-    <ClCompile Include="Prefabs.cpp" />
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="RenderItem.cpp" />
-    <ClCompile Include="SpaceRaiders.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Vector2D.cpp" />
-    <ClCompile Include="VisualManager.cpp" />
-    <ClCompile Include="Wall.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
