@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Renderer.h"
 #include "Game.h"
 #include "MessageLog.h"
@@ -45,8 +44,9 @@ constexpr WORD charColors[(int)Color::count] =
 const int Renderer::hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer(const IVector2D& bounds_, Console& consoleC_) :
-	console {consoleC_},
+Renderer::Renderer(const IVector2D& bounds_, Console& console_, ConsoleModule& consoleModule_) :
+	console {console_},
+	consoleModule { consoleModule_ },
 	bounds {bounds_}
 {
 	assert(bounds.x > 0);
@@ -71,8 +71,8 @@ bool Renderer::InitializeConsole(int fontSize)
 {
 	const int consoleWidth = bounds.x;
 	const int consoleHeight = bounds.y + hudRows;
-	bool r = console.resize(console.handle, consoleWidth, consoleHeight, fontSize);
-	r = r && console.centerOnDesktop();
+	bool r = consoleModule.resize(console.handle, consoleWidth, consoleHeight, fontSize);
+	r = r && consoleModule.centerOnDesktop();
 	return r;
 }
 
@@ -80,40 +80,10 @@ bool Renderer::InitializeConsole(int fontSize)
 void Renderer::Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog)
 {
 	FillCanvas(Color::black);
-	if (game.GetState() == GameStateId::start)
-	{
-		DrawGameState(GameStateId::start, *this);
-	}
-	else if (game.GetState() == GameStateId::intro)
-	{
-		DrawGameState(GameStateId::intro, *this);
-	}
-	else if (game.GetState() == GameStateId::paused)
-	{
-		DrawSprites(sprites);
-		DisplayScores(game);
-		DrawGameState(GameStateId::paused, *this);
-	}
-	else if (game.GetState() == GameStateId::victory)
-	{
-		DrawSprites(sprites);
-		DisplayScores(game);
-		DrawGameState(GameStateId::victory, *this);
-	}
-	else if (game.GetState() == GameStateId::over)
-	{
-		DrawSprites(sprites);
-		DisplayScores(game);
-		DrawGameState(GameStateId::over, *this);
-	}
-	else
-	{
-		// Running
-		DrawSprites(sprites);
-		DisplayScores(game);
-	}
+	DrawSprites(sprites);
+	DisplayScores(game);
 	DisplayMessages(messageLog);
-
+	DrawGameState(game.GetState(), *this);
 	DrawCanvas();
 }
 
@@ -145,7 +115,7 @@ void Renderer::FillCanvas(Color color)
 
 void Renderer::DrawCanvas()
 {
-	console.writeOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
+	consoleModule.writeOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
 }
 
 

@@ -11,13 +11,14 @@ class Game;
 class MessageLog;
 struct Image;
 struct Console;
+struct ConsoleModule;
 
 
 class Renderer
 {
 public:
 
-	Renderer(const IVector2D& bounds, Console& consoleC);
+	Renderer(const IVector2D& bounds, Console& console, ConsoleModule& consoleModule);
 	~Renderer();
 
 	const IVector2D& GetBounds() const;
@@ -52,8 +53,7 @@ public:
 	static const int hudRows;
 
 	Console& console;
+	ConsoleModule& consoleModule;
 	IVector2D bounds;
-	// Double buffering is not necessary when using WriteConsoleOutput
 	std::vector<CHAR_INFO> canvas;
 };
-

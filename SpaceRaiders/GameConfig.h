@@ -15,7 +15,6 @@ struct GameConfig
 	// Alien
 	float alienUpdateRate;
 	float alienTransformEnergy;
-	float alienTransformRate;
 	float alienFireRate;  // #lasers / s
 	float alienDownVelocity;
 	float betterAlienFireRate; // #lasers / s

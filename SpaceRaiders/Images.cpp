@@ -1,5 +1,4 @@
-﻿#include "stdafx.h"
-#include "Images.h"
+﻿#include "Images.h"
 #include "Vector2D.h"
 #include <cassert>
 
@@ -11,7 +10,7 @@ const wchar_t alien0_0Str[2 + 8 * 4] =
 LR"(
  ▀▄▄▄▀ 
 ▄▀▀█▀▀▄
-▀▀█▀█▀▀
+▀█▀▀▀█▀
   ▀ ▀  
 )";
 
@@ -19,7 +18,7 @@ const wchar_t alien0_1Str[2 + 8 * 4] =
 LR"(
  ▀▄▄▄▀ 
 ▄▀▀█▀▀▄
-▀▀█▀█▀▀
+█▀▀▀▀▀█
  ▀   ▀ 
 )";
 
@@ -27,7 +26,7 @@ const wchar_t alien1_0Str[2 + 8 * 4] =
 LR"(
  ▄▄█▄▄ 
 █▀▀█▀▀█
- ▀█▀█▀ 
+▀█▀▀▀█▀
   ▀ ▀  
 )";
 
@@ -35,77 +34,95 @@ const wchar_t alien1_1Str[2 + 8 * 4] =
 LR"(
  ▄▄█▄▄ 
 █▀▀█▀▀█
- ▀█▀█▀ 
+█▀▀▀▀▀█
  ▀   ▀ 
 )";
 
 const wchar_t alien2_0Str[2 + 8 * 4] = 
 LR"(
-  ▄▄▄  
+ ▄ ▄ ▄ 
 █▀▀█▀▀█
-▀▀█▀█▀▀
-  ▀ ▀  
+█▀▀▀▀▀█
+ ▀   ▀ 
 )";
 
 const wchar_t alien2_1Str[2 + 8 * 4] = 
 LR"(
-  ▄▄▄  
+ ▄ ▄ ▄ 
 █▀▀█▀▀█
-▀▀█▀█▀▀
+▀█▀▀▀█▀
+  ▀ ▀  
+)";
+
+const wchar_t alien3_0Str[2 + 8 * 4] = 
+LR"(
+  ▄ ▄  
+▄▀▀█▀▀▄
+▀█▀▀▀█▀
+  ▀ ▀  
+)";
+
+const wchar_t alien3_1Str[2 + 8 * 4] = 
+LR"(
+  ▄ ▄  
+▄▀▀█▀▀▄
+█▀▀▀▀▀█
  ▀   ▀ 
-)";
-
-const wchar_t alien3Str[2 + 8 * 4] = 
-LR"(
- ▀▄▄▄▀ 
-▄▀▀█▀▀▄
-▀██▀██▀
-  ▀▀▀  
-)";
-
-const wchar_t alien4Str[2 + 8 * 4] = 
-LR"(
- ▀▄▄▄▀ 
-▄▀▀█▀▀▄
-▀██▀██▀
-  ▀▀▀  
 )";
 
 
 const wchar_t boss0_0Str[] = 
 LR"(
   ▀▄   ▄▀  
- ▄█▀▀█▀▀█▄ 
-█▀███████▀█
-█ █▀▀▀▀▀█ █
-   ▀▀ ▀▀   
+ ▄█▀███▀█▄ 
+███▄▄█▄▄███
+▄▀  ▀ ▀  ▀▄
+ ▀▀     ▀▀ 
 )";
 
 const wchar_t boss0_1Str[] = 
 LR"(
-▄ ▀▄   ▄▀ ▄
-█▄█▀▀█▀▀█▄█
-▀█████████▀
-  █▀▀▀▀▀█  
+  ▀▄   ▄▀  
+ ▄█▀███▀█▄ 
+███▄▄█▄▄███
+ ▄▀ ▀ ▀ ▀▄ 
+  ▀▀   ▀▀  
+)";
+
+const wchar_t boss1_0Str[] = 
+LR"(
+   ▄███▄   
+ ▄▀█████▀▄ 
+██▄▄███▄▄██
+  ▄▀▀ ▀▀▄  
+   ▀   ▀   
+)";
+
+const wchar_t boss1_1Str[] = 
+LR"(
+   ▄███▄   
+ ▄▀█████▀▄ 
+██▄▄███▄▄██
+ ▄▀▀   ▀▀▄ 
+  ▀     ▀  
+)";
+
+const wchar_t boss2_0Str[] = 
+LR"(
+ ▄▄██ ██▄▄ 
+██▀█████▀██
+██▄▄███▄▄██
+ ▄▀ ▀ ▀ ▀▄ 
+  ▀     ▀  
+)";
+
+const wchar_t boss2_1Str[] = 
+LR"(
+ ▄▄██ ██▄▄ 
+██▀█████▀██
+██▄▄███▄▄██
+▄▀  ▀ ▀  ▀▄
  ▀       ▀ 
-)";
-
-const wchar_t boss1Str[] = 
-LR"(
-   ▄██▄   
- ▄██████▄ 
-███▄██▄███
-  ▄▀▄▄▀▄  
- ▀ ▀  ▀ ▀ 
-)";
-
-const wchar_t boss2Str[] = 
-LR"(
- ▄▄████▄▄ 
-██████████
-██▄▄██▄▄██
- ▄▀▄▀▀▄▀▄ 
-▀        ▀
 )";
 
 const wchar_t laserStr[] =
@@ -231,11 +248,14 @@ const Image images[(int)ImageId::count] =
 	{ alien1_1Str, 7, 4 },
 	{ alien2_0Str, 7, 4 },
 	{ alien2_1Str, 7, 4 },
-	{ alien3Str, 7,	4 },
+	{ alien3_0Str, 7,	4 },
+	{ alien3_1Str, 7,	4 },
 	{ boss0_0Str, 11, 5 },
 	{ boss0_1Str, 11, 5 },
-	{ boss1Str,	10,	5 },
-	{ boss2Str,	10,	5 },
+	{ boss1_0Str, 11, 5 },
+	{ boss1_1Str, 11, 5 },
+	{ boss2_0Str,	11,	5 },
+	{ boss2_1Str,	11,	5 },
 	{ laserStr,	1, 3 },
 	{ laserLeftStr,	4, 3 },
 	{ laserRightStr, 4,	3 },

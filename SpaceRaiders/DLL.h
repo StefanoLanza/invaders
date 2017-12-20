@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include <cassert>
 
 
 struct FileTime
@@ -14,30 +15,34 @@ struct DLL
 {
 	void*       module = nullptr;
 	const char* fileName = nullptr;
-	FileTime    writeTime;
-	int         version = -1;
+	FileTime    writeTime = {};
+	uint        version = 0;
 };
 
-using ModuleInterfaceProc = void (__cdecl *)(void);
 
-
-enum class DLLError : int
+enum class DLLError : uint
 {
-	getProcAddressFailed = -2,
-	loadLibraryFailed = -1,
-	ok = 0
+	copyFailed = 0,
+	unchanged = 1,
+	getProcAddressFailed = 2,
+	loadLibraryFailed = 3,
+	ok = 4
 };
 
+using DLLProc = void (__cdecl *)(void);
+
+const char* GetErrorMessage(DLLError error);
 DLLError LoadDLL(DLL& dll, const char* fileName);
 void FreeDLL(DLL& dll);
 DLLError ReloadDLL(DLL& dll);
-ModuleInterfaceProc GetDLLProcedure(const DLL& dll, const char* procName);
+bool IsValid(const DLL& dll);
+DLLProc GetDLLProcedure(const DLL& dll, const char* procName);
+
 template <typename Proc>
 DLLError GetDLLProcedure(Proc* outProc, const DLL& dll, const char* procName)
 {
-	ModuleInterfaceProc proc = GetDLLProcedure(dll, procName);
+	assert(outProc);
+	DLLProc proc = GetDLLProcedure(dll, procName);
 	*outProc = reinterpret_cast<Proc>(proc);
 	return proc == nullptr ? DLLError::getProcAddressFailed : DLLError::ok;
 }
-
-bool IsValid(const DLL& dll);

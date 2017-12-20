@@ -1,9 +1,15 @@
 #pragma once
 
-#include "Colors.h"
+#include "DLL.h"
 
 
 struct Console
+{
+	void* handle = nullptr;
+};
+
+
+struct ConsoleModule
 {
 	using WriteOutput = void (*)(void* consoleHandle, const void* buff, int cols, int rows, int colOffs, int rowOffs);
 	using CenterOnDesktop = bool (*)();
@@ -11,7 +17,7 @@ struct Console
 	using ShowCursor = void (*)(void* consoleHandle);
 	using Resize = bool (*) (void* consoleHandle, int cols, int rows, int fontSize);
 
-	void*           handle = nullptr;
+	DLL             dll;
 	// DLL entry points
 	Resize          resize = nullptr;
 	WriteOutput     writeOutput = nullptr;
@@ -20,6 +26,5 @@ struct Console
 	ShowCursor      showCursor = nullptr;
 };
 
-struct DLL;
 
-bool InitConsole(Console& console, DLL& dll, const char* dllFileName);
+bool InitConsole(Console& console, ConsoleModule& module, const char* dllFileName);

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Console.h"
 #include "DLL.h"
 #define NOMINMAX
@@ -10,9 +9,9 @@
 #include <cassert>
 
 
-bool InitConsole(Console& console, DLL& dll, const char* dllFileName)
+bool InitConsole(Console& console, ConsoleModule& module, const char* dllFileName)
 {
-	DLLError err = LoadDLL(dll, dllFileName);
+	DLLError err = LoadDLL(module.dll, dllFileName);
 	if (err != DLLError::ok)
 	{
 		return false;
@@ -24,27 +23,27 @@ bool InitConsole(Console& console, DLL& dll, const char* dllFileName)
 		return false;
 	}
 
-	err = GetDLLProcedure(&console.writeOutput, dll, "WriteConsoleOutput");
+	err = GetDLLProcedure(&module.writeOutput, module.dll, "WriteConsoleOutput");
 	if (err != DLLError::ok)
 	{
 		return false;
 	}
-	err = GetDLLProcedure(&console.resize, dll, "ResizeConsole");
+	err = GetDLLProcedure(&module.resize, module.dll, "ResizeConsole");
 	if (err != DLLError::ok)
 	{
 		return false;
 	}
-	err = GetDLLProcedure(&console.centerOnDesktop, dll, "CenterConsoleOnDesktop");
+	err = GetDLLProcedure(&module.centerOnDesktop, module.dll, "CenterConsoleOnDesktop");
 	if (err != DLLError::ok)
 	{
 		return false;
 	}
-	err = GetDLLProcedure(&console.showCursor, dll, "ShowConsoleCursor");
+	err = GetDLLProcedure(&module.showCursor, module.dll, "ShowConsoleCursor");
 	if (err != DLLError::ok)
 	{
 		return false;
 	}
-	err = GetDLLProcedure(&console.hideCursor, dll, "HideConsoleCursor");
+	err = GetDLLProcedure(&module.hideCursor, module.dll, "HideConsoleCursor");
 	if (err != DLLError::ok)
 	{
 		return false;

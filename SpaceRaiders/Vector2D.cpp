@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Vector2D.h"
 #include <algorithm>
 #include <cassert>

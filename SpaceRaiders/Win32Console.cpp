@@ -1,3 +1,4 @@
+#include "Base.h"
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -16,9 +17,8 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
 }
 
 
-#define EXPORT extern "C" __declspec( dllexport )
 
-EXPORT void WriteConsoleOutput(void* consoleHandle, const void* buff, int cols, int rows, int colOffs, int rowOffs)
+DLL_EXPORT void WriteConsoleOutput(void* consoleHandle, const void* buff, int cols, int rows, int colOffs, int rowOffs)
 {
 	if (consoleHandle)
 	{
@@ -28,13 +28,13 @@ EXPORT void WriteConsoleOutput(void* consoleHandle, const void* buff, int cols, 
 }
 
 
-EXPORT bool CenterConsoleOnDesktop()
+DLL_EXPORT bool CenterConsoleOnDesktop()
 {
 	return CenterWindowOnDesktop(GetConsoleWindow());
 }
 
 
-EXPORT void HideConsoleCursor(void* handle)
+DLL_EXPORT void HideConsoleCursor(void* handle)
 {
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
@@ -43,7 +43,7 @@ EXPORT void HideConsoleCursor(void* handle)
 }
 
 
-EXPORT void ShowConsoleCursor(void* handle)
+DLL_EXPORT void ShowConsoleCursor(void* handle)
 {
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
@@ -51,7 +51,7 @@ EXPORT void ShowConsoleCursor(void* handle)
 	SetConsoleCursorInfo(handle, &info);
 }
 
-EXPORT bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
+DLL_EXPORT bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
 {
 	return ResizeConsoleImpl(cols, rows, fontSize, handle);
 }

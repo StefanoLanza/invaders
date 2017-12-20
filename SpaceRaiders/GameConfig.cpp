@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "GameConfig.h"
 
 
@@ -15,9 +14,8 @@ GameConfig::GameConfig()
 	// Player
 	playerFireRate = 0.3f;
 	// Alien
-	alienUpdateRate = 0.01f;
+	alienUpdateRate = 0.003f;
 	alienTransformEnergy = 1.f;
-	alienTransformRate = 0.005f;
 	alienDownVelocity = 0.5f;
 	alienFireRate = 1.0f;
 	betterAlienFireRate = 0.75f;

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "CollisionSpace.h"
 #include <algorithm>
 
@@ -42,7 +41,7 @@ int CollisionSpace::Execute(CollisionInfo collisionInfo[], int maxCollisions) co
 		for (int y = 0; y < nc - x - 1; ++y, ++c1, ++r1)
 		{
 			// FIXME Collision matrix
-			if (c0->id != c1->id && Intersect(*r0, *r1))
+			if (c0->userData != c1->userData && Intersect(*r0, *r1))
 			{
 				collisionInfo[nci] = { c0->userData, c1->userData, c0->id, c1->id };
 				nci++;
