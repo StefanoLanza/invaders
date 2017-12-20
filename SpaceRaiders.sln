@@ -22,6 +22,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scripts", "SpaceRaiders\Scr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{558F7FFA-E256-4B25-9C48-47D9E6C9DC4B}"
 	ProjectSection(SolutionItems) = preProject
+		game.ini = game.ini
 		SpaceRaiders\IKA.txt = SpaceRaiders\IKA.txt
 		SpaceRaiders\raiders.txt = SpaceRaiders\raiders.txt
 	EndProjectSection
