@@ -31,6 +31,7 @@ enum class ImageId
 	sPowerUp,
 	fPowerUp,
 	iPowerUp,
+	shield,
 	solidWall,
 	brittleWall,
 	bomb,

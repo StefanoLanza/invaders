@@ -26,6 +26,7 @@
     <ClCompile Include="DLL.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameStateMgr.cpp" />
     <ClCompile Include="Images.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Laser.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="DLL.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameStateMgr.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Images.h" />
     <ClInclude Include="Input.h" />

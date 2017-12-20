@@ -134,16 +134,16 @@ LR"(
 
 const wchar_t laserLeftStr[] =
 LR"(
-▄   
- ▀▄ 
-   ▀
+\  
+ \ 
+  \
 )";
 
 const wchar_t laserRightStr[] =
 LR"(
-   ▄
- ▄▀ 
-▀   
+  /
+ / 
+/  
 )";
 
 const wchar_t playerStr[] =
@@ -221,6 +221,10 @@ LR"(
 ░░░░
 ░░░░
 )";
+const wchar_t shieldStr[] =
+LR"(
+(═══════════)
+)";
 
 
 const wchar_t planetStr[] = 
@@ -257,8 +261,8 @@ const Image images[(int)ImageId::count] =
 	{ boss2_0Str,	11,	5 },
 	{ boss2_1Str,	11,	5 },
 	{ laserStr,	1, 3 },
-	{ laserLeftStr,	4, 3 },
-	{ laserRightStr, 4,	3 },
+	{ laserLeftStr,	3, 3 },
+	{ laserRightStr, 3,	3 },
 	{ laserStr,	1, 3 },
 	{ playerStr, 11, 3 },
 	{ explosionStr,	7, 3 },
@@ -267,6 +271,7 @@ const Image images[(int)ImageId::count] =
 	{ SbonusStr, 5, 3 },
 	{ FbonusStr, 5, 3 },
 	{ IbonusStr, 5, 3 },
+	{ shieldStr, 13, 1 },
 	{ solidWallStr,	4, 2 },
 	{ brittleWallStr, 4, 2 },
 	{ bombStr, 5, 3 }

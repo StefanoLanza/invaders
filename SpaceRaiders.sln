@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{558F7FFA
 		game.ini = game.ini
 		SpaceRaiders\IKA.txt = SpaceRaiders\IKA.txt
 		SpaceRaiders\raiders.txt = SpaceRaiders\raiders.txt
+		todo.txt = todo.txt
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Inih", "SpaceRaiders\Inih.vcxproj", "{37D86B7F-25F8-4FDF-929D-92838D478B7B}"

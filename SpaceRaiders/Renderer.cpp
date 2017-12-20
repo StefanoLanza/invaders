@@ -83,7 +83,7 @@ void Renderer::Update(const RenderItemList& sprites, const Game& game, const Mes
 	DrawSprites(sprites);
 	DisplayScores(game);
 	DisplayMessages(messageLog);
-	DrawGameState(game.GetState(), *this);
+	DrawGameState(game.stateId, game, *this);
 	DrawCanvas();
 }
 
