@@ -46,6 +46,7 @@
     <ClInclude Include="Base.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionSpace.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DLL.h" />
     <ClInclude Include="Explosion.h" />

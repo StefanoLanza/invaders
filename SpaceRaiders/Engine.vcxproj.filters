@@ -140,5 +140,8 @@
     <ClInclude Include="GameStateMgr.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Colors.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

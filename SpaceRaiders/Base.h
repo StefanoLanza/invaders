@@ -28,3 +28,6 @@ typedef uint32_t dword;
 
 
 #define DLL_EXPORT extern "C" __declspec( dllexport )
+
+
+#define XMAS_EDITION 1

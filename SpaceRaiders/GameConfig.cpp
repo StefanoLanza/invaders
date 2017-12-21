@@ -32,5 +32,5 @@ GameConfig::GameConfig()
 	wallMaxHits = 2;
 
 	godMode = false;  // good for testing
-	randomSeed = 0; // use random_device
+	randomSeed = 1734176512;
 }

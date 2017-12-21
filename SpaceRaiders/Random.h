@@ -19,4 +19,5 @@ private:
 	std::default_random_engine& rGen;
 	std::uniform_int<int>       rndInt;
 	int                         history[maxValues];
+	int                         last;
 };

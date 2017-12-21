@@ -45,6 +45,7 @@ public:
 	void DisplayText(const char* str, int col, int row, Color color);
 	void DisplayMessages(const MessageLog& messageLog);
 	void DrawImage(const Image& image, int x, int y, Color color, Alignment hAlignment, Alignment vAlignment);
+	void DrawColoredImage(const Image& image, int x, int y);
 	void DisplayScores(const Game& game);
 	void DrawSprites(const RenderItem* sprites, int count);
 

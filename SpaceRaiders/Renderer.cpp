@@ -155,7 +155,14 @@ void Renderer::DrawSprites(const RenderItem* sprites, int count)
 		{
 			x -= image.width / 2;
 			y -= image.height / 2;
-			DrawImage(image, x, y, ri.visual.color, Alignment::left,  Alignment::top);
+			if (image.colors)
+			{
+				DrawColoredImage(image, x, y);
+			}
+			else
+			{
+				DrawImage(image, x, y, ri.visual.color, Alignment::left,  Alignment::top);
+			}
 		}
 	}
 }
@@ -181,7 +188,7 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 	}
 	else if (hAlignment == Alignment::right)
 	{
-		x0 = bounds.x - image.width + x0;
+		x0 = bounds.x - image.width - x0;
 	}
 	if (vAlignment == Alignment::centered)
 	{
@@ -189,7 +196,7 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 	}
 	else if (vAlignment == Alignment::bottom)
 	{
-		y0 = bounds.y- image.height + y0;
+		y0 = bounds.y- image.height - y0;
 	}
 	// Clip
 	const int l = std::max(0, x0);
@@ -207,6 +214,31 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 			{
 				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
 				c.Attributes = charColors[(int)color];
+			}
+		}
+	}
+}
+
+
+void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
+{
+	CHAR_INFO* const dst = canvas.data();
+	// Clip
+	const int l = std::max(0, x0);
+	const int r = std::min(bounds.x, x0 + image.width);
+	const int b = std::max(0, y0);
+	const int t = std::min(bounds.y, y0 + image.height);
+
+	for (int y = b; y < t; ++y)
+	{
+		for (int x = l; x < r; ++x)
+		{
+			auto& c = dst[x + (y + hudRows) * bounds.x];
+			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
+			if (image.img[s] != ' ')
+			{
+				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
+				c.Attributes = charColors[image.colors[s] - '0'];
 			}
 		}
 	}
