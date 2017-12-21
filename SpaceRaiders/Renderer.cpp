@@ -80,7 +80,7 @@ bool Renderer::InitializeConsole(int fontSize)
 void Renderer::Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog)
 {
 	FillCanvas(Color::black);
-	DrawSprites(sprites);
+	DrawSprites(sprites.data(), (int)sprites.size());
 	DisplayScores(game);
 	DisplayMessages(messageLog);
 	DrawGameState(game.stateId, game, *this);
@@ -92,7 +92,7 @@ void Renderer::DisplayScores(const Game& game)
 {
 	// Write scores
 	char tmp[256];
-	for (int p = 0; p < game.GetNumPlayers(); ++p)
+	for (int p = 0; p < game.numPlayers; ++p)
 	{
 		sprintf_s(tmp, "P%d Score: %d", p + 1, game.GetScore(p));
 		DisplayText(tmp, 0, p, Color::white);
@@ -143,10 +143,11 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color)
 }
 
 
-void Renderer::DrawSprites(const RenderItemList& sprites)
+void Renderer::DrawSprites(const RenderItem* sprites, int count)
 {
-	for (const auto& ri : sprites)
+	for (int i = 0; i < count; ++i)
 	{
+		const auto& ri = sprites[i];
 		int x = (int)std::floor(ri.pos.x);
 		int y = (int)std::floor(ri.pos.y);
 		const Image& image = GetImage(ri.visual.imageId);

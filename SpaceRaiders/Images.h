@@ -35,7 +35,12 @@ enum class ImageId
 	solidWall,
 	brittleWall,
 	bomb,
-	count
+	// numbers
+	_0,
+	_1,
+	_2,
+	_3,
+	count,
 };
 
 const Image& GetImage(ImageId imageId);

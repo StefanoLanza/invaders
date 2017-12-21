@@ -1,2 +1,20 @@
 Remove Game play code from Game
 Have a TimeLine API to run events ?
+Add collisions masks to avoid unnecessary checks
+Statically link to win32 console
+
+[Game Play]
+Show level number at start and wait N seconds
+Avoid alien vs alien collisions by design
+Fix alien vs wall collisions
+Have each alien shoot a laser each
+
+[Shield]
+Improve image
+Add struct
+Register in collisions
+
+[Misc]
+Do not show player ship in intro screen
+
+[Bugs]

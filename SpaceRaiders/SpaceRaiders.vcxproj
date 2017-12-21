@@ -101,15 +101,27 @@
   <ItemGroup>
     <ClCompile Include="GameConfig.cpp" />
     <ClCompile Include="GameEvents.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GameStates.cpp" />
+    <ClCompile Include="IntroScreen.cpp" />
+    <ClCompile Include="PauseScreen.cpp" />
+    <ClCompile Include="PlayGameState.cpp" />
     <ClCompile Include="SpaceRaiders.cpp" />
     <ClCompile Include="src\ScriptModule.cpp" />
+    <ClCompile Include="StartMenu.cpp" />
+    <ClCompile Include="VictoryScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameConfig.h" />
     <ClInclude Include="GameEvents.h" />
+    <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GameStates.h" />
+    <ClInclude Include="IntroScreen.h" />
+    <ClInclude Include="PauseScreen.h" />
+    <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="src\ScriptModule.h" />
+    <ClInclude Include="StartMenu.h" />
+    <ClInclude Include="VictoryScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

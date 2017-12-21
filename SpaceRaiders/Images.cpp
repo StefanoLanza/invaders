@@ -242,6 +242,34 @@ LR"(
 )";
 
 
+const wchar_t _0Img[] =
+LR"(
+ ▄▄▄ 
+█   █
+▀▄▄▄▀
+)";
+
+const wchar_t _1Img[] =
+LR"(
+    ▄
+    █
+    █
+)";
+
+const wchar_t _2Img[] =
+LR"(
+ ▄▄▄▄
+ ▄▄▄█
+ █▄▄▄
+)";
+
+const wchar_t _3Img[] =
+LR"(
+ ▄▄▄▄
+ ▄▄▄█
+ ▄▄▄█
+)";
+
 const Image images[(int)ImageId::count] =
 {
 	{ nullptr, 0, 0 },
@@ -274,7 +302,10 @@ const Image images[(int)ImageId::count] =
 	{ shieldStr, 13, 1 },
 	{ solidWallStr,	4, 2 },
 	{ brittleWallStr, 4, 2 },
-	{ bombStr, 5, 3 }
+	{ bombStr, 5, 3 },
+	{ _0Img, 5, 3 },
+	{ _1Img, 5, 3 },
+	{ _2Img, 5, 3 },
 };
 
 }

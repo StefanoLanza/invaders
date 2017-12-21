@@ -46,7 +46,7 @@ public:
 	void DisplayMessages(const MessageLog& messageLog);
 	void DrawImage(const Image& image, int x, int y, Color color, Alignment hAlignment, Alignment vAlignment);
 	void DisplayScores(const Game& game);
-	void DrawSprites(const RenderItemList& sprites);
+	void DrawSprites(const RenderItem* sprites, int count);
 
 public:
 
