@@ -12,8 +12,11 @@ const int keyCodeToVKey[KeyCode::count] =
 {
 	VK_ESCAPE,
 	VK_RETURN,
+	VK_SPACE,
 	VK_LEFT,
 	VK_RIGHT,
+	VK_UP,
+	VK_DOWN,
 	'1',
 	'2',
 	'3',

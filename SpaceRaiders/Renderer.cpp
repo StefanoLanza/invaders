@@ -83,7 +83,7 @@ void Renderer::Update(const RenderItemList& sprites, const Game& game, const Mes
 	DrawSprites(sprites.data(), (int)sprites.size());
 	DisplayScores(game);
 	DisplayMessages(messageLog);
-	DrawGameState(game.stateId, game, *this);
+	DrawGameState(game, *this);
 	DrawCanvas();
 }
 
@@ -161,7 +161,7 @@ void Renderer::DrawSprites(const RenderItem* sprites, int count)
 			}
 			else
 			{
-				DrawImage(image, x, y, ri.visual.color, Alignment::left,  Alignment::top);
+				DrawImage(image, x, y, ri.visual.color, ImageAlignment::left,  ImageAlignment::top);
 			}
 		}
 	}
@@ -179,22 +179,22 @@ void Renderer::DisplayMessages(const MessageLog& messageLog)
 }
 
 
-void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignment hAlignment, Alignment vAlignment)
+void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
 	CHAR_INFO* const dst = canvas.data();
-	if (hAlignment == Alignment::centered)
+	if (hAlignment == ImageAlignment::centered)
 	{
 		x0 = (bounds.x - image.width) / 2 + x0;
 	}
-	else if (hAlignment == Alignment::right)
+	else if (hAlignment == ImageAlignment::right)
 	{
 		x0 = bounds.x - image.width - x0;
 	}
-	if (vAlignment == Alignment::centered)
+	if (vAlignment == ImageAlignment::centered)
 	{
 		y0 = (bounds.y - image.height) / 2 + y0;
 	}
-	else if (vAlignment == Alignment::bottom)
+	else if (vAlignment == ImageAlignment::bottom)
 	{
 		y0 = bounds.y- image.height - y0;
 	}
@@ -203,6 +203,7 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
+	const WORD attrib = charColors[(int)color];
 
 	for (int y = b; y < t; ++y)
 	{
@@ -213,7 +214,7 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, Alignm
 			if (image.img[s] != ' ')
 			{
 				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
-				c.Attributes = charColors[(int)color];
+				c.Attributes = attrib;
 			}
 		}
 	}
@@ -239,6 +240,49 @@ void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
 			{
 				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
 				c.Attributes = charColors[image.colors[s] - '0'];
+			}
+		}
+	}
+}
+
+
+void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
+{
+	CHAR_INFO* const dst = renderer.canvas.data();
+	IVector2D bounds = renderer.bounds;
+	if (hAlignment == ImageAlignment::centered)
+	{
+		x0 = (bounds.x - image.width) / 2 + x0;
+	}
+	else if (hAlignment == ImageAlignment::right)
+	{
+		x0 = bounds.x - image.width - x0;
+	}
+	if (vAlignment == ImageAlignment::centered)
+	{
+		y0 = (bounds.y - image.height) / 2 + y0;
+	}
+	else if (vAlignment == ImageAlignment::bottom)
+	{
+		y0 = bounds.y- image.height - y0;
+	}
+	// Clip
+	const int l = std::max(0, x0);
+	const int r = std::min(bounds.x, x0 + image.width);
+	const int b = std::max(0, y0);
+	const int t = std::min(bounds.y, y0 + image.height);
+	const WORD attrib = charColors[(int)color];
+
+	for (int y = b; y < t; ++y)
+	{
+		for (int x = l; x < r; ++x)
+		{
+			auto& c = dst[x + (y + renderer.hudRows) * bounds.x];
+			int s = (x - x0) + (y - y0) * (image.width);
+			if (image.img[s] != ' ')
+			{
+				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
+				c.Attributes = attrib;
 			}
 		}
 	}

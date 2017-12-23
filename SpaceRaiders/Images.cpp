@@ -3,6 +3,8 @@
 #include "Vector2D.h"
 #include "Colors.h"
 #include <cassert>
+#include <fstream>
+#include <sys/stat.h>
 
 namespace
 {
@@ -18,8 +20,8 @@ namespace
 // <  violet
 // =  violetIntense
 
-const wchar_t alien_color[2 + 8 * 4] = 
-LR"(
+const byte alien_color[2 + 8 * 4] = 
+R"(
 1111199
 1111111
 8888888
@@ -177,8 +179,8 @@ LR"(
   ██   ██  
 ▄█████████▄
 )";
-const wchar_t playerShipColors[] =
-LR"(
+const byte playerShipColors[] =
+R"(
   :     :  
   :9   9:  
 99999999999
@@ -254,9 +256,17 @@ LR"(
 )";
 const wchar_t shieldStr[] =
 LR"(
-(═══════════)
+((─────────))
 )";
 
+const wchar_t girlStr[] =
+LR"(
+  .__. 
+ {('')}
+ -/  \/
+ /____\
+ _/ |_ 
+)";
 
 const wchar_t planetStr[] = 
 LR"(
@@ -275,37 +285,47 @@ LR"(
 
 const wchar_t _0Img[] =
 LR"(
- ▄▄ 
-█  █
-▀▄▄▀
+   ____ 
+  / __ \
+ / / / /
+/ /_/ / 
+\____/  
 )";
 
 const wchar_t _1Img[] =
 LR"(
-   ▄
-   █
-   █
+    __
+   / /
+  / / 
+ / /  
+/_/   
 )";
 
 const wchar_t _2Img[] =
 LR"(
-▄▄▄▄
-▄▄▄█
-█▄▄▄
+   ___ 
+  |__ \
+  __/ /
+ / __/ 
+/____/ 
 )";
 
 const wchar_t _3Img[] =
 LR"(
-▄▄▄▄
-▄▄▄█
-▄▄▄█
+   _____
+  |__  /
+   /_ < 
+ ___/ / 
+/____/  
 )";
 
 const wchar_t levelImg[] =
 LR"(
-▄   ▄▄▄▄ ▄   ▄ ▄▄▄▄ ▄  
-█   █▄▄  ▀▄ ▄▀ █▄▄  █  
-█▄▄ █▄▄▄  ▀▄▀  █▄▄▄ █▄▄
+    __                   __
+   / /   ___ _   _____  / /
+  / /   / _ \ | / / _ \/ / 
+ / /___/  __/ |/ /  __/ /  
+/_____/\___/|___/\___/_/   
 )";
 
 const wchar_t snowFlakeImg[] =
@@ -388,11 +408,12 @@ const Image images[(int)ImageId::count] =
 	{ giftImg, nullptr, 24, 8 },
 	{ happyHolImg, nullptr, 30, 8 },
 	{ leafImg, nullptr, 21, 8 },
-	{ levelImg, nullptr, 23, 3},
-	{ _0Img, nullptr, 4, 3 },
-	{ _1Img, nullptr, 4, 3 },
-	{ _2Img, nullptr, 4, 3 },
-	{ _3Img, nullptr, 4, 3 },
+	{ levelImg, nullptr, 27, 5},
+	{ girlStr, nullptr, 7, 5 },
+	{ _0Img, nullptr, 8, 5 },
+	{ _1Img, nullptr, 6, 5 },
+	{ _2Img, nullptr, 7, 5 },
+	{ _3Img, nullptr, 8, 5 },
 };
 
 }
@@ -409,3 +430,53 @@ Vector2D GetImageSize(ImageId imageId)
 	const Image& image = GetImage(imageId);
 	return { (float)image.width, (float)image.height };
 }
+
+
+long GetFileSize(const char* fileName)
+{
+	struct stat stat_buf;
+	int rc = stat(fileName, &stat_buf);
+    return rc == 0 ? stat_buf.st_size : -1;
+}
+
+
+bool LoadTxtImage(ImageA& image, int width, int height, const char* fileName)
+{
+	const long fileSize = GetFileSize(fileName);
+	if (fileSize == -1)
+	{
+		return false;
+	}
+	const size_t imgSize = width * height;
+	if (fileSize != (width + 2) * height) // +2: CR LF
+	{
+		return false;
+	}
+
+	std::ifstream inFile;
+	inFile.open(fileName);
+    if (!inFile) 
+	{
+		return false;
+    }
+    
+	char* img = static_cast<char*>( malloc(imgSize * sizeof(char)) );
+	char* dst = img;
+	for (int row = 0; row < height; ++row)
+	{
+		inFile.read(dst, width);
+		// skip CR/LF
+		char CRLF;
+		inFile.read(&CRLF, 1);
+		dst += width;
+	}
+	image.img = img;
+	image.width = width;
+	image.height = height;
+	image.freeMemory = true;
+    
+    inFile.close();
+	return true;
+}
+
+

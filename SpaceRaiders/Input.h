@@ -7,8 +7,11 @@ enum class KeyCode
 {
 	escape,
 	enter,
+	spaceBar,
 	left,
 	right,
+	up,
+	down,
 	_1,
 	_2,
 	_3,

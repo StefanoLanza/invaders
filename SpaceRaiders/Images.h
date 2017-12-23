@@ -41,6 +41,7 @@ enum class ImageId
 	happyHolidays,
 	xmasLeaf,
 	level,
+	girl,
 	// numbers
 	_0,
 	_1,

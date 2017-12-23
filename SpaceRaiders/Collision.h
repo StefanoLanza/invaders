@@ -11,7 +11,8 @@ enum class ColliderId : uint8
 	playerLaser,
 	alienLaser,
 	powerUp,
-	wall
+	wall,
+	count
 };
 
 

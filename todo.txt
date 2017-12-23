@@ -10,9 +10,10 @@ Fix alien vs wall collisions
 Have each alien shoot a laser each
 
 [Shield]
-Improve image
+Improve image (a dome?)
 Add struct
-Register in collisions
+Blink when invulnerability is going to go off
+Register in collisions?
 
 [Misc]
 Do not show player ship in intro screen

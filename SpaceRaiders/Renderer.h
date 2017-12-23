@@ -7,11 +7,22 @@
 
 typedef struct _CHAR_INFO CHAR_INFO; // forward declaration of C struct
 typedef std::vector<RenderItem> RenderItemList;
-class Game;
+struct Game;
 class MessageLog;
 struct Image;
+struct ImageA;
 struct Console;
 struct ConsoleModule;
+
+
+enum class ImageAlignment
+{
+	left,
+	centered, 
+	right,
+	top,
+	bottom
+};
 
 
 class Renderer
@@ -26,15 +37,6 @@ public:
 	// Display all game objects, score, game over message
 	void Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog);
 
-	enum class Alignment
-	{
-		left,
-		centered, 
-		right,
-		top,
-		bottom
-	};
-
 	// Fills whole canvas array with sprite
 	void FillCanvas(Color color);
 
@@ -44,7 +46,7 @@ public:
 	void ClearLine(int row);
 	void DisplayText(const char* str, int col, int row, Color color);
 	void DisplayMessages(const MessageLog& messageLog);
-	void DrawImage(const Image& image, int x, int y, Color color, Alignment hAlignment, Alignment vAlignment);
+	void DrawImage(const Image& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
 	void DrawColoredImage(const Image& image, int x, int y);
 	void DisplayScores(const Game& game);
 	void DrawSprites(const RenderItem* sprites, int count);
@@ -58,3 +60,6 @@ public:
 	IVector2D bounds;
 	std::vector<CHAR_INFO> canvas;
 };
+
+
+void DrawImage(Renderer& renderer, const ImageA& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);

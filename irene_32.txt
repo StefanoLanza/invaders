@@ -1,0 +1,32 @@
+                ..====++++;;,,,,..,,,,--==--;;..                
+                --++xx++;;............;;------,,                
+              ,,++xxxx;;..............,,--====--..              
+              ==xxxx==,,,,............,,--==++==,,              
+            ,,++xx++,,,,................,,==++==;;              
+        ..  --xxxx==,,;;;;,,..........,,;;==++++;;              
+          ..==xxxx--;;--====,,....,,====--==++++--              
+          ..++xxxx,,;;====--;;....--========++++--..            
+          ;;++xx++,,;;----,,,,..,,;;;;======++xx==..            
+          ;;++xx==,,..,,,,,,,,,,,,,,,,,,,,;;++xx++,,            
+        ..;;++xx==,,........,,..,,,,..,,..;;++xx++;;            
+        ..--xxxx++;;........;;,,;;;;....,,;;xxxx++--            
+        ..==xxxxxx==,,,,....--====;;..,,,,--xxxx++==..          
+        ,,++xxxxxx++;;,,,,....,,,,..,,,,;;++XXxx++==;;          
+        ,,++++XXXXxx--,,,,==========--,,--xxxxxx++--;;..        
+        ..++xxXXXXxx==;;,,;;========;;;;==xxxx++++--,,,,        
+        ..==XXXXXXXXxx--,,,,,,;;,,,,,,--++xxxx++xx==..,,        
+          ==XXXXXXXXxx++--,,,,,,,,,,;;++xxxxxxxxxx==..,,..      
+        ,,--xxxxxxXXxx++++--;;,,,,;;==xxxxxxxxxxxx==..,,..      
+      ,,,,;;++xxxxXXXX++++++++====++xxxxxxxxxxxxxx++,,,,..      
+    ....  --++xxxxxxXXXX++==++++++++++xxXXXXxxxxxx++;;,,        
+        ;;xxxxxxxxxxXXXXxx++++++++==++xxXXXXxxxxxx++--..        
+    ..==xxxxXXXXxxxxxxXXXXxx++++====++XXXXxxxxxxxx==..          
+  ..++xxXXXXXXXXXXXXxxXXXXxxxx==----++XXxxxxxxxxxx==;;....      
+..;;xxxxxxXXXXXXXXXXXXXXxx++++--,,;;++XXXXxxxxxxxx++++--..      
+;;==XX++xxXXXXXXXXxxXXXXxxxx++;;,,;;++xxXXXXxxxx++xxxx++--..    
+--==XX++xxxxXXXXXXxxXXXXxx==;;,,,,;;==xxXXXXxxxxxxxxxxxx++;;..  
+----xx++xxXXXXXXXXXXXXXXxx--,,,,,,;;--++xxxxxxXXXXXXxxxx++==--;;
+;;--++++xxXXXXXXXXXXXXXX++;;,,,,,,;;==xxxxXXXXXXXXxxxx++====----
+--==++++XXxxXXXXxxXXxxXX++;;,,,,,,;;==++xxxxXXXXxxXXxx++======--
+--======xxxxxxxxxxXXxxxx==;;,,,,,,,,--==XXXXXXXXXXXXXX++++==--==
+--++xxxxXXXXXXxxxxxxXXXX==;;,,,,,,,,;;==xxXXXXXXxxxxXX++++++====

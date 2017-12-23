@@ -19,53 +19,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Alien.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionSpace.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="DLL.cpp" />
-    <ClCompile Include="Explosion.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameStateMgr.cpp" />
     <ClCompile Include="Images.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Laser.cpp" />
     <ClCompile Include="MessageLog.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayField.cpp" />
-    <ClCompile Include="PowerUp.cpp" />
-    <ClCompile Include="Prefabs.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderItem.cpp" />
     <ClCompile Include="Vector2D.cpp" />
-    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Alien.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionSpace.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="DLL.h" />
-    <ClInclude Include="Explosion.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameStateMgr.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Images.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Laser.h" />
     <ClInclude Include="MessageLog.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayField.h" />
-    <ClInclude Include="PowerUp.h" />
-    <ClInclude Include="Prefabs.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderItem.h" />
     <ClInclude Include="Vector2D.h" />
-    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -1,0 +1,64 @@
+                              ..  **KKwwwwKKKKKKKKKKaa****,,,,,,,,,,,,,,,,**oowwKKssaassssoooo                                  
+                                ..wwLLLLKKKKKKOOKKss**,,,,,,,,,,,,,,,,,,,,****aaLLaaaaaassooss,,                                
+                                ssKKLLOOOOOOOOKKoo,,,,,,,,,,,,....,,..,,,,,,**ooaawwsswwaassssoo                                
+                          ..  **KKLLKKOOOOHHOOss**,,,,,,................,,,,****sswwaawwwwaassss..                              
+                            ..LLKKKKHHOOOOOOaa**,,,,....................,,,,,,**oowwwwwwLLwwssaa,,                              
+                            ooKKKKOOHHHHHHwwoo**,,,,,,,,................,,,,,,**oowwLLwwLLwwaaaaoo                              
+                          ..LLKKOOHHHHHHLLoo****,,,,,,....................,,,,**ooaaLLLLKKKKwwaaaa..                            
+                          **KKKKOOHHHHKKssoo**,,,,,,......................,,,,****ssLLLLLLKKLLwwww,,                            
+                          wwOOOOOOHHOOwwoo****,,,,,,......................,,,,,,**oowwKKLLKKLLwwww**                            
+                        ,,KKOOOOHHHHKKss****,,,,............................,,,,,,**aaKKKKKKKKLLwwoo                            
+                        ssOOOOOOHHHHLLoo******,,,,,,..........................,,****ssLLKKKKKKLLwwss                            
+                        wwOOHHOOOOOOwwooaaaaaawwLLLLwwoo,,............,,**ooaawwaawwwwLLKKKKKKLLLLaa..                          
+                      ,,LLHHHHHHHHHHaaoossooooaawwwwwwwwoo,,..,,....,,sswwLLKKLLaassLLKKKKKKOOKKwwaa..                          
+                  ..  **LLHHHHHHHHOOoooooooooossoosswwaass,,,,....,,**ssaaaaaassooooaaLLKKKKOOKKLLww..                          
+                      ooLLHHHHHHHHLL**ooooaawwLLKKLLLLwwaaoo,,....,,aawwLLLLaaLLLLaaaaKKKKKKOOOOLLww,,                          
+                    ..ooLLHHOOOOHHLL,,**sswwKKaaKKKKssaaoooo,,....**ssaaaaLLOOKKKKKKwwOOLLKKKKOOLLww**                          
+                ..  ooaaLLHHOOHHHHww,,****oossaaaass******oo,,..,,oooo**oosswwwwLLLLwwLLLLOOOOOOLLLLoo                          
+                    oowwKKHHOOLLOOaa,,********oooooo**********,,,,oooo**oooossssssoooowwLLOOOOOOKKLLaa  ..                      
+                  ..ooaaKKHHHHLLKKaa,,,,,,,,,,****************,,**********************wwLLKKOOOOKKLLww..                        
+                  ..**aaLLHHHHLLLLww,,,,,,,,,,,,,,,,,,,,,,**,,,,******,,,,**,,**,,****ssKKOOHHOOKKLLww..                        
+                  ,,oowwKKHHHHKKwwww**,,,,,,,,,,,,,,,,,,****,,,,,,oo**,,,,,,,,,,,,,,**ssKKOOHHOOKKLLLL,,                        
+                ..,,ooaaKKHHHHHHLLLL**,,,,,,,,,,,,,,,,,,oo**,,,,,,**oo,,,,,,,,,,,,,,**ssKKOOHHOOKKLLKKss                        
+                  ,,ssaaOOHHHHOOKKOOss,,,,,,,,,,,,,,,,,,oo**,,,,,,**oo**,,,,,,,,,,,,**ssKKHHOOHHOOLLLLww                        
+                  ,,wwLLOOHHHHOOOOKKaa**,,,,,,,,,,,,,,,,oossoo**ooaassoo,,,,,,,,,,****aaOOHHHHHHOOLLwwKK,,                      
+                ..ooLLKKHHHHHHOOHHOOww****,,,,,,,,,,,,,,aaKKKKwwwwKKLL**,,,,,,,,,,****wwHHHHHHOOOOLLwwKK**                      
+                ..ooLLKKHHHHHHHHHHHHOOss****,,,,,,,,,,,,**ssssLLwwssoo,,,,,,,,,,,,**ssLLHHHHHHOOOOLLLLLLaa  ..                  
+                ..aaLLOOHHHHHHHHHHHHHHwwoooo**,,,,,,,,,,,,,,,,**,,,,,,,,,,,,,,****ooaaKKHHHHHHHHKKKKLLwwLL,,                    
+                ,,wwLLOOOOHHHHHHHHHHHHLLaaoo****,,,,,,,,,,,,,,,,,,,,,,,,,,,,****oossLLOOHHHHHHHHKKKKLLwwaaoo  ..                
+                ,,LLLLKKKKHHMMMMMMHHHHKKaass******oossooaaaaaaaawwwwwwaassss**ooooaaLLHHHHHHHHHHLLKKKKaa**ww..                  
+                ,,LLLLKKKKHHHHHHHHHHHHOOaaaaoo****aaOOOOOOOOOOOOKKOOOOOOHHLL****oowwKKHHHHHHHHHHLLKKKKaa..ww**                  
+                  wwOOOOOOHHMMMMMMHHHHHHwwaass******oowwLLLLwwwwaawwLLLLss****ooaaLLKKHHHHHHOOOOKKOOKKaa  **oo  ..              
+              ..  ssOOOOHHHHHHMMMMHHHHHHKKssaaoo********oossaaaaaassaaoo****oosswwLLOOHHOOHHOOOOKKOOKKaa....aa..                
+                  ,,LLHHHHHHHHMMMMHHHHHHHHwwaassoo********oossssssoooooooo**ooaawwKKHHOOOOOOOOKKOOOOKKww..  ss**                
+                  ,,LLOOHHMMMMMMMMMMMMMMHHOOwwssoo************,,********oooossaaLLHHHHOOOOOOOOKKOOOOKKLL,,  ,,aa                
+                  ,,wwOOHHMMMMHHMMHHMMHHHHOOKKwwaa******,,,,,,,,,,,,******ssaaLLOOHHHHHHOOOOOOOOOOOOKKLL**  ..aa..              
+                ..  aaOOHHMMHHHHMMHHMMMMMMHHKKKKLLss****,,**************ooaaLLOOHHHHHHOOOOOOOOHHOOHHKKLLoo    aa,,              
+              ..  **LLwwMMOOOOHHHHHHMMMMMMOOKKKKKKLLoo**************,,**ssLLOOHHHHHHHHHHOOHHHHHHHHOOKKLLss    aa**              
+            ..  **LL,,LLMMKKOOHHHHHHMMMMHHHHLLKKKKKKLLssoooooo****oossaaLLOOHHHHHHHHHHHHHHHHHHHHHHOOKKwwww..  ss**              
+              ,,aa,,..OOOOKKOOHHHHHHMMMMMMMMOOLLKKKKKKKKLLwwLLLLLLLLLLKKOOOOHHHHHHHHHHHHHHHHHHHHHHOOOOwwaa,,  aa**              
+            ,,aa,,  ooKKLLKKOOOOHHHHHHMMMMMMHHKKLLKKKKKKKKKKLLKKKKKKOOOOOOOOOOHHHHHHHHHHHHHHHHHHHHOOOOLLaa**  ww,,              
+            ,,..  ..wwwwLLKKHHOOOOHHHHMMMMMMMMHHLLLLKKKKKKKKLLKKKKKKKKKKKKKKOOHHHHMMMMMMMMHHHHHHHHOOOOKKaa**..aa..              
+              ..  ,,LLwwKKOOHHHHOOOOHHHHMMMMMMMMOOLLLLKKKKKKLLLLKKKKKKKKKKKKHHHHHHMMMMMMMMHHOOHHHHOOOOOOwwooss**                
+          ....    aaOOOOHHHHHHHHHHOOHHHHHHMMMMHHHHOOLLLLLLKKLLLLKKKKKKKKLLKKHHHHMMMMMMMMHHHHHHHHOOOOOOKKLLww,,                  
+              ,,ooKKHHHHMMHHHHHHHHOOOOHHHHMMMMMMMMHHHHKKLLKKKKLLLLLLLLLLKKOOHHHHHHMMMMHHHHHHHHHHOOOOKKKKLLss                    
+      ..  ..ooaaLLOOHHHHMMMMMMHHHHHHOOHHHHMMMMMMMMHHHHHHKKKKKKKKLLLLwwwwKKOOHHMMMMMMHHHHHHHHHHHHOOOOLLLLss,,....                
+        ..aaLLOOOOHHOOMMMMMMMMHHHHHHHHHHHHHHMMMMMMHHHHHHOOLLLLLLLLwwwwLLLLOOHHMMHHHHHHHHHHHHHHHHOOOOLLwwoo  ....                
+        wwOOOOHHMMMMMMMMMMMMMMMMMMHHHHHHHHMMMMMMMMHHHHHHOOKKLLwwwwwwwwwwLLOOMMMMMMHHOOOOHHHHHHHHOOOOKKwwss..                    
+      aaHHHHHHHHMMMMMMMMMMMMMMMMMMMMMMMMHHHHMMMMMMHHHHHHOOOOwwwwaaaawwwwLLHHMMMMMMHHOOKKHHHHHHOOOOHHKKwwaass,,......            
+..  **KKOOMMHHHHHHMMMMMMMMMMMMMMMMMMMMMMMMHHMMMMMMHHOOOOOOOOwwssoooossaawwHHMMMMMMHHHHKKHHHHHHOOHHHHHHKKLLLLwwssss,,            
+    ooLLHHHHHHHHHHMMMMMMMMMMMMMMMMMMHHMMMMMMHHMMHHHHOOKKOOKKwwssoo**ooooLLOOHHMMMMMMHHHHOOHHHHOOHHHHHHKKOOOOKKaa..              
+ooooaaHHHHHHKKOOMMMMMMMMMMMMMMMMMMMMHHHHMMMMMMMMHHHHKKKKOOLLaaoo******ssLLKKHHMMMMMMHHHHHHHHOOOOHHMMHHOOOOHHOOLLss,,....        
+aassLLHHHHMMKKLLMMHHMMMMMMMMMMMMMMMMHHHHHHMMMMMMHHHHOOOOKKwwoo********sswwKKHHMMHHMMMMHHHHHHOOHHLLLLHHHHHHOOOOLLLLwwss,,        
+aawwLLHHHHHHKKKKHHHHHHHHMMMMMMHHMMHHHHHHHHMMMMHHHHHHHHKKwwssoo********sswwLLOOMMMMMMMMMMHHHHKKHHLLKKHHHHHHHHOOOOOOLLaa**        
+wwaaaaOOHHHHKKLLHHHHOOHHMMMMMMHHHHHHHHHHHHMMHHHHHHOOLLssoo************ooaaLLOOMMMMMMMMMMHHHHOOHHMMHHHHHHHHHHHHOOOOKKwwoo,,..    
+ssaawwKKHHHHOOLLHHHHHHMMMMMMMMMMMMMMHHHHHHMMHHMMHHKKwwssoo************ooaawwKKHHHHHHMMHHHHHHHHHHHHHHHHHHHHHHOOOOHHOOKKLLaaoo,,  
+aawwaawwHHKKKKLLHHHHHHMMMMMMHHMMMMMMMMMMMMHHHHMMHHKKwwssoo**********oooosswwLLOOHHHHOOOOHHHHMMHHMMMMHHMMMMHHHHOOKKKKKKwwwwaaaass
+sswwsswwHHKKLLKKHHHHMMMMMMHHMMMMMMMMMMMMHHHHMMMMOOLLaaoo**************ooooaaKKKKOOHHMMMMMMMMMMHHMMHHMMHHHHHHOOOOKKKKKKaaaaaassww
+sssssswwOOKKLLKKMMMMMMMMMMMMMMMMMMHHMMMMHHMMMMHHOOwwssoooo**************ssLLOOHHHHHHHHHHMMMMMMHHMMHHHHHHHHOOOOLLwwwwKKLLwwaassaa
+ssssaaLLOOKKOOOOMMMMMMMMMMMMMMMMHHHHMMMMHHHHHHHHOOwwssoo**************aaLLLLKKOOHHOOHHMMMMMMHHMMMMHHHHHHHHKKKKKKwwwwKKaawwwwwwaa
+wwwwwwOOOOLLKKHHMMHHHHHHMMMMHHMMHHHHMMMMHHHHHHHHOOwwssoo**************aaLLwwLLOOHHHHHHHHHHMMMMMMHHHHHHHHHHHHKKOOLLwwKKwwwwaawwww
+LLaassLLKKssLLHHHHHHHHMMMMMMMMHHHHHHHHMMHHHHHHHHOOwwssoo********,,****sswwwwwwKKHHMMMMHHHHMMMMHHMMMMMMMMHHHHOOOOKKLLKKwwwwaaaaww
+aassssLLKKsswwHHHHHHHHMMHHOOHHOOHHMMHHHHHHHHHHHHOOaassoo****************ssaaaaLLHHHHMMMMHHMMMMMMMMMMMMMMMMHHOOKKKKKKOOwwLLaaaaww
+aaaawwOOHHLLOOMMHHHHHHHHMMHHHHOOHHHHHHHHHHHHHHHHLLaaoooo****************oossaaLLOOMMMMMMHHMMMMHHHHMMHHHHHHHHHHKKLLKKOOKKLLwwwwww
+wwKKHHHHHHOOHHMMHHHHMMMMMMMMHHHHHHHHHHHHMMMMMMHHLLaassoo******************ooaawwLLHHMMMMHHHHMMMMHHHHHHHHHHHHHHOOLLKKKKKKKKLLwwLL
