@@ -1,51 +1,44 @@
-         7  77777777=~+~~~~~~~?IIIIII77777777II+=~??=+??II7   7                
-          7  7777777~~=:::~:=?II7I777777777777II??+=++=+??+? 77 7               
-          7  77777+::=:::::~?III77777777777777IIII+==+==+++=777 7               
-          7 77777I~~~:::::??III777777777777777IIII?=~=+~=++?I77 7               
-          7 7777I=~~~::::+?III7777777777777777IIIII+~~=~~=++=77                 
-           777 7==:~:::~+?IIII77777777777777777IIII?=~~=~==+=7777               
-         777777I~:~::::=+IIII7777777777777777777IIII+=~=~~==+777777777          
-         777777~::~:,:~??IIIII7777777777777777777IIII==~~~=~=?77777777          
-         777777~::::::~??===+====?I7777777777I??=++====~~:~~==77777777          
-         77777=~:::::~?????III?++++?777777I?++==+???+~~~~~~~==I7777777          
-         7777I=:,,,::+?????++=++~=+?II777II++=+++=?+?~=~~~:~==?7777777          
-         7777??~,:~,:?II?+=~++:~?+=??I77I?+?=+:~,~:=+::~~~:~~=+7777777          
-     7  7777I?=~,~:::IIII??+==+???I??I77I??II?++===~=~~=~:::~+=777777           
-     7  7777++=::,=~:IIIIIIII?IIIIIIIIIII??I?????????+~=::~:~=~7777777          
-     7  777I?+=~::==~III7IIIIIIIIIIIIIIIIIIIIIIIIIIII?==::~:~==I777777          
-     777777II==~:::=~?IIIIIIIII7777III7II?IIIIIIIIIII?+~~:::~==?777   7         
-     777777I?+=~::::==IIIII7777777I?II77I??II777IIIII?+~~:::~~=~777 777         
-     777777I++~::,::~:+IIII7777IIII?IIIII???II777IIII?+::::::~~~~777777         
-     777777?~=~::,:~:==IIIIII77777I+=+??+=++IIII7IIII?+::::::~==:77 777         
-     777777+=~::,::::::??IIII7III7I?++=~=++IIIIIIIII?+=:::::~~==++7 777         
-     77777I==:::,:,::::=??IIIIIIIIIIIIIIIIIIIIIIIII??=~:::::~~=~=:77777         
-     77777++=~~:,:,:,::~=+??IIIIIIIIIIIII?IIIIIII??+=~::::::~~~==I?7777         
-     77777+==~=::,,,::::=+?IIII+++==~~~~~=~~~=+????==~,:::::=~~==7=I777 77      
-        777=~:~:,,,,,::::++?IIIII=~====~==~=~?III?+=~:,:::::=:~=+77=777 77      
-        777:~:::::,,,,,:,=++?IIIII?+=++++==+?III??==~:::::::~:~=+77I7 7 77      
-     777777+=:::::,,,,,,,:++++IIIII??????????????+=:,:::::~~::~~=777=7 7        
-     777777==::,,,,,,,,,,:~=+??IIIIIIIIIIIIII???+=~::::::~~~:::=~777~+7 777     
-     777777I?~:,,:,:::,::,~~===IIIIIIIIIIIIII?+=~::::::::::::::==I777:  7       
-     7 7 77?~=::~:,::,,,,,~~~~~=?IIIIIIIIIIII?=~:,:::::::::::::==I777~ 777      
-     77777++7~::=:::,:,,,,:~~~~~~=+????I?+++=~::,::::::::::::::=+~777+  7       
-        7??77:::~:::,:,,,,,:==~~~~~~=~~~===~~::::::::,:::::::::~==777=7  77     
-7  7777I7777===~~::::::,,,,,:~==~~=~~~~~~~~~~:~~:::,,::,::::::~:~I77I:7  77     
-777   77777?=++::::::::::,,,:,~=~~~~~~~~~~~~~~~:::,,,,,,:::::::~~??7:I7         
-77777777777:::,::::::::::,,,,:::~=~~~~~~~~~~~~~:::,,,,,:::::::~~~=:?777 777     
-777777777?+:::,,:::,:~::::,,,,,:::~~~~~~~====~::,,,,:,::::::~:~=~=?7777  7      
- 77777==~~::~:::,,::::::::,,,,:,:::~~~~======~::::,,,::,:::::::==?77777         
-77777=~~,::,:,,,,,,,,::::,,,,,,:,:::~========~:,,,,:,::::::::::==?7777777       
-777+:::::,,,,,,,,,,,,,,,,,,,,,,,::::~=++++++==,,,,,::~::,::::::==+=I77777777 777
-77I~~:,::,:,,,,,,,,,,,,,,,,,,,,::~::~=++???++=::,,,:,~~:,:::,:,~=~====+ 77777777
-7++:::,::,,,,,,,,,,,,,::,,,:,:::~~~:==+?III??~~:,,,,:,,:,,~:::::~~::~=I777777777
-=I=~:,:~~,,,,,,,,,,,,,,:,,,,,,::~::~++?IIII??~~::,:,,,:,::~:~,,:::::~==++?777777
-==+,:,~~~::,,::,,,,,,:::,,,,,,:::~~+??IIIII??=~~,,,,,,,:::::~:::::::::~==+?7 777
-+++:,:::=:::::,,,,,,:::::,,::::~=+??IIIIIII??+~~,,,,,,:,::::::,::::::::~=??I7777
-+==+,:~:=~,,,,,,,,,,,,:,:,,,,,:~=++?IIIIIII??+==~:::::::::::,,,,:,:::::~~~~=++?7
-?=?+::=~=~:::,,,,,,,,,,,,::,,,:~=+??IIIIIII?I++==~:,,:::,,:,,,,,,::,::=~:+=+++=+
-+?+=~:~~~:,,,,,,,,,,:,,,,,,,,,~=+???IIIIIIIII+=:::::,::,,,:,,,,:::~:~===~~=+++?=
-?+=~~~~::,,,,,,,,,,,:,,,,::,:,~++?IIIIIIIII+~~=~~::::::,,,:,,::,,:~~~~=+=~?==++=
-=?+:~=+=::::::,,,:,::,,,,,::::~+??IIIIIIIII?+===~~:,,,:,,,,::,,:,:::~~=~~~+==+?=
-+?=~~=+=:::::,,::,:~,,::,,::::~+??IIIIIIIIII?+=+=~:,,,,:,,,,,:,:,,::~~~~:===+++=
-++=,::::,,::,,,,::::::,:,,,,::=+??IIIIIIIIIII?++=~:,,,,,,,,,,,,::,:::~=~~:~=+===
-=:::::~::::,,,,,,,::,,:::,,,::=++?I?IIIIIIII?I?+===,,,::::,,::::,:::::~~~=:~=+==
+                                    **....oooooooooo                          ,,oo                                              
+                                  ..,,,,ssssssssoo                              **                                              
+                                  ss**ssaaaawwss                                ..,,  ..                                        
+                                oo**sswwaawwss                                    ,,....,,                                      
+                              ,,ssoowwwwwwww                                      ,,,,..,,..                                    
+                              ssoowwLLwwww..                                      ,,**..**..                                    
+                            ,,sssswwLLLL,,                                        ..**,,**oo..                                  
+                            oosswwwwLLoo                                            ******ss,,                                  
+                          ..ssaawwLLww..                                            ,,oo,,oo**....                              
+                          ooaaaawwwwss                                              ..oooooooo,,..                              
+                          aaaaaawwLL,,                                                **oooooo**..                              
+                        ..wwwwaawwww..    ....,,****,,                      ........,,,,ssssss**,,                              
+                        ,,wwLLwwwwww          ....,,,,,,                ,,**oo**..  ,,**oossssoo..                              
+                        **LLLLLLLLss                ....                ....        ..**ooooaass,,                              
+                        **LLwwwwKK**        ,,**oo,,**,,..            ,,**,,..****..  ssoossaass**..                            
+                        **LLaaaaLL,,      ,,oo  ooss                  ..  ,,aassssoo,,aa**ssssaa**..                            
+                        **LLwwwwLL..            ..                          ..,,,,**,,**,,aaaaaa**,,                            
+                      ..ooLLaa**aa                                                    ,,,,ssaaaaoo,,                            
+                        **wwww,,ss                                                    ,,**sswwaaoo,,                            
+                      ..**LLLL,,**..                                                  ..ooaawwaaoo,,..                          
+                      ..**LLLLss,,,,                                                    oossLLwwoo,,,,                          
+                        ssLLLLww,,**                                                    ooaawwwwss,,oo                          
+                      ..aaLLLLwwssaa                                                    sswwwwwwaa,,**..                        
+                    ..,,aaLLLLwwaass                                                  ..aaLLwwwwaa**..oo                        
+                    ,,oowwLLLLwwwwaa..                    ssoo,,,,oo**                ..wwLLLLwwaa**..oo                        
+                    ,,sswwLLLLwwLLLLaa                        ,,..                    **LLLLLLwwss**,,,,                        
+                    ,,aaLLLLLLLLLLwwww..                                            ..ssKKLLLLwwssoo**..**                      
+                  ..,,aawwLLKKLLLLLLLL**                                            ,,aaKKLLLLwwoooo**                          
+                  ,,,,**ssLLKKKKKKLLLLss                  ......,,,,,,..          ..**wwKKLLLLww**oooo    ..                    
+                  ****ssssLLKKKKKKLLLLaa..        ..sswwwwaaaaaaoossaaaaww**      ..ooLLLLLLLLww**ssoo    ..                    
+                    aaaaaaKKKKKKKKKKLLLL,,            ..****,,,,  ,,**,,          ,,ssKKLLwwwwaaooaaoo                          
+                    wwwwwwLLLLKKKKKKLLKKss                  ........            ,,,,aaLLwwwwaaaassaaoo                          
+                    ,,wwLLLLLLKKOOKKKKKKLL,,                                  ..,,ooLLwwwwaaaassssaaoo..                        
+                    ,,ssLLKKKKKKKKKKKKKKKKaa,,                                ..**LLLLwwwwaassssaawwoo,,                        
+                    ..wwLLKKKKKKKKKKKKKKKKwwoo,,                            ..,,aaKKwwwwwwaaaawwwwwwoo**                        
+                      aaLLKKLLKKKKLLOOKKKKwwssoo**                          **aaKKLLwwwwwwwwwwwwwwwwoo**                        
+                    ,,..KKaawwKKLLKKOOKKKKaaoossss**                      **wwLLLLLLLLwwaawwwwLLLLwwss,,                        
+                  ..  ,,OOooaaLLLLLLKKKKKKLL**ooooss**                ..**wwLLLLLLwwLLLLLLwwwwLLwwwwss....                      
+                      aawwooaaLLLLLLKKOOOOKKaa,,oossssoo**,,**********ssaawwLLLLLLLLLLLLLLLLwwLLwwwwaa..                        
+                      oo**sswwwwwwLLKKOOOOKKLLoo**oooooooooo**oooooossssaaaawwLLLLKKKKKKLLLLLLwwLLaaww,,      ..                
+                    ....**sswwwwwwwwLLKKKKOOKKLL**,,oooooooo****oooossssssoowwLLLLKKKKKKOOKKwwwwLLaaaass                        
+                    **..sswwLLwwwwwwLLLLKKOOOOKKww****oooooo****oooooooo**ssLLLLKKKKOOOOKKLLwwwwwwwwaass                        
+                    aaaaKKwwLLLLLLaawwLLKKOOOOKKKKww******oo****oooooooo**ssLLLLKKKKOOKKKKLLLLwwwwaassss,,..                    
+                  ooKKKKKKLLLLKKLLaawwLLLLKKKKOOKKLLwwoo**oooo******,,,,**aaLLKKKKKKKKKKLLLLLLLLwwaaoooo,,                      

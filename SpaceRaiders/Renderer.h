@@ -12,7 +12,6 @@ class MessageLog;
 struct Image;
 struct ImageA;
 struct Console;
-struct ConsoleModule;
 
 
 enum class ImageAlignment
@@ -29,7 +28,7 @@ class Renderer
 {
 public:
 
-	Renderer(const IVector2D& bounds, Console& console, ConsoleModule& consoleModule);
+	Renderer(const IVector2D& bounds, Console& console);
 	~Renderer();
 
 	const IVector2D& GetBounds() const;
@@ -44,7 +43,7 @@ public:
 	void DrawCanvas();
 
 	void ClearLine(int row);
-	void DisplayText(const char* str, int col, int row, Color color);
+	void DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment = ImageAlignment::left);
 	void DisplayMessages(const MessageLog& messageLog);
 	void DrawImage(const Image& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
 	void DrawColoredImage(const Image& image, int x, int y);
@@ -56,7 +55,6 @@ public:
 	static const int hudRows;
 
 	Console& console;
-	ConsoleModule& consoleModule;
 	IVector2D bounds;
 	std::vector<CHAR_INFO> canvas;
 };

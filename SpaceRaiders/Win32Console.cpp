@@ -18,7 +18,7 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
 
 
 
-DLL_EXPORT void WriteConsoleOutput(void* consoleHandle, const void* buff, int cols, int rows, int colOffs, int rowOffs)
+void WriteConsoleOutput(void* consoleHandle, const void* buff, int cols, int rows, int colOffs, int rowOffs)
 {
 	if (consoleHandle)
 	{
@@ -28,13 +28,13 @@ DLL_EXPORT void WriteConsoleOutput(void* consoleHandle, const void* buff, int co
 }
 
 
-DLL_EXPORT bool CenterConsoleOnDesktop()
+bool CenterConsoleOnDesktop()
 {
 	return CenterWindowOnDesktop(GetConsoleWindow());
 }
 
 
-DLL_EXPORT void HideConsoleCursor(void* handle)
+void HideConsoleCursor(void* handle)
 {
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
@@ -43,7 +43,7 @@ DLL_EXPORT void HideConsoleCursor(void* handle)
 }
 
 
-DLL_EXPORT void ShowConsoleCursor(void* handle)
+void ShowConsoleCursor(void* handle)
 {
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
@@ -51,7 +51,7 @@ DLL_EXPORT void ShowConsoleCursor(void* handle)
 	SetConsoleCursorInfo(handle, &info);
 }
 
-DLL_EXPORT bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
+bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
 {
 	return ResizeConsoleImpl(cols, rows, fontSize, handle);
 }

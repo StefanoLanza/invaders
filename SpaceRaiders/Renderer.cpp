@@ -44,9 +44,8 @@ constexpr WORD charColors[(int)Color::count] =
 const int Renderer::hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer(const IVector2D& bounds_, Console& console_, ConsoleModule& consoleModule_) :
+Renderer::Renderer(const IVector2D& bounds_, Console& console_) :
 	console {console_},
-	consoleModule { consoleModule_ },
 	bounds {bounds_}
 {
 	assert(bounds.x > 0);
@@ -71,8 +70,8 @@ bool Renderer::InitializeConsole(int fontSize)
 {
 	const int consoleWidth = bounds.x;
 	const int consoleHeight = bounds.y + hudRows;
-	bool r = consoleModule.resize(console.handle, consoleWidth, consoleHeight, fontSize);
-	r = r && consoleModule.centerOnDesktop();
+	bool r = ResizeConsole(console.handle, consoleWidth, consoleHeight, fontSize);
+	r = r && CenterConsoleOnDesktop();
 	return r;
 }
 
@@ -115,7 +114,7 @@ void Renderer::FillCanvas(Color color)
 
 void Renderer::DrawCanvas()
 {
-	consoleModule.writeOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
+	WriteConsoleOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
 }
 
 
@@ -132,13 +131,21 @@ void Renderer::ClearLine(int row)
 }
 
 
-void Renderer::DisplayText(const char* str, int col, int row, Color color)
+void Renderer::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
 {
+	assert(str);
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
+	if (hAlignment == ImageAlignment::centered)
+	{
+		col = (bounds.x - strlen(str)) / 2 + col;
+	}
 	for (int i = 0; str[i] != 0; ++i)
 	{
-		curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
-		curCanvas[i + col].Attributes = charColors[(int)color];
+		if (col >= 0 && col < bounds.x)
+		{
+			curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
+			curCanvas[i + col].Attributes = charColors[(int)color];
+		}
 	}
 }
 

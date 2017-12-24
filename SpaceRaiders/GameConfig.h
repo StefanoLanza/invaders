@@ -28,6 +28,7 @@ struct GameConfig
 	// Power ups
 	float powerUpVelocity;
 	float powerUpInvulnerabilityTime;
+	float powerUpFireBoost;
 	// Walls
 	int wallMaxHits;
 	// Simulation

@@ -256,7 +256,7 @@ LR"(
 )";
 const wchar_t shieldStr[] =
 LR"(
-((─────────))
+▄ ▄ ▄▄▄▄▄▄▄ ▄ ▄
 )";
 
 const wchar_t girlStr[] =
@@ -400,7 +400,7 @@ const Image images[(int)ImageId::count] =
 	{ FbonusStr, nullptr, 5, 3 },
 	{ IbonusStr, nullptr, 5, 3 },
 	{ shieldBonusImg, nullptr, 5, 3 },
-	{ shieldStr, nullptr, 13, 1 },
+	{ shieldStr, nullptr, 15, 1 },
 	{ solidWallStr,	nullptr, 4, 2 },
 	{ brittleWallStr, nullptr, 4, 2 },
 	{ bombStr, nullptr, 5, 3 },
