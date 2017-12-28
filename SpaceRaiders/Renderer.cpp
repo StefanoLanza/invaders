@@ -93,7 +93,7 @@ void Renderer::DisplayScores(const Game& game)
 	char tmp[256];
 	for (int p = 0; p < game.numPlayers; ++p)
 	{
-		sprintf_s(tmp, "P%d Score: %d", p + 1, game.GetScore(p));
+		sprintf_s(tmp, "P%d Score: %d", p + 1, game.score[p]);
 		DisplayText(tmp, 0, p, Color::white);
 	}
 }
@@ -137,7 +137,7 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	if (hAlignment == ImageAlignment::centered)
 	{
-		col = (bounds.x - strlen(str)) / 2 + col;
+		col = (bounds.x - (int)strlen(str)) / 2 + col;
 	}
 	for (int i = 0; str[i] != 0; ++i)
 	{
