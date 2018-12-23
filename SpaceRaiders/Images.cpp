@@ -370,7 +370,7 @@ LR"(
           `)_/`      
 )";
 
-const Image images[(int)ImageId::count] =
+const Image images[numImages] =
 {
 	{ nullptr, nullptr, 0, 0 },
 	{ planetStr, nullptr, 33, 10 },

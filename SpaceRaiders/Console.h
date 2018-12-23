@@ -1,7 +1,5 @@
 #pragma once
 
-#include "DLL.h"
-
 
 struct Console
 {

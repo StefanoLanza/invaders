@@ -46,9 +46,9 @@ enum class ImageId
 	_0,
 	_1,
 	_2,
-	_3,
-	count,
+	_3
 };
+constexpr size_t numImages = static_cast<size_t>(ImageId::_3) + 1;
 
 const Image& GetImage(ImageId imageId);
 

@@ -53,7 +53,7 @@ void ShowConsoleCursor(void* handle)
 
 bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
 {
-	return ResizeConsoleImpl(cols, rows, fontSize, handle);
+	return ResizeConsoleImpl(static_cast<SHORT>(cols), static_cast<SHORT>(rows), static_cast<SHORT>(fontSize), handle);
 }
 
 

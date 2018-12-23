@@ -18,9 +18,9 @@ enum class KeyCode
 	_4,
 	_5,
 	A,
-	D,
-	count
+	D
 };
+constexpr size_t numKeyCodes = static_cast<size_t>(KeyCode::D) + 1;
 
 
 void UpdateKeyStates();

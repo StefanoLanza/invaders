@@ -20,7 +20,7 @@ struct DLL
 };
 
 
-enum class DLLError : uint
+enum class DLLError
 {
 	copyFailed = 0,
 	unchanged = 1,

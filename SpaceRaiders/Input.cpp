@@ -6,9 +6,9 @@ namespace
 {
 
 
-int prevKeyState[KeyCode::count] = { -1 };
-int keyState[KeyCode::count] = { -1 };
-const int keyCodeToVKey[KeyCode::count] =
+int prevKeyState[numKeyCodes] = { -1 };
+int keyState[numKeyCodes] = { -1 };
+const int keyCodeToVKey[numKeyCodes] =
 {
 	VK_ESCAPE,
 	VK_RETURN,
@@ -32,7 +32,7 @@ const int keyCodeToVKey[KeyCode::count] =
 void UpdateKeyStates()
 {
 	std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
-	for (int i = 0; i < (int)KeyCode::count; ++i)
+	for (size_t i = 0; i < numKeyCodes; ++i)
 	{
 		keyState[i] = (GetAsyncKeyState(keyCodeToVKey[i]) & 0x8000) ? 1 : 0;
 	}
@@ -58,7 +58,7 @@ bool KeyJustReleased(KeyCode keyCode)
 bool AnyKeyJustPressed()
 {
 	bool res = false;
-	for (int i = 0; i < (int)KeyCode::count; ++i)
+	for (size_t i = 0; i < numKeyCodes; ++i)
 	{
 		if (KeyJustPressed((KeyCode)i))
 		{

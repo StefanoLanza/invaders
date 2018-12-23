@@ -31,3 +31,5 @@ typedef uint32_t dword;
 
 
 #define XMAS_EDITION 1
+
+#define SP_EDITION 1

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaceRaiders", "SpaceRaiders\SpaceRaiders.vcxproj", "{C395EFFE-F4FD-43CA-BF2A-62486D536E0A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -24,7 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{558F7FFA-E256-4B25-9C48-47D9E6C9DC4B}"
 	ProjectSection(SolutionItems) = preProject
 		game.ini = game.ini
-		SpaceRaiders\IKA.txt = SpaceRaiders\IKA.txt
+		SpaceRaiders\Parrots.txt = SpaceRaiders\Parrots.txt
 		SpaceRaiders\invaders.txt = SpaceRaiders\invaders.txt
 		SpaceRaiders\raiders.txt = SpaceRaiders\raiders.txt
 		todo.txt = todo.txt
