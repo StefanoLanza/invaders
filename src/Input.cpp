@@ -79,9 +79,9 @@ bool AnyKeyJustPressed()
 
 RndInput::RndInput(std::default_random_engine& rGen) : 
 	rGen {rGen}, 
+	rndInt { { 30, 30, 30 }},
 	accumTime {0},
-	state {0},
-	rndInt { { 30, 30, 30 }}
+	state {0}
 {}
 
 
