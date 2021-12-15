@@ -86,9 +86,10 @@ project("inih")
 project("Invaders")
 	kind "ConsoleApp"
 	files { "src/*.*", }
-	-- TODO Linux, windows folders
 	includedirs { ".", "external", }
 	links { "inih", }
 	filter "system:linux"
+		files {"src/linux/**.*"}
 	filter "system:Windows"
+		files {"src/windows/**.*"}
 	filter {}

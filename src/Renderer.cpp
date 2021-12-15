@@ -1,8 +1,5 @@
 #include "Renderer.h"
 
-// FIXME
-#if 0
-
 #include "Game.h"
 #include "MessageLog.h"
 #include "Image.h"
@@ -20,16 +17,20 @@
 #include <windows.h>
 #undef GetMessage
 #undef WriteConsoleOutput
+
 #else
-struct CHAR_INFO {
+
+#include <ncurses.h>
+struct _CHAR_INFO {
 	char ch;
 };
+
 #endif
 
 namespace
 {
 
-
+#ifdef WINDOWS
 constexpr uint32_t charColors[(int)Color::count] =
 {
 	FOREGROUND_RED,
@@ -48,6 +49,25 @@ constexpr uint32_t charColors[(int)Color::count] =
 	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 };
 
+#else
+constexpr uint32_t charColors[(int)Color::count] =
+{
+	COLOR_RED,
+	COLOR_RED,
+	COLOR_GREEN,
+	COLOR_GREEN,
+	COLOR_BLUE,
+	COLOR_RED,
+	COLOR_RED,
+	0,
+	COLOR_RED,
+	COLOR_RED,
+	COLOR_BLUE,
+	COLOR_BLUE,
+	COLOR_RED,
+	COLOR_RED
+};
+#endif
 
 }
 
@@ -81,9 +101,13 @@ bool Renderer::InitializeConsole(int fontSize)
 {
 	const int consoleWidth = bounds.x;
 	const int consoleHeight = bounds.y + hudRows;
+#ifdef WINDOWS
 	bool r = ResizeConsole(console.handle, consoleWidth, consoleHeight, fontSize);
 	r = r && CenterConsoleOnDesktop();
 	return r;
+#else
+	return true;
+#endif
 }
 
 
@@ -104,7 +128,8 @@ void Renderer::DisplayScores(const Game& game)
 	char tmp[256];
 	for (int p = 0; p < game.numPlayers; ++p)
 	{
-		sprintf(tmp, "P%d Score: %d", p + 1, game.score[p]);
+		snprintf(tmp, sizeof tmp - 1, "P%d Score: %d", p + 1, game.score[p]);
+		tmp[sizeof tmp - 1] = 0;
 		DisplayText(tmp, 0, p, Color::white);
 	}
 }
@@ -112,6 +137,7 @@ void Renderer::DisplayScores(const Game& game)
 
 void Renderer::FillCanvas(Color color)
 {
+#ifdef WINDOWS
 	CHAR_INFO* curCanvas = canvas.data();
 	CHAR_INFO ch; 
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
@@ -120,17 +146,22 @@ void Renderer::FillCanvas(Color color)
 	{
 		curCanvas[i] = ch;
 	}
+#endif
 }
 
 
 void Renderer::DrawCanvas()
 {
+#ifdef WINDOWS
 	WriteConsoleOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
+#else
+#endif
 }
 
 
 void Renderer::ClearLine(int row)
 {
+#ifdef WINDOWS
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	CHAR_INFO ch; 
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
@@ -139,6 +170,7 @@ void Renderer::ClearLine(int row)
 	{
 		curCanvas[x] = ch;
 	}
+#endif
 }
 
 
@@ -154,8 +186,11 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 	{
 		if (col >= 0 && col < bounds.x)
 		{
+#ifdef WINDOWS
 			curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
 			curCanvas[i + col].Attributes = charColors[(int)color];
+#else
+#endif
 		}
 	}
 }
@@ -221,6 +256,7 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
+#ifdef WINDOWS
 	const WORD attrib = charColors[(int)color];
 
 	for (int y = b; y < t; ++y)
@@ -236,6 +272,8 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 			}
 		}
 	}
+#else
+#endif
 }
 
 
@@ -256,8 +294,11 @@ void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
+#ifdef WINDOWS
 				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
 				c.Attributes = charColors[image.colors[s] - '0'];
+#else
+#endif
 			}
 		}
 	}
@@ -289,6 +330,8 @@ void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color co
 	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
+
+#ifdef WINDOWS
 	const WORD attrib = charColors[(int)color];
 
 	for (int y = b; y < t; ++y)
@@ -304,6 +347,5 @@ void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color co
 			}
 		}
 	}
-}
-
 #endif
+}

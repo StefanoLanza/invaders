@@ -1,5 +1,7 @@
 #include "Input.h"
 
+#include <cstring>
+
 #ifdef WINDOWS
 #include <windows.h>
 #endif
@@ -34,16 +36,16 @@ const int keyCodeToVKey[numKeyCodes] =
 
 }
 
-#ifdef WINDOWS
 void UpdateKeyStates()
 {
 	std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
+#ifdef WINDOWS
 	for (size_t i = 0; i < numKeyCodes; ++i)
 	{
 		keyState[i] = (GetAsyncKeyState(keyCodeToVKey[i]) & 0x8000) ? 1 : 0;
 	}
-}
 #endif
+}
 
 
 bool KeyPressed(KeyCode keyCode)
