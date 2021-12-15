@@ -1,7 +1,7 @@
 @echo off
-
+setlocal
 if not defined DEV_ENV_DIR (
-	call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+	call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat" x64
 )
 set DEV_ENV_DIR= ???
 
@@ -18,12 +18,12 @@ REM dlls
 echo "WAITING FOR PDB ..." > lock.tmp
 REM cl %CFLAGS% ../Win32Console.cpp -LD /link -PDB:Win32Console_%random%.pdb %LFLAGS%
 REM cl %CFLAGS% ../src/Scripts.cpp -LD /link -PDB:Script_%random%.pdb %LFLAGS% Engine.lib
-msbuild ../Scripts.vcxproj /p:Configuration=Debug
+msbuild  ..\build\vs2019\Scripts.vcxproj /p:Configuration=Debug
 del lock.tmp
 
 REM platform exe
 REM cl %CFLAGS% ..\src\main.cpp /link %LFLAGS%
 
 popd
-
+endlocal
 echo Done!

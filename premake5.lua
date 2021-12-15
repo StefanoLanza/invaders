@@ -83,6 +83,11 @@ project("inih")
 	files { "external/inih-master/ini.c", "external/inih-master/ini.h", }
 	includedirs { "./", "external/", }
 
+project("Scripts")
+	kind "SharedLib"
+	files { "src/scripts/**.*", }
+	includedirs { "./", "src", }
+
 project("Invaders")
 	kind "ConsoleApp"
 	files { "src/*.*", }

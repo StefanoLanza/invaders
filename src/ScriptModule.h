@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scripts.h"
+#include "scripts/Scripts.h"
 #include "DLL.h"
 
 

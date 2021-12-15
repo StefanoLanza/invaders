@@ -4,7 +4,7 @@
 #include "RenderItem.h"
 #include "Body.h"
 #include "Collision.h"
-#include "src/Scripts.h"
+#include "src/scripts/Scripts.h"
 #include <random>
 
 

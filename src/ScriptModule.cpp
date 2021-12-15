@@ -1,8 +1,5 @@
 #include "ScriptModule.h"
-
-#ifdef WINDOWS
-#include "windows/DLL.h"
-#endif
+#include "DLL.h"
 
 namespace
 {
