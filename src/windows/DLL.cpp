@@ -1,4 +1,4 @@
-#include "DLL.h"
+#include "../DLL.h"
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -113,10 +113,7 @@ DLLProc GetDLLProcedure(const DLL& dll, const char* procName)
 {
 	assert(dll.module);
 	assert(procName);
-	DLLProc pPerModuleInterfaceProcAdd = nullptr;
-#ifdef _WIN32
-	pPerModuleInterfaceProcAdd = (DLLProc) GetProcAddress((HMODULE)dll.module, procName);
-#endif
+	DLLProc pPerModuleInterfaceProcAdd = (DLLProc) GetProcAddress((HMODULE)dll.module, procName);
 	return pPerModuleInterfaceProcAdd;
 }
 
