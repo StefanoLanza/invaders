@@ -27,9 +27,12 @@ typedef uint16_t word;
 typedef uint32_t dword;
 
 
+#ifdef WINDOWS
 #define DLL_EXPORT extern "C" __declspec( dllexport )
+#else
+#define DLL_EXPORT
+#define MAX_PATH 256
+#endif
 
-
-#define XMAS_EDITION 1
-
-#define SP_EDITION 1
+#define XMAS_EDITION 0
+#define SP_EDITION 0

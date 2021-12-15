@@ -19,9 +19,8 @@ workspace ("IKA-Invaders")
 	characterset "MBCS"
 	flags   { "MultiProcessorCompile", } --"ConformanceMode", }
 	startproject "UnitTest"
-	exceptionhandling "Off"
-	defines { "_HAS_EXCEPTIONS=0" }
 	cppdialect "c++17"
+	exceptionhandling "Off"
 	rtti "Off"
 
 filter { filter_vs }
@@ -44,6 +43,9 @@ filter { filter_vs, filter_release, }
 filter { filter_xcode }
 	system "macosx"
 	systemversion("10.12") -- MACOSX_DEPLOYMENT_TARGET
+
+filter "system:windows"
+	defines { "WINDOWS", "_HAS_EXCEPTIONS=0", }
 
 filter "platforms:x86"
 	architecture "x86"
@@ -75,6 +77,11 @@ filter { "toolset:gcc" }
 
 filter { "toolset:clang", "configurations:Debug*" }
 	buildoptions { "/fsanitize=address" }
+
+project("inih")
+	kind "StaticLib"
+	files { "external/inih-master/ini.c", "external/inih-master/ini.h", }
+	includedirs { "./", "external/", }
 
 project("Invaders")
 	kind "ConsoleApp"

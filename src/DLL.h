@@ -29,7 +29,11 @@ enum class DLLError
 	ok = 4
 };
 
+#if WINDOWS
 using DLLProc = void (__cdecl *)(void);
+#else
+using DLLProc = void ( *)(void); // FIXME
+#endif
 
 const char* GetErrorMessage(DLLError error);
 DLLError LoadDLL(DLL& dll, const char* fileName);
