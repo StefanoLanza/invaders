@@ -3,9 +3,9 @@
 #include "PlayField.h"
 #include "Laser.h"
 #include "GameConfig.h"
-#include "Collision.h"
+#include <engine/Collision.h>
 #include "Images.h"
-#include "src/ScriptModule.h"
+#include <engine/ScriptModule.h>
 #include <random>
 #include <algorithm>
 #include <cassert>

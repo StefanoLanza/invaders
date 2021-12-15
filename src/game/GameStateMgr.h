@@ -4,7 +4,7 @@
 struct Game;
 class Renderer;
 
-
+// FIXME Should be part of the engine
 struct GameState
 {
 	// FIXME Enter and Exit function ? Start for example should destroy all objects

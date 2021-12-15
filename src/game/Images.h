@@ -5,7 +5,6 @@
 
 enum class ImageId
 {
-	null,
 	planet,
 	alien0_0,
 	alien0_1,

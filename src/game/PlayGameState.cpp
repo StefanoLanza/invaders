@@ -10,11 +10,11 @@
 #include "PowerUp.h"
 #include "Wall.h"
 #include "Prefabs.h"
-#include "Input.h"
-#include "MessageLog.h"
+#include <engine/Input.h>
+#include <engine/MessageLog.h>
 #include "GameEvents.h"
-#include "Renderer.h"
-#include "CollisionSpace.h"
+#include <engine/Renderer.h>
+#include <engine/CollisionSpace.h>
 #include <cassert>
 #include <functional>
 

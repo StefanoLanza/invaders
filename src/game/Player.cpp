@@ -1,10 +1,10 @@
 #include "Player.h"
 #include "PlayField.h"
 #include "Laser.h"
-#include "Input.h"
+#include <engine/Input.h>
 #include "Images.h"
 #include "Prefabs.h"
-#include "Collision.h"
+#include <engine/Collision.h>
 #include <random>
 #include <algorithm>
 #include <cassert>

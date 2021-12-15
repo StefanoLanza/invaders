@@ -1,6 +1,6 @@
 #include "Images.h"
 #include "Wall.h"
-#include "Collision.h"
+#include <engine/Collision.h>
 
 
 Wall NewWall(const Vector2D& pos, int maxHits)

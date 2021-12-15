@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Vector2D.h"
-#include "RenderItem.h"
-#include "Body.h"
-#include "Collision.h"
-#include "src/scripts/Scripts.h"
+#include <engine/Vector2D.h>
+#include <engine/RenderItem.h>
+#include <engine/Body.h>
+#include <engine/Collision.h>
+#include <scripts/Scripts.h>
 #include <random>
 
 

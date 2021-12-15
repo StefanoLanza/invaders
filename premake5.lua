@@ -88,13 +88,23 @@ project("Scripts")
 	files { "src/scripts/**.*", }
 	includedirs { "./", "src", }
 
+project("Engine")
+	kind "StaticLib"
+	files { "src/engine/*.*", }
+	includedirs { "./", "src", }
+	filter "system:linux"
+		files {"src/engine/linux/**.*"}
+	filter "system:Windows"
+		files {"src/engine/windows/**.*"}
+	filter {}
+
+project("Game")
+	kind "StaticLib"
+	files { "src/game/**.*", }
+	includedirs { "./", "src", }
+
 project("Invaders")
 	kind "ConsoleApp"
-	files { "src/*.*", }
-	includedirs { ".", "external", }
-	links { "inih", }
-	filter "system:linux"
-		files {"src/linux/**.*"}
-	filter "system:Windows"
-		files {"src/windows/**.*"}
-	filter {}
+	files { "src/main/*.*", }
+	includedirs { ".", "external", "src", }
+	links { "inih", "engine", "game", }

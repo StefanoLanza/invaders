@@ -1,6 +1,6 @@
 #include "PowerUp.h"
 #include "Images.h"
-#include "Collision.h"
+#include <engine/Collision.h>
 #include <algorithm>
 #include <cassert>
 

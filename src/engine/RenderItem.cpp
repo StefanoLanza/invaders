@@ -1,5 +1,4 @@
 #include "RenderItem.h"
-#include "Images.h"
 
 
 void UpdateAnimation(AnimState& state, const Animation& anim, float dt)

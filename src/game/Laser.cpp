@@ -1,6 +1,5 @@
 #include "Laser.h"
 #include "Images.h"
-#include "Collision.h"
 #include <algorithm>
 #include <cassert>
 

@@ -1,7 +1,7 @@
-﻿#include "Base.h"
-#include "Images.h"
-#include "Vector2D.h"
-#include "Colors.h"
+﻿#include "Images.h"
+#include <engine/Base.h>
+#include <engine/Vector2D.h>
+#include <engine/Colors.h>
 #include <cassert>
 #include <fstream>
 #include <sys/stat.h>

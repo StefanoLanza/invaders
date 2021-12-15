@@ -6,9 +6,9 @@
 #include "PowerUp.h"
 #include "Wall.h"
 #include "GameConfig.h"
-#include "Renderer.h"
-#include "Utils.h"
-#include "MessageLog.h"
+#include <engine/Renderer.h>
+#include <engine/Utils.h>
+#include <engine/MessageLog.h>
 #include "Images.h"
 #include <algorithm>
 #include <cassert>

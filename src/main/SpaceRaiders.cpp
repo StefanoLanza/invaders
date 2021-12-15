@@ -7,26 +7,26 @@
 #include <iostream>
 #include <algorithm>
 
-#include "Base.h"
-#include "Vector2D.h"
-#include "GameConfig.h"
-#include "Game.h"
-#include "Renderer.h"
-#include "PlayField.h"
-#include "Input.h"
-#include "MessageLog.h"
-#include "src/ScriptModule.h"
-#include "GameStates.h"
-#include "inih-master/ini.h"
+#include <engine/Base.h>
+#include <engine/Vector2D.h>
+#include <engine/Renderer.h>
+#include <engine/Input.h>
+#include <engine/MessageLog.h>
+#include <engine/ScriptModule.h>
+#include <engine/Console.h>
+#include <engine/DLL.h>
+#include <inih-master/ini.h>
 // States
-#include "StartMenu.h"
-#include "PauseScreen.h"
-#include "PlayGameState.h"
-#include "GameOverState.h"
-#include "IntroScreen.h"
-#include "VictoryScreen.h"
-#include "Console.h"
-#include "DLL.h"
+#include <game/GameConfig.h>
+#include <game/Game.h>
+#include <game/PlayField.h>
+#include <game/GameStates.h>
+#include <game/StartMenu.h>
+#include <game/PauseScreen.h>
+#include <game/PlayGameState.h>
+#include <game/GameOverState.h>
+#include <game/IntroScreen.h>
+#include <game/VictoryScreen.h>
 
 #ifdef WINDOWS
 

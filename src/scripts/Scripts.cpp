@@ -1,11 +1,10 @@
-#include "Base.h"
 #include "Scripts.h"
-#include "Alien.h"
-#include "Prefabs.h"
-#include "PlayField.h"
-#include "Laser.h"
-#include "GameConfig.h"
-#include "Images.h"
+#include <game/Alien.h>
+#include <game/Prefabs.h>
+#include <game/PlayField.h>
+#include <game/Laser.h>
+#include <game/GameConfig.h>
+#include <game/Images.h>
 #include <random>
 #include <algorithm>
 #include <cassert>

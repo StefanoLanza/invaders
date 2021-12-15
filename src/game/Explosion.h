@@ -1,11 +1,7 @@
 #pragma once
 
-#include "Vector2D.h"
-#include "RenderItem.h"
-
-
-struct Collider;
-
+#include <engine/Vector2D.h>
+#include <engine/RenderItem.h>
 
 struct Explosion
 {

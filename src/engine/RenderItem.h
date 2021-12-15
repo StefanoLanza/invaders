@@ -4,7 +4,10 @@
 #include "Colors.h"
 
 
-enum class ImageId;
+enum class ImageId : int {
+	null
+};
+
 
 struct Visual
 {
