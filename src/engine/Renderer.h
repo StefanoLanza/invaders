@@ -4,10 +4,11 @@
 #include "Vector2D.h"
 #include "RenderItem.h"
 
-
+#ifdef WINDOWS
 typedef struct _CHAR_INFO CHAR_INFO; // forward declaration of C struct
-typedef std::vector<RenderItem> RenderItemList;
-struct Game;
+#endif
+
+using RenderItemList = std::vector<RenderItem>;
 class MessageLog;
 struct Image;
 struct ImageA;
@@ -17,7 +18,7 @@ struct Console;
 enum class ImageAlignment
 {
 	left,
-	centered, 
+	centered,
 	right,
 	top,
 	bottom
@@ -33,8 +34,6 @@ public:
 
 	const IVector2D& GetBounds() const;
 	bool InitializeConsole(int fontSize);
-	// Display all game objects, score, game over message
-	void Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog);
 
 	// Fills whole canvas array with sprite
 	void FillCanvas(Color color);
@@ -47,7 +46,6 @@ public:
 	void DisplayMessages(const MessageLog& messageLog);
 	void DrawImage(const Image& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
 	void DrawColoredImage(const Image& image, int x, int y);
-	void DisplayScores(const Game& game);
 	void DrawSprites(const RenderItem* sprites, int count);
 
 public:

@@ -1,14 +1,11 @@
 #include "Renderer.h"
 
-#include "Game.h"
 #include "MessageLog.h"
 #include "Image.h"
-#include "Images.h"
-#include "GameStates.h"
 #include <cassert>
 #include <cstring>
 #include <algorithm>
-#include <iostream>
+#include <cmath>
 
 #ifdef WINDOWS
 #define NOMINMAX
@@ -31,7 +28,7 @@ namespace
 {
 
 #ifdef WINDOWS
-constexpr uint32_t charColors[(int)Color::count] =
+constexpr WORD charColors[(int)Color::count] =
 {
 	FOREGROUND_RED,
 	FOREGROUND_RED | FOREGROUND_INTENSITY,
@@ -110,31 +107,6 @@ bool Renderer::InitializeConsole(int fontSize)
 #endif
 }
 
-
-void Renderer::Update(const RenderItemList& sprites, const Game& game, const MessageLog& messageLog)
-{
-	FillCanvas(Color::black);
-	DrawSprites(sprites.data(), (int)sprites.size());
-	DisplayScores(game);
-	DisplayMessages(messageLog);
-	DrawGameState(game, *this);
-	DrawCanvas();
-}
-
-
-void Renderer::DisplayScores(const Game& game)
-{
-	// Write scores
-	char tmp[256];
-	for (int p = 0; p < game.numPlayers; ++p)
-	{
-		snprintf(tmp, sizeof tmp - 1, "P%d Score: %d", p + 1, game.score[p]);
-		tmp[sizeof tmp - 1] = 0;
-		DisplayText(tmp, 0, p, Color::white);
-	}
-}
-
-
 void Renderer::FillCanvas(Color color)
 {
 #ifdef WINDOWS
@@ -203,9 +175,8 @@ void Renderer::DrawSprites(const RenderItem* sprites, int count)
 		const auto& ri = sprites[i];
 		int x = (int)std::floor(ri.pos.x);
 		int y = (int)std::floor(ri.pos.y);
-		const Image& image = GetImage(ri.visual.imageId);
-		if (image.img)
-		{
+		if (ri.visual.imageId != ImageId::null) {
+			const Image& image = GetImage(ri.visual.imageId);
 			x -= image.width / 2;
 			y -= image.height / 2;
 			if (image.colors)

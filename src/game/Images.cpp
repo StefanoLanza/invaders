@@ -370,9 +370,9 @@ LR"(
           `)_/`      
 )";
 
-const Image images[numImages] =
+constexpr int numGameImages = static_cast<int>(GameImageId::_3) + 1;
+const Image gameImages[numGameImages] =
 {
-	{ nullptr, nullptr, 0, 0 },
 	{ planetStr, nullptr, 33, 10 },
 	{ alien0_0Str, alien_color, 7, 4 },
 	{ alien0_1Str, alien_color, 7, 4 },
@@ -416,22 +416,6 @@ const Image images[numImages] =
 	{ _3Img, nullptr, 8, 5 },
 };
 
-}
-
-
-const Image& GetImage(ImageId imageId)
-{
-	return images[(int)imageId];
-}
-
-
-Vector2D GetImageSize(ImageId imageId)
-{
-	const Image& image = GetImage(imageId);
-	return { (float)image.width, (float)image.height };
-}
-
-
 long GetFileSize(const char* fileName)
 {
 	struct stat stat_buf;
@@ -439,6 +423,13 @@ long GetFileSize(const char* fileName)
     return rc == 0 ? stat_buf.st_size : -1;
 }
 
+}
+
+
+void InitGameImages() {
+	SetImages(GetImageId(GameImageId::planet), numGameImages, gameImages);
+
+}
 
 bool LoadTxtImage(ImageA& image, int width, int height, const char* fileName)
 {

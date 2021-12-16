@@ -12,19 +12,19 @@ namespace
 // it takes two laser shots to destroy a better alien ship.
 const Animation alien0Anim = 
 {
-	{ ImageId::alien0_0, ImageId::alien0_1 }, .5f
+	{ GetImageId(GameImageId::alien0_0), GetImageId(GameImageId::alien0_1) }, .5f
 };
 const Animation alien1Anim = 
 {
-	{ ImageId::alien1_0, ImageId::alien1_1 }, .5f
+	{ GetImageId(GameImageId::alien1_0), GetImageId(GameImageId::alien1_1) }, .5f
 };
 const Animation alien2Anim = 
 {
-	{ ImageId::alien2_0, ImageId::alien2_1 }, .5f
+	{ GetImageId(GameImageId::alien2_0), GetImageId(GameImageId::alien2_1) }, .5f
 };
 const Animation alien3Anim = 
 {
-	{ ImageId::alien3_0, ImageId::alien3_1 }, .5f
+	{ GetImageId(GameImageId::alien3_0), GetImageId(GameImageId::alien3_1) }, .5f
 };
 
 const AlienPrefab alienPrefabs[] =
@@ -45,9 +45,9 @@ const AlienPrefab alienPrefabs[] =
 
 const AlienPrefab bossPrefabs[] =
 {
-	{ { { ImageId::boss0_0, ImageId::boss0_1 }, 0.25f }, Color::violet, 8, 40.f, },
-	{ { { ImageId::boss1_0, ImageId::boss1_1 }, 0.25f }, Color::violet, 10, 40.f, },
-	{ { { ImageId::boss2_0, ImageId::boss2_1 }, 0.25f }, Color::violet, 12, 40.f, },
+	{ { { GetImageId(GameImageId::boss0_0), GetImageId(GameImageId::boss0_1) }, 0.25f }, Color::violet, 8, 40.f, },
+	{ { { GetImageId(GameImageId::boss1_0), GetImageId(GameImageId::boss1_1) }, 0.25f }, Color::violet, 10, 40.f, },
+	{ { { GetImageId(GameImageId::boss2_0), GetImageId(GameImageId::boss2_1) }, 0.25f }, Color::violet, 12, 40.f, },
 };
 
 }
@@ -67,8 +67,8 @@ const AlienPrefab& GetBossPrefab(int index)
 
 const PlayerPrefab playerPrefabs[] =
 {
-	{ ImageId::player, Color::white, Color::yellow, 30.f, 3.f },
-	{ ImageId::player, Color::yellow, Color::white, 30.f, 3.f },
+	{ GetImageId(GameImageId::player), Color::white, Color::yellow, 30.f, 3.f },
+	{ GetImageId(GameImageId::player), Color::yellow, Color::white, 30.f, 3.f },
 };
 
 const PlayerPrefab& GetPlayerPrefab(int index)

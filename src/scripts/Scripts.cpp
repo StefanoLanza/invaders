@@ -97,7 +97,7 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	if (gameState.fireTimer < 0.f)
 	{
 		const Vector2D laserPos = { body.pos.x, body.pos.y + size.y * 0.5f }; // spawn in front
-		world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { ImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
+		world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GetImageId(GameImageId::alienLaser), Color::greenIntense }, -1, ColliderId::alienLaser) );
 		gameState.fireTimer = 0.f; // reset it
 	}
 }

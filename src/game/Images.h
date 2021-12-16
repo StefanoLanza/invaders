@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Image.h"
+#include <engine/Image.h>
 #include <cstddef>
 
-enum class ImageId
+enum class GameImageId
 {
 	planet,
 	alien0_0,
@@ -48,9 +48,9 @@ enum class ImageId
 	_2,
 	_3
 };
-constexpr size_t numImages = static_cast<size_t>(ImageId::_3) + 1;
 
-const Image& GetImage(ImageId imageId);
+constexpr ImageId GetImageId(GameImageId gameImageId) {
+	return static_cast<ImageId>(static_cast<int>(gameImageId) + 1);
+}
 
-struct Vector2D;
-Vector2D GetImageSize(ImageId imageId);
+void InitGameImages();

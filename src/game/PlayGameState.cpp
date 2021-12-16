@@ -142,9 +142,9 @@ void DisplayPlayGame(Renderer& renderer, const void* data)
 	const PlayGameStateData& stateData = *(const PlayGameStateData*)data;
 	if (stateData.showLevel)
 	{
-		ImageId imageId = (ImageId)(stateData.levelIndex + (int)ImageId::_1);
+		ImageId imageId = (ImageId)(stateData.levelIndex + (int)GameImageId::_1);
 		renderer.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
-		renderer.DrawImage(GetImage(ImageId::level), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
+		renderer.DrawImage(GetImage(GetImageId(GameImageId::level)), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
 }
 
@@ -178,7 +178,7 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	}
 
 	CollisionInfo collisions[64];
-	const int nc = collisionSpace.Execute(collisions, std::size(collisions));
+	const int nc = collisionSpace.Execute(collisions, (int)std::size(collisions));
 	CollisionInfo* c = collisions;
 
 	using Callback = void (*) (const CollisionContext&, void*, void*);
@@ -493,13 +493,13 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 	}
 	if (input1)
 	{
-		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 - player0Size.x, worldBounds.y - player0Size.y * 0.5f }, prefab0, 0, std::move(input0) ) );
-		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 + player1Size.x, worldBounds.y - player1Size.y * 0.5f }, prefab1, 1, std::move(input1) ) );
+		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 - player0Size.x, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, std::move(input0) ) );
+		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 + player1Size.x, worldBounds.y - player1Size.y * 0.45f }, prefab1, 1, std::move(input1) ) );
 		game.numPlayers = 2;
 	}
 	else
 	{
-		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2, worldBounds.y - player0Size.y * 0.5f }, prefab0, 0, std::move(input0) ) );
+		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, std::move(input0) ) );
 		game.numPlayers = 1;
 	}
 }

@@ -96,12 +96,12 @@ void PlayField::SpawnPowerUp(const Vector2D& position, int type)
 	constexpr int c = (int)PowerUp::count;
 	constexpr Visual visuals[c] =
 	{
-		{ ImageId::sPowerUp, Color::yellowIntense, },
-		{ ImageId::fPowerUp, Color::yellowIntense, },
-		{ ImageId::dPowerUp, Color::yellowIntense, },
-		{ ImageId::tPowerUp, Color::yellowIntense, },
-		{ ImageId::iPowerUp, Color::yellowIntense, },
-		{ ImageId::bomb,     Color::yellowIntense, },
+		{ GetImageId(GameImageId::sPowerUp), Color::yellowIntense, },
+		{ GetImageId(GameImageId::fPowerUp), Color::yellowIntense, },
+		{ GetImageId(GameImageId::dPowerUp), Color::yellowIntense, },
+		{ GetImageId(GameImageId::tPowerUp), Color::yellowIntense, },
+		{ GetImageId(GameImageId::iPowerUp), Color::yellowIntense, },
+		{ GetImageId(GameImageId::bomb),     Color::yellowIntense, },
 	};
 	powerUps.push_back( NewPowerUp(position, visuals[type], { 5.f, 3.f }, config.powerUpVelocity, (PowerUp::Type)type) );
 }
@@ -152,7 +152,7 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 		if (player.hasShield)
 		{
 			Color shieldColor = std::sin(20.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
-			ritems.push_back( { Add(player.pos, { 0, -2, }), { ImageId::shield, shieldColor } } );
+			ritems.push_back( { Add(player.pos, { 0, -2, }), { GetImageId(GameImageId::shield), shieldColor } } );
 		}
 	}
 	for (const auto& alienShip : aliens)

@@ -2,11 +2,7 @@
 
 #include "Vector2D.h"
 #include "Colors.h"
-
-
-enum class ImageId : int {
-	null
-};
+#include "Image.h"
 
 
 struct Visual

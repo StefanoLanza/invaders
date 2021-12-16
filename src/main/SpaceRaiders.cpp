@@ -16,7 +16,8 @@
 #include <engine/Console.h>
 #include <engine/DLL.h>
 #include <inih-master/ini.h>
-// States
+
+#include <game/Images.h>
 #include <game/GameConfig.h>
 #include <game/Game.h>
 #include <game/PlayField.h>
@@ -41,6 +42,7 @@ namespace
 	
 void ReadGameConfig(GameConfig& config, const char* iniFile);
 void RegisterGameStates(Game& game);
+void DisplayScores(const Game& game, Renderer& renderer);
 
 }
 
@@ -99,8 +101,8 @@ int main()
 
 	const IVector2D consoleSize { gameConfig.worldWidth, gameConfig.worldHeight };
 	const Vector2D worldSize { (float)gameConfig.worldWidth, (float)gameConfig.worldHeight };
-	Renderer mainRenderer { consoleSize, console };
-	if (! mainRenderer.InitializeConsole(gameConfig.fontSize))
+	Renderer renderer { consoleSize, console };
+	if (! renderer.InitializeConsole(gameConfig.fontSize))
 	{
 		return 0;
 	}
@@ -108,6 +110,8 @@ int main()
 	PlayField world { worldSize, gameConfig, rGen, messageLog };
 	Game game = NewGame(world, gameConfig, rGen, messageLog, scriptModule);
 	RegisterGameStates(game);
+
+	InitGameImages();
 
 	EnterGameState(game, (int)GameStateId::start);
 
@@ -117,7 +121,7 @@ int main()
 	const auto fixedFrameTime_ms = std::chrono::milliseconds(fixedFrameTime);
 	const auto fixedFrameTime_sc = std::chrono::duration_cast<std::chrono::steady_clock::duration>(fixedFrameTime_ms);
 
-	RenderItemList rl;
+	RenderItemList renderItems;
 	std::chrono::steady_clock::duration accumTime { 0 };
 	std::chrono::steady_clock::duration sleepTime { 0 };
 	std::chrono::steady_clock::duration elapsedTimeHistory[256] = { };
@@ -146,8 +150,15 @@ int main()
 				maxIter--;
 				UpdateKeyStates();
 				RunGameState(game, fixedDeltaTime);
-				world.GetRenderItems(rl);
-				mainRenderer.Update(rl, game, messageLog);
+
+				world.GetRenderItems(renderItems);
+				renderer.FillCanvas(Color::black);
+				renderer.DrawSprites(renderItems.data(), (int)renderItems.size());
+				renderer.DisplayMessages(messageLog);
+				DisplayScores(game, renderer);
+				DrawGameState(game, renderer);
+				renderer.DrawCanvas();
+
 				messageLog.DeleteOldMessages(fixedDeltaTime, 3.f);
 			}
 		}
@@ -198,7 +209,7 @@ namespace
 		config.varName = strcmp(value, "true") ? false : true; \
 	}
 
-int INIParser(void* user, const char* section, const char* name, const char* value)
+int INIParser(void* user, [[maybe_unused]] const char* section, const char* name, const char* value)
 {
 	GameConfig& config = *(GameConfig*)user;
 	PARSE_INT(maxAlienLasers, 0, 100);
@@ -238,6 +249,17 @@ void RegisterGameStates(Game& game)
 	RegisterGameState(game, nullptr, GameOverMenu, DisplayGameOver, nullptr);
 	RegisterGameState(game, nullptr, VictoryScreen, DisplayVictoryScreen, nullptr);
 	RegisterGameState(game, nullptr, nullptr, nullptr, nullptr);
+}
+
+void DisplayScores(const Game& game, Renderer& renderer) {
+	// Write scores
+	char tmp[256];
+	for (int p = 0; p < game.numPlayers; ++p)
+	{
+		snprintf(tmp, sizeof tmp - 1, "P%d Score: %d", p + 1, game.score[p]);
+		tmp[sizeof tmp - 1] = 0;
+		renderer.DisplayText(tmp, 0, p, Color::white);
+	}
 }
 
 }
