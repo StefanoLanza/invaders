@@ -6,6 +6,7 @@
 #include <cstring>
 #include <algorithm>
 #include <cmath>
+#include <locale.h>
 
 #ifdef __APPLE__
 #include <ncurses.h>
@@ -35,7 +36,7 @@ constexpr attr_t attrs[colorCount] = {
 
 
 int toColorPair(Color color) {
-	return COLOR_PAIR((int)color + 1);
+	return (int)color + 1;
 }
 
 }
@@ -47,6 +48,7 @@ Renderer::Renderer() :
 	consoleHandle {nullptr},
 	bounds {0,0}
 {
+	setlocale(LC_ALL, "");
 	initscr();
 	start_color();
 	curs_set(FALSE);
@@ -107,11 +109,27 @@ void Renderer::Clear(Color color)
 void Renderer::DrawCanvas()
 {
 	WINDOW* win = static_cast<WINDOW*>(consoleHandle);
+
+	box(win, ACS_VLINE, ACS_HLINE);
+
 	const cchar_t* s = canvas.data();
 	for (int y = 0; y < bounds.y; ++y) {
 		mvwadd_wchnstr(win, y, 0, s, bounds.x);
 		s += bounds.x;
 	}
+
+
+//wattron(win, COLOR_PAIR(1));
+int err = OK;
+	cchar_t ch[2];
+	err = setcchar(ch, L"T", attrs[0], 1/*toColorPair(Color::white)*/, NULL);
+		assert(err == OK);
+	err = setcchar(ch + 1, L"▀", attrs[1], 3/*toColorPair(Color::white)*/, NULL);
+		assert(err == OK);
+		err = mvwadd_wchnstr(win, 1, 1, ch, 2);
+		assert(err == OK);
+//				mvwprintw(win, 0, 0, "test");
+
 	wrefresh(win);
 }
 
@@ -131,6 +149,10 @@ void Renderer::ClearLine(int row)
 void Renderer::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
 {
 	assert(str);
+	if (row < 0 || row >= bounds.y) {
+		return;
+	}
+	const int colorPair = toColorPair(color);
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	if (hAlignment == ImageAlignment::centered)
 	{
@@ -141,9 +163,11 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 		if (col >= 0 && col < bounds.x)
 		{
 			wchar_t chstr[2];
-			chstr[0] = str[i]; 
+			chstr[0] = str[i];
 			chstr[1] = 0;
-			setcchar(&curCanvas[i + col], chstr, attrs[(int)color], toColorPair(color), NULL);
+			int err = setcchar(&curCanvas[i + col], chstr, attrs[(int)color], colorPair, NULL);
+			(void)err;
+			assert(err == OK);
 		}
 	}
 }
