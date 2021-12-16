@@ -7,8 +7,8 @@ GameConfig::GameConfig()
 	// Console
 	fontSize = 12;
 	// World
-	worldWidth = 160;
-	worldHeight = 54;
+	worldWidth = 40; //FIXME 160;
+	worldHeight = 20; //54;
 	maxAlienLasers = 10;
 	maxPlayerLasers = 4;
 	// Player

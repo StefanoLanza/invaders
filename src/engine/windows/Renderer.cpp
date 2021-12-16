@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "../Console.h"
 
 #include "MessageLog.h"
 #include "Image.h"
@@ -7,32 +7,15 @@
 #include <algorithm>
 #include <cmath>
 
-#include "Console.h"
-
-#ifdef WINDOWS
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #undef GetMessage
 #undef WriteConsoleOutput
 
-#else
-
-#ifdef __APPLE__
-#include <ncurses.h>
-#else
-#include <ncursesw/curses.h>
-#endif
-struct CHAR_INFO {
-	cchar_t ch;
-};
-
-#endif
-
 namespace
 {
 
-#ifdef WINDOWS
 constexpr WORD charColors[colorCount] =
 {
 	FOREGROUND_RED,
@@ -50,24 +33,7 @@ constexpr WORD charColors[colorCount] =
 	FOREGROUND_RED | FOREGROUND_BLUE,
 	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 };
-#else
-constexpr attr_t attrs[colorCount] = {
-	A_NORMAL,
-	A_BOLD,
-	A_NORMAL,
-	A_BOLD,
-	A_BOLD,
-	A_NORMAL,
-	A_BOLD,
-	A_NORMAL,
-	A_NORMAL,
-	A_BOLD,
-	A_NORMAL,
-	A_BOLD,
-	A_NORMAL,
-	A_BOLD
-};
-#endif
+
 }
 
 constexpr int hudRows = 2; // rows reserved for the HUD
@@ -77,42 +43,14 @@ Renderer::Renderer() :
 	consoleHandle {nullptr},
 	bounds {0,0}
 {
-
-#ifdef WINDOWS
 	CONSOLE_CURSOR_INFO info;
 	info.dwSize = 100;
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(console.handle, &info);
-#else
-	initscr();
-	start_color();
-	curs_set(FALSE);
-	cbreak();	
-	init_pair(1, COLOR_RED, COLOR_BLACK);
-	init_pair(2, COLOR_RED, COLOR_BLACK);
-	init_pair(3, COLOR_GREEN, COLOR_BLACK);
-	init_pair(4, COLOR_GREEN, COLOR_BLACK);
-	init_pair(5, COLOR_BLUE, COLOR_BLACK);
-	init_pair(6, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(7, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(8, COLOR_BLACK, COLOR_BLACK);
-	init_pair(9, COLOR_WHITE, COLOR_BLACK);
-	init_pair(10, COLOR_WHITE, COLOR_BLACK);
-	init_pair(11, COLOR_BLUE, COLOR_BLACK);
-	init_pair(12, COLOR_BLUE, COLOR_BLACK);
-	init_pair(13, COLOR_BLUE, COLOR_BLACK);
-	init_pair(14, COLOR_BLUE, COLOR_BLACK);
-#endif
 }
 
 
-Renderer::~Renderer() {
-#ifdef WINDOWS
-#else
-	endwin();
-#endif
-}
-
+Renderer::~Renderer() = default;
 
 const IVector2D& Renderer::GetBounds() const
 {
@@ -127,7 +65,6 @@ bool Renderer::Initialize(int width, int height, int fontSize)
 	bounds = { width, height };
 	height += hudRows;
 	canvas.resize(width * height);
-#ifdef WINDOWS
 	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (!consoleHandle)
 	{
@@ -136,41 +73,26 @@ bool Renderer::Initialize(int width, int height, int fontSize)
 	bool r = ResizeConsole(consoleHandle, width, height, fontSize);
 	r = r && CenterConsoleOnDesktop();
 	return r;
-#else
-	consoleHandle = newwin(height, width, (LINES - height) / 2, (COLS - width) / 2);
-	if (! consoleHandle) {
-		return false;
-	}
-	return true;
-#endif
 }
 
 void Renderer::Clear(Color color)
 {
 	CHAR_INFO ch; 
-#ifdef WINDOWS
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
 	ch.Attributes = charColors[(int)color];
-#else
-	setcchar(&ch.ch, L" ", attrs[(int)color], COLOR_PAIR((int)color), NULL);
-#endif
 	std::fill(canvas.begin(), canvas.end(), ch);
 }
 
 
 void Renderer::DrawCanvas()
 {
-#ifdef WINDOWS
 	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
 	WriteConsoleOutputW(consoleHandle, canvas.data(), { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, { 0, 0 }, &writeRegion);
-#else
-#endif
 }
 
 
 void Renderer::ClearLine(int row)
 {
-#ifdef WINDOWS
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	CHAR_INFO ch; 
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
@@ -179,7 +101,6 @@ void Renderer::ClearLine(int row)
 	{
 		curCanvas[x] = ch;
 	}
-#endif
 }
 
 
@@ -195,11 +116,8 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 	{
 		if (col >= 0 && col < bounds.x)
 		{
-#ifdef WINDOWS
 			curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
 			curCanvas[i + col].Attributes = charColors[(int)color];
-#else
-#endif
 		}
 	}
 }
@@ -264,7 +182,6 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
-#ifdef WINDOWS
 	const WORD attrib = charColors[(int)color];
 
 	for (int y = b; y < t; ++y)
@@ -280,8 +197,6 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 			}
 		}
 	}
-#else
-#endif
 }
 
 
@@ -302,11 +217,8 @@ void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
-#ifdef WINDOWS
 				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
 				c.Attributes = charColors[image.colors[s] - '0'];
-#else
-#endif
 			}
 		}
 	}
@@ -339,14 +251,13 @@ void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color co
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
 
-#ifdef WINDOWS
 	const WORD attrib = charColors[(int)color];
 
 	for (int y = b; y < t; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + (y + renderer.hudRows) * bounds.x];
+			auto& c = dst[x + (y + Console.hudRows) * bounds.x];
 			int s = (x - x0) + (y - y0) * (image.width);
 			if (image.img[s] != ' ')
 			{
@@ -355,5 +266,4 @@ void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color co
 			}
 		}
 	}
-#endif
 }

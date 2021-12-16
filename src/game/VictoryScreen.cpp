@@ -1,7 +1,7 @@
 #include "VictoryScreen.h"
 #include "GameStates.h"
 #include <engine/Input.h>
-#include <engine/Renderer.h>
+#include <engine/Console.h>
 #include <cassert>
 #include <cstring>
 

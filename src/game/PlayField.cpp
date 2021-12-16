@@ -6,7 +6,7 @@
 #include "PowerUp.h"
 #include "Wall.h"
 #include "GameConfig.h"
-#include <engine/Renderer.h>
+#include <engine/Console.h>
 #include <engine/Utils.h>
 #include <engine/MessageLog.h>
 #include "Images.h"

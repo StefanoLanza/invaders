@@ -3,7 +3,7 @@
 #include "GameStates.h"
 #include "Game.h"
 #include <engine/Input.h>
-#include <engine/Renderer.h>
+#include <engine/Console.h>
 #include "Images.h"
 #include <engine/MessageLog.h>
 #include "PlayField.h"
@@ -219,7 +219,7 @@ void DisplayStartMenu(Renderer& renderer, const void* data_)
 		"",
 		"Press ESC to quit"
 	};
-	const int row = 22;
+	constexpr int row = 22;
 	constexpr int numRows = std::size(str);
 	const int col = (renderer.GetBounds().x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)

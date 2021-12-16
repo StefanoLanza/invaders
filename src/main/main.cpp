@@ -9,7 +9,7 @@
 
 #include <engine/Base.h>
 #include <engine/Vector2D.h>
-#include <engine/Renderer.h>
+#include <engine/Console.h>
 #include <engine/Input.h>
 #include <engine/MessageLog.h>
 #include <engine/ScriptModule.h>
@@ -61,17 +61,15 @@ int main()
 	//}
 	const char* scriptsFileName = 
 	#ifdef WINDOWS
-	"Scripts.dll";
+		"Scripts.dll";
 	#else
-	"libScripts.so";
+		"libScripts.so";
 	#endif
 	if (! InitScriptModule(scriptModule, scriptsFileName))
 	{
 		std::cerr << "Cannot initialize DLL" << std::endl;
 		return -1;
 	}
-
-	std::default_random_engine rGen;
 
 	const Vector2D worldSize { (float)gameConfig.worldWidth, (float)gameConfig.worldHeight };
 	Renderer renderer;
@@ -80,6 +78,8 @@ int main()
 		std::cerr << "Cannot initialize console" << std::endl;
 		return -1;
 	}
+
+	std::default_random_engine rGen;
 	MessageLog messageLog;
 	PlayField world { worldSize, gameConfig, rGen, messageLog };
 	Game game = NewGame(world, gameConfig, rGen, messageLog, scriptModule);

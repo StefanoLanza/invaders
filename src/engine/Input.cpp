@@ -4,6 +4,8 @@
 
 #ifdef WINDOWS
 #include <windows.h>
+#else
+#include <ncurses.h>
 #endif
 
 namespace
@@ -32,6 +34,23 @@ const int keyCodeToVKey[numKeyCodes] =
 	'D'
 };
 #else
+const int keyCodeToVKey[numKeyCodes] =
+{
+	27, //ESCAPE,
+	KEY_ENTER,
+	KEY_BACKSPACE,
+	KEY_LEFT,
+	KEY_RIGHT,
+	KEY_UP,
+	KEY_DOWN,
+	'1',
+	'2',
+	'3',
+	'4',
+	'5',
+	'A',
+	'D'
+};
 #endif
 
 }
@@ -43,6 +62,15 @@ void UpdateKeyStates()
 	for (size_t i = 0; i < numKeyCodes; ++i)
 	{
 		keyState[i] = (GetAsyncKeyState(keyCodeToVKey[i]) & 0x8000) ? 1 : 0;
+	}
+#else
+	std::memset(keyState, 0, sizeof(prevKeyState));
+	const int ch = getch();
+	for (size_t i = 0; i < numKeyCodes; ++i) {
+		if (ch == keyCodeToVKey[i]) {
+			keyState[i] = 1;
+			break;
+		}
 	}
 #endif
 }

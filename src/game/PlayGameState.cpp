@@ -13,7 +13,7 @@
 #include <engine/Input.h>
 #include <engine/MessageLog.h>
 #include "GameEvents.h"
-#include <engine/Renderer.h>
+#include <engine/Console.h>
 #include <engine/CollisionSpace.h>
 #include <cassert>
 #include <functional>
