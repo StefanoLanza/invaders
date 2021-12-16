@@ -26,11 +26,22 @@ typedef uint8_t  byte;
 typedef uint16_t word;
 typedef uint32_t dword;
 
-
-#ifdef WINDOWS
-#define DLL_EXPORT extern "C" __declspec( dllexport )
+#if defined(_MSC_VER)
+    //  Microsoft 
+    #define DLL_EXPORT __declspec(dllexport)
+    #define DLL_IMPORT __declspec(dllimport)
+#elif defined(__GNUC__)
+    //  GCC
+    #define DLL_EXPORT __attribute__((visibility("default")))
+    #define DLL_IMPORT
 #else
-#define DLL_EXPORT
+    //  do nothing and hope for the best?
+    #define DLL_EXPORT
+    #define DLL_IMPORT
+    #pragma warning Unknown dynamic link import/export semantics.
+#endif
+
+#ifndef MAX_PATH
 #define MAX_PATH 256
 #endif
 

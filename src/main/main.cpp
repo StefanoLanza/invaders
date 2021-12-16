@@ -15,6 +15,7 @@
 #include <engine/ScriptModule.h>
 #include <engine/Console.h>
 #include <engine/DLL.h>
+#include <engine/Path.h>
 #include <inih-master/ini.h>
 
 #include <game/Images.h>
@@ -29,14 +30,6 @@
 #include <game/IntroScreen.h>
 #include <game/VictoryScreen.h>
 
-#ifdef WINDOWS
-
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-#endif
-
 namespace
 {
 	
@@ -47,64 +40,45 @@ void DisplayScores(const Game& game, Renderer& renderer);
 }
 
 
-const char DIR_SEPARATOR =
-#if defined(_WIN32) || defined(WIN32)
-    '\\';
-#else
-    '/';
-#endif
-
-void cutPath(char* path)
-{
-    // get '/' or '\\' depending on unix/mac or windows.
-	int e = (int)strlen(path) - 1;
-	while (e >= 0)
-	{
-		if (path[e] == DIR_SEPARATOR)
-		{
-			path[e] = 0;
-			return;
-		}
-		e--;
-	}
-}
-
 int main()
 {
-	char exePath[MAX_PATH];
-#ifdef WINDOWS
-	// Get the path and the name
-	GetModuleFileNameA( GetModuleHandle(NULL), exePath, sizeof(exePath));
-#endif
-	cutPath(exePath);
+	std::cout << "IKA Invaders" << std::endl;
+	std::cout << "by Stefano Lanza - steflanz@gmail.com - 2021" << std::endl;
+	std::cout << std::endl;
 
+	//char exePath[MAX_PATH];
+	//getExePath(exePath, sizeof exePath);
+	//cutPath(exePath);
+
+	std::cout << "Reading game config from game.ini" << std::endl;
 	GameConfig gameConfig;
-	// Read game config from ini file
 	ReadGameConfig(gameConfig, "game.ini");
 
-	Console console;
-	if (!InitConsole(console))
-	{
-		return 0;
-	}
-	HideConsoleCursor(console.handle);
-
 	ScriptModule scriptModule;
-    char tmp[MAX_PATH];
-	sprintf(tmp, "%s%cScripts.dll", exePath, DIR_SEPARATOR);
-	if (!InitScriptModule(scriptModule, tmp))
+    //char tmp[MAX_PATH];
+	//if (snprintf(tmp, sizeof tmp, "%s%cScripts.dll", exePath, DIR_SEPARATOR) > (int)(sizeof tmp)) {
+	//	return -1;
+	//}
+	const char* scriptsFileName = 
+	#ifdef WINDOWS
+	"Scripts.dll";
+	#else
+	"libScripts.so";
+	#endif
+	if (! InitScriptModule(scriptModule, scriptsFileName))
 	{
-		return 0;
+		std::cerr << "Cannot initialize DLL" << std::endl;
+		return -1;
 	}
 
 	std::default_random_engine rGen;
 
-	const IVector2D consoleSize { gameConfig.worldWidth, gameConfig.worldHeight };
 	const Vector2D worldSize { (float)gameConfig.worldWidth, (float)gameConfig.worldHeight };
-	Renderer renderer { consoleSize, console };
-	if (! renderer.InitializeConsole(gameConfig.fontSize))
+	Renderer renderer;
+	if (! renderer.Initialize(gameConfig.worldWidth, gameConfig.worldHeight, gameConfig.fontSize))
 	{
-		return 0;
+		std::cerr << "Cannot initialize console" << std::endl;
+		return -1;
 	}
 	MessageLog messageLog;
 	PlayField world { worldSize, gameConfig, rGen, messageLog };
@@ -152,7 +126,7 @@ int main()
 				RunGameState(game, fixedDeltaTime);
 
 				world.GetRenderItems(renderItems);
-				renderer.FillCanvas(Color::black);
+				renderer.Clear(Color::black);
 				renderer.DrawSprites(renderItems.data(), (int)renderItems.size());
 				renderer.DisplayMessages(messageLog);
 				DisplayScores(game, renderer);
@@ -252,7 +226,6 @@ void RegisterGameStates(Game& game)
 }
 
 void DisplayScores(const Game& game, Renderer& renderer) {
-	// Write scores
 	char tmp[256];
 	for (int p = 0; p < game.numPlayers; ++p)
 	{

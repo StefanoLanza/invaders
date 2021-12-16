@@ -196,7 +196,8 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		{ ColliderId::alien, ColliderId::playerLaser, Collision_AlienVSLaser },
 		{ ColliderId::alien, ColliderId::wall, Collision_AlienVSWall },
 		{ ColliderId::playerLaser, ColliderId::alienLaser, Collision_LaserVSLaser },
-		{ ColliderId::playerLaser, ColliderId::wall, Collision_LaserVSWall }
+		{ ColliderId::playerLaser, ColliderId::wall, Collision_LaserVSWall },
+		{ ColliderId::player, ColliderId::alien, Collision_PlayerVSAlien },
 	};
 
 	const CollisionContext context =
@@ -360,6 +361,12 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 	case PowerUp::bomb:
 		messageLog.AddMessage("Bomb!");
 		world.SpawnBomb();
+		break;
+	case PowerUp::shield:
+		messageLog.AddMessage("Shield!");
+		world.SpawnBomb();
+		break;
+	default:
 		break;
 	}
 }

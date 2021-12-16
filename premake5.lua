@@ -13,7 +13,7 @@ local filter_release =  "configurations:Release*"
 
 workspace ("IKA-Invaders")
 	configurations { "Debug", "Release" }
-	platforms { "x86", "x86_64" }
+	platforms { "x86_64" }
 	language "C++"
 	location (workspacePath)
 	characterset "MBCS"
@@ -46,9 +46,6 @@ filter { filter_xcode }
 
 filter "system:windows"
 	defines { "WINDOWS", "_HAS_EXCEPTIONS=0", }
-
-filter "platforms:x86"
-	architecture "x86"
 
 filter "platforms:x86_64"
 	architecture "x86_64"
@@ -89,6 +86,10 @@ project("Engine")
 	includedirs { "./", "src", }
 	filter "system:linux"
 		files {"src/engine/linux/**.*"}
+		links {"ncursesw", "dl", }
+		-- relocation R_X86_64_PC32 against symbol `_ZNSt6vectorI5ImageSaIS0_EED1Ev' can not be used when making a shared object; recompile with -fPIC
+		-- TODO investigate
+		buildoptions { "-fPIC", }
 	filter "system:Windows"
 		files {"src/engine/windows/**.*"}
 	filter {}
@@ -97,15 +98,21 @@ project("Game")
 	kind "StaticLib"
 	files { "src/game/**.*", }
 	includedirs { "./", "src", }
+	links {"Engine", }
 
 project("Scripts")
 	kind "SharedLib"
 	files { "src/scripts/**.*", }
 	includedirs { "./", "src", }
-	links { "game", "engine", }
+	links { "Game", "Engine", }
 
 project("Invaders")
 	kind "ConsoleApp"
 	files { "src/main/*.*", }
 	includedirs { ".", "external", "src", }
-	links { "inih", "engine", "game", }
+	filter "system:linux"
+		-- ! Order matters with make
+		links { "inih", "ncursesw", "dl", "Scripts", "Game", "Engine", }
+	filter "system:Windows"
+		links { "inih", "Game", "Engine",  }
+	filter {}

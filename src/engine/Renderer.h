@@ -6,13 +6,14 @@
 
 #ifdef WINDOWS
 typedef struct _CHAR_INFO CHAR_INFO; // forward declaration of C struct
+#else
+struct CHAR_INFO;
 #endif
 
 using RenderItemList = std::vector<RenderItem>;
 class MessageLog;
 struct Image;
 struct ImageA;
-struct Console;
 
 
 enum class ImageAlignment
@@ -29,18 +30,14 @@ class Renderer
 {
 public:
 
-	Renderer(const IVector2D& bounds, Console& console);
+	Renderer();
 	~Renderer();
 
 	const IVector2D& GetBounds() const;
-	bool InitializeConsole(int fontSize);
-
-	// Fills whole canvas array with sprite
-	void FillCanvas(Color color);
-
+	bool Initialize(int width, int height, int fontSize);
+	void Clear(Color color);
 	// Prints canvas char array on console
 	void DrawCanvas();
-
 	void ClearLine(int row);
 	void DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment = ImageAlignment::left);
 	void DisplayMessages(const MessageLog& messageLog);
@@ -50,9 +47,7 @@ public:
 
 public:
 
-	static const int hudRows;
-
-	Console& console;
+	void* consoleHandle;
 	IVector2D bounds;
 	std::vector<CHAR_INFO> canvas;
 };

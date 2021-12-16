@@ -14,9 +14,9 @@
 namespace
 {
 
-const AlienPrefab* GetActivePrefab(const Alien& alien)
+const AlienPrefab& GetActivePrefab(const Alien& alien)
 {
-	return alien.state == Alien::State::better ? alien.betterPrefab : alien.normalPrefab;
+	return *(alien.state == Alien::State::better ? alien.betterPrefab : alien.normalPrefab);
 }
 
 }
@@ -24,15 +24,15 @@ const AlienPrefab* GetActivePrefab(const Alien& alien)
 
 void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig, const ScriptModule& scriptModule)
 {
-	const Image& image = GetImage( GetActivePrefab(alien)->anim.images[alien.animState.frame] );
+	const Image& image = GetImage( GetActivePrefab(alien).anim.images[alien.animState.frame] );
 	alien.body.size = { (float)image.width, (float)image.height };
 
 	UpdateAnimation(alien.animState, alien.state == Alien::State::better ? alien.betterPrefab->anim : alien.normalPrefab->anim, dt);
 //	RunAIScript(alien.aiScriptId, alien, scriptArgs);
 
-	const AlienPrefab* prefab = GetActivePrefab(alien);
-	alien.visual.imageId = prefab->anim.images[alien.animState.frame];
-	alien.visual.color =  prefab->color;
+	const AlienPrefab& prefab = GetActivePrefab(alien);
+	alien.visual.imageId = prefab.anim.images[alien.animState.frame];
+	alien.visual.color =  prefab.color;
 
 	if (scriptModule.ai)
 	{
@@ -45,7 +45,7 @@ void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& normalPrefab, const AlienPrefab& betterPrefab)
 {
 	Alien alien;
-	alien.body = { initialPos, initialPos, velocity };
+	alien.body = { initialPos, initialPos, velocity, {0.f, 0.f} };
 	alien.normalPrefab = &normalPrefab;
 	alien.betterPrefab = &betterPrefab;
 	alien.scriptId = AlienScriptId::alien;

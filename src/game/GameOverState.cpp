@@ -1,7 +1,7 @@
 #include "GameOverState.h"
 #include "GameStates.h"
-#include "Input.h"
-#include "Renderer.h"
+#include <engine/Input.h>
+#include <engine/Renderer.h>
 #include <cassert>
 #include <cstring>
 

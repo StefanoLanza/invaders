@@ -15,6 +15,7 @@ enum class Color
 	lightBlue,
 	lightBlueIntense,
 	violet,
-	violetIntense,
-	count
+	violetIntense
 };
+
+constexpr int colorCount = static_cast<int>(Color::violetIntense) + 1;

@@ -1,7 +1,7 @@
 #include "PauseScreen.h"
 #include "GameStates.h"
-#include "Input.h"
-#include "Renderer.h"
+#include <engine/Input.h>
+#include <engine/Renderer.h>
 #include "Images.h"
 #include <cassert>
 #include <cstring>

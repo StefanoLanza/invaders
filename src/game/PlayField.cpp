@@ -16,10 +16,10 @@
 
 
 PlayField::PlayField(const Vector2D& iBounds, const GameConfig& config, std::default_random_engine& rGen, MessageLog& messageLog) : 
-	bounds { iBounds },
-	config { config },
 	rGen { rGen },
 	messageLog { messageLog },
+	config { config },
+	bounds { iBounds },
 	rndFloat01 { 0.f, 1.f },
 	rndPowerUp { (int)PowerUp::count, rGen }
 {}

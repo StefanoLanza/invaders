@@ -112,8 +112,12 @@ const AIScript aiScripts[numAlienScripts] =
 
 }
 
+extern "C"
+{
 
 DLL_EXPORT void ExecuteAlienScript(AlienScriptId scriptId, Alien& alien, const ScriptArgs& args)
 {
 	aiScripts[(int)scriptId](alien, args.dt, *args.world, *args.gameConfig);
+}
+
 }

@@ -6,8 +6,8 @@
 
 struct FileTime
 {
-	dword lowDateTime;
-	dword highDateTime;
+	uint32_t lowDateTime;
+	uint32_t highDateTime;
 };
 
 
@@ -32,7 +32,7 @@ enum class DLLError
 #if WINDOWS
 using DLLProc = void (__cdecl *)(void);
 #else
-using DLLProc = void ( *)(void); // FIXME
+using DLLProc = void*;
 #endif
 
 const char* GetErrorMessage(DLLError error);

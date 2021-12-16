@@ -7,19 +7,24 @@
 #include <algorithm>
 #include <cmath>
 
+#include "Console.h"
+
 #ifdef WINDOWS
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
-#include "Console.h"
 #include <windows.h>
 #undef GetMessage
 #undef WriteConsoleOutput
 
 #else
 
+#ifdef __APPLE__
 #include <ncurses.h>
-struct _CHAR_INFO {
-	char ch;
+#else
+#include <ncursesw/curses.h>
+#endif
+struct CHAR_INFO {
+	cchar_t ch;
 };
 
 #endif
@@ -28,7 +33,7 @@ namespace
 {
 
 #ifdef WINDOWS
-constexpr WORD charColors[(int)Color::count] =
+constexpr WORD charColors[colorCount] =
 {
 	FOREGROUND_RED,
 	FOREGROUND_RED | FOREGROUND_INTENSITY,
@@ -45,47 +50,68 @@ constexpr WORD charColors[(int)Color::count] =
 	FOREGROUND_RED | FOREGROUND_BLUE,
 	FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY
 };
-
 #else
-constexpr uint32_t charColors[(int)Color::count] =
-{
-	COLOR_RED,
-	COLOR_RED,
-	COLOR_GREEN,
-	COLOR_GREEN,
-	COLOR_BLUE,
-	COLOR_RED,
-	COLOR_RED,
-	0,
-	COLOR_RED,
-	COLOR_RED,
-	COLOR_BLUE,
-	COLOR_BLUE,
-	COLOR_RED,
-	COLOR_RED
+constexpr attr_t attrs[colorCount] = {
+	A_NORMAL,
+	A_BOLD,
+	A_NORMAL,
+	A_BOLD,
+	A_BOLD,
+	A_NORMAL,
+	A_BOLD,
+	A_NORMAL,
+	A_NORMAL,
+	A_BOLD,
+	A_NORMAL,
+	A_BOLD,
+	A_NORMAL,
+	A_BOLD
 };
 #endif
-
 }
 
+constexpr int hudRows = 2; // rows reserved for the HUD
 
-const int Renderer::hudRows = 2; // rows reserved for the HUD
 
-
-Renderer::Renderer(const IVector2D& bounds_, Console& console_) :
-	console {console_},
-	bounds {bounds_}
+Renderer::Renderer() :
+	consoleHandle {nullptr},
+	bounds {0,0}
 {
-	assert(bounds.x > 0);
-	assert(bounds.y > 0);
-	const int consoleWidth = bounds.x;
-	const int consoleHeight = bounds.y + hudRows;
-	const size_t canvasSize = consoleWidth * consoleHeight;
-	canvas.resize(canvasSize);
+
+#ifdef WINDOWS
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(console.handle, &info);
+#else
+	initscr();
+	start_color();
+	curs_set(FALSE);
+	cbreak();	
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_RED, COLOR_BLACK);
+	init_pair(3, COLOR_GREEN, COLOR_BLACK);
+	init_pair(4, COLOR_GREEN, COLOR_BLACK);
+	init_pair(5, COLOR_BLUE, COLOR_BLACK);
+	init_pair(6, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(7, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(8, COLOR_BLACK, COLOR_BLACK);
+	init_pair(9, COLOR_WHITE, COLOR_BLACK);
+	init_pair(10, COLOR_WHITE, COLOR_BLACK);
+	init_pair(11, COLOR_BLUE, COLOR_BLACK);
+	init_pair(12, COLOR_BLUE, COLOR_BLACK);
+	init_pair(13, COLOR_BLUE, COLOR_BLACK);
+	init_pair(14, COLOR_BLUE, COLOR_BLACK);
+#endif
 }
 
 
-Renderer::~Renderer() = default;
+Renderer::~Renderer() {
+#ifdef WINDOWS
+#else
+	endwin();
+#endif
+}
 
 
 const IVector2D& Renderer::GetBounds() const
@@ -94,38 +120,49 @@ const IVector2D& Renderer::GetBounds() const
 }
 
 
-bool Renderer::InitializeConsole(int fontSize)
+bool Renderer::Initialize(int width, int height, int fontSize)
 {
-	const int consoleWidth = bounds.x;
-	const int consoleHeight = bounds.y + hudRows;
+	assert(width > 0);
+	assert(height > 0);
+	bounds = { width, height };
+	height += hudRows;
+	canvas.resize(width * height);
 #ifdef WINDOWS
-	bool r = ResizeConsole(console.handle, consoleWidth, consoleHeight, fontSize);
+	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (!consoleHandle)
+	{
+		return false;
+	}
+	bool r = ResizeConsole(consoleHandle, width, height, fontSize);
 	r = r && CenterConsoleOnDesktop();
 	return r;
 #else
+	consoleHandle = newwin(height, width, (LINES - height) / 2, (COLS - width) / 2);
+	if (! consoleHandle) {
+		return false;
+	}
 	return true;
 #endif
 }
 
-void Renderer::FillCanvas(Color color)
+void Renderer::Clear(Color color)
 {
-#ifdef WINDOWS
-	CHAR_INFO* curCanvas = canvas.data();
 	CHAR_INFO ch; 
+#ifdef WINDOWS
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
 	ch.Attributes = charColors[(int)color];
-	for (int i = 0, ei = (int)canvas.size(); i != ei; ++i)
-	{
-		curCanvas[i] = ch;
-	}
+#else
+	setcchar(&ch.ch, L" ", attrs[(int)color], COLOR_PAIR((int)color), NULL);
 #endif
+	std::fill(canvas.begin(), canvas.end(), ch);
 }
 
 
 void Renderer::DrawCanvas()
 {
 #ifdef WINDOWS
-	WriteConsoleOutput(console.handle, canvas.data(), bounds.x, bounds.y, 0, hudRows);
+	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
+	WriteConsoleOutputW(consoleHandle, canvas.data(), { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, { 0, 0 }, &writeRegion);
 #else
 #endif
 }

@@ -1,8 +1,7 @@
 #include "IntroScreen.h"
-#include "Base.h"
 #include "GameStates.h"
-#include "Input.h"
-#include "Renderer.h"
+#include <engine/Input.h>
+#include <engine/Renderer.h>
 #include "Images.h"
 #include <cassert>
 #include <array>
@@ -56,7 +55,7 @@ void DisplayIntroScreen(Renderer& renderer, const void* data)
 {
 	const IntroScreenData& screenData = *(IntroScreenData*)data;
 
-	renderer.DrawImage(GetImage(ImageId::planet), 0, 8, Color::greenIntense, ImageAlignment::centered, ImageAlignment::top);
+	renderer.DrawImage(GetImage(GetImageId(GameImageId::planet)), 0, 8, Color::greenIntense, ImageAlignment::centered, ImageAlignment::top);
 #if SP_EDITION
 	static const char* str[] =
 	{

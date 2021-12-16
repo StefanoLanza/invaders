@@ -19,49 +19,12 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
 
 
 
-bool InitConsole(Console& console)
-{
-	console.handle = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (!console.handle)
-	{
-		return false;
-	}
-	return true;
-}
-
-
-void WriteConsoleOutput(void* consoleHandle, const void* buff, int cols, int rows, int colOffs, int rowOffs)
-{
-	if (consoleHandle)
-	{
-		SMALL_RECT writeRegion = { 0, 0, (SHORT)cols - 1, (SHORT)(rows - 1 + rowOffs) };
-		WriteConsoleOutputW(consoleHandle, (const CHAR_INFO*)buff, { (SHORT)cols, (SHORT)(rows + rowOffs) }, { 0, 0 }, &writeRegion);
-	}
-}
-
-
 bool CenterConsoleOnDesktop()
 {
 	return CenterWindowOnDesktop(GetConsoleWindow());
 }
 
 
-void HideConsoleCursor(void* handle)
-{
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = FALSE;
-	SetConsoleCursorInfo(handle, &info);
-}
-
-
-void ShowConsoleCursor(void* handle)
-{
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = FALSE;
-	SetConsoleCursorInfo(handle, &info);
-}
 
 bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
 {

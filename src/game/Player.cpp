@@ -30,7 +30,7 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 	playerShip.laserShots = 0;
 	playerShip.doubleFire = false;
 	playerShip.tripleFire = false;
-	playerShip.hasShield = false;//true;
+	playerShip.hasShield = false;
 	return playerShip;
 }
 
