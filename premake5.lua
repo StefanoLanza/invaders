@@ -46,7 +46,7 @@ filter { filter_xcode }
 
 filter "system:windows"
 	defines { "WINDOWS", "_HAS_EXCEPTIONS=0", }
-
+	
 filter "platforms:x86_64"
 	architecture "x86_64"
 
@@ -115,4 +115,17 @@ project("Invaders")
 		links { "inih", "ncursesw", "dl", "Scripts", "Game", "Engine", }
 	filter "system:Windows"
 		links { "inih", "Game", "Engine",  }
+	filter {}
+	filter "system:windows"
+		local root_dir = "%{wks.location}".."../.." 
+		local bin_dir = root_dir.."/bin" -- FIXME PAth concate
+		postbuildcommands {
+			"{ECHO}, Copying data to bin folder",
+			"{ECHO}, Relpath: %{cfg.buildtarget.directory}",
+			"{ECHO}, bin dir "..bin_dir,
+			"{MKDIR} %{wks.location}../../bin",
+			"{COPY} %{cfg.buildtarget.directory}/*.exe "..bin_dir,
+			"{COPY} %{cfg.buildtarget.directory}/*.dll "..bin_dir,
+			"{COPY} "..root_dir.."/assets "..bin_dir,
+		}
 	filter {}

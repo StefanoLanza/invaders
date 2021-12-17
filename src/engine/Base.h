@@ -41,9 +41,5 @@ typedef uint32_t dword;
     #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
-#ifndef MAX_PATH
-#define MAX_PATH 256
-#endif
-
 #define XMAS_EDITION 0
 #define SP_EDITION 0

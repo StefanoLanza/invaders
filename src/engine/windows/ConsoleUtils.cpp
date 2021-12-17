@@ -15,19 +15,6 @@ bool CenterWindowOnDesktop(HWND hwndWindow);
 bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
 
 
-bool CenterConsoleOnDesktop()
-{
-	return CenterWindowOnDesktop(GetConsoleWindow());
-}
-
-
-
-bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
-{
-	return ResizeConsoleImpl(static_cast<SHORT>(cols), static_cast<SHORT>(rows), static_cast<SHORT>(fontSize), handle);
-}
-
-
 bool CenterWindowOnDesktop(HWND hwndWindow)
 {
 	HWND hwndParent;
@@ -108,4 +95,14 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 }
 
 
+}
+
+bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
+{
+	return ResizeConsoleImpl(static_cast<SHORT>(cols), static_cast<SHORT>(rows), static_cast<SHORT>(fontSize), handle);
+}
+
+bool CenterConsoleOnDesktop()
+{
+	return CenterWindowOnDesktop(GetConsoleWindow());
 }

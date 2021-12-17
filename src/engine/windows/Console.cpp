@@ -1,7 +1,7 @@
 #include "../Console.h"
-
-#include "MessageLog.h"
-#include "Image.h"
+#include "../MessageLog.h"
+#include "../Image.h"
+#include "ConsoleUtils.h"
 #include <cassert>
 #include <cstring>
 #include <algorithm>
@@ -43,10 +43,6 @@ Renderer::Renderer() :
 	consoleHandle {nullptr},
 	bounds {0,0}
 {
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = FALSE;
-	SetConsoleCursorInfo(console.handle, &info);
 }
 
 
@@ -72,6 +68,12 @@ bool Renderer::Initialize(int width, int height, int fontSize)
 	}
 	bool r = ResizeConsole(consoleHandle, width, height, fontSize);
 	r = r && CenterConsoleOnDesktop();
+
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &info);
+
 	return r;
 }
 
@@ -257,7 +259,7 @@ void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color co
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + (y + Console.hudRows) * bounds.x];
+			auto& c = dst[x + (y + hudRows) * bounds.x];
 			int s = (x - x0) + (y - y0) * (image.width);
 			if (image.img[s] != ' ')
 			{
