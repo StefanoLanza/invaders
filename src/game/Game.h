@@ -1,7 +1,5 @@
 #include <engine/Vector2D.h>
-#include "GameStateMgr.h"
 #include <random>
-
 
 struct GameConfig;
 class PlayField;
@@ -11,7 +9,7 @@ struct WallInfo;
 struct BossInfo;
 struct Event;
 struct ScriptModule;
-
+struct GameState;
 
 struct Game
 {
@@ -26,17 +24,16 @@ struct Game
 
 	static constexpr int maxPlayers = 2;
 
-	const GameConfig&           config;
-	std::default_random_engine& rGen;
-	MessageLog&                 messageLog;
-	const ScriptModule&         scriptModule;
-	PlayField&                  world;
-	std::vector<GameState>      states;
-	Mode  mode;
-	int   stateId;
-	int   score[maxPlayers];
-	int   numPlayers;
+	const GameConfig &config;
+	std::default_random_engine &rGen;
+	MessageLog &messageLog;
+	const ScriptModule &scriptModule;
+	PlayField &world;
+	std::vector<GameState> states;
+	Mode mode;
+	int stateId;
+	int score[maxPlayers];
+	int numPlayers;
 };
 
-
-Game NewGame(PlayField& world, const GameConfig& config, std::default_random_engine& rGen, MessageLog& messageLog, const ScriptModule& scriptModule);
+Game NewGame(PlayField &world, const GameConfig &config, std::default_random_engine &rGen, MessageLog &messageLog, const ScriptModule &scriptModule);

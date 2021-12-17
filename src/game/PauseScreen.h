@@ -2,8 +2,8 @@
 
 
 struct Game;
-class Renderer;
+class Console;
 
 
 int PauseScreen(Game& game, void* data, float dt);
-void DisplayPauseScreen(Renderer& renderer, const void* data);
+void DisplayPauseScreen(Console& renderer, const void* data);

@@ -51,7 +51,7 @@ int IntroScreen(Game& game, void* data, float dt)
 }
 
 
-void DisplayIntroScreen(Renderer& renderer, const void* data)
+void DisplayIntroScreen(Console& renderer, const void* data)
 {
 	const IntroScreenData& screenData = *(IntroScreenData*)data;
 

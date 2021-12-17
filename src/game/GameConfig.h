@@ -4,10 +4,10 @@
 struct GameConfig
 {
 	// Console
+	int   consoleWidth;
+	int   consoleHeight;
 	int   fontSize;
 	// World
-	int   worldWidth;
-	int   worldHeight;
 	int   maxAlienLasers;
 	int   maxPlayerLasers;
 	// Player

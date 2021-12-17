@@ -137,7 +137,7 @@ int PlayGame(Game& game, void* data, float dt)
 }
 
 
-void DisplayPlayGame(Renderer& renderer, const void* data)
+void DisplayPlayGame(Console& renderer, const void* data)
 {
 	const PlayGameStateData& stateData = *(const PlayGameStateData*)data;
 	if (stateData.showLevel)

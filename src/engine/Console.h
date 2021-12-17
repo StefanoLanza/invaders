@@ -27,12 +27,12 @@ enum class ImageAlignment
 };
 
 
-class Renderer
+class Console
 {
 public:
 
-	Renderer();
-	~Renderer();
+	Console();
+	~Console();
 
 	const IVector2D& GetBounds() const;
 	bool Initialize(int width, int height, int fontSize);
@@ -54,4 +54,4 @@ public:
 };
 
 
-void DrawImage(Renderer& renderer, const ImageA& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
+void DrawImage(Console& renderer, const ImageA& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);

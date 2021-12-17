@@ -26,7 +26,7 @@ void RunGameState(Game& game, float dt)
 }
 
 
-void DrawGameState(const Game& game, Renderer& renderer)
+void DrawGameState(const Game& game, Console& renderer)
 {
 	const GameState& state = game.states[game.stateId];
 	if (state.drawFunc)

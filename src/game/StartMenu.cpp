@@ -182,7 +182,7 @@ int StartMenu(Game& game, void* data_, float dt)
 }
 
 
-void DisplayStartMenu(Renderer& renderer, const void* data_)
+void DisplayStartMenu(Console& renderer, const void* data_)
 {
 	const StartMenuData& data = *(const StartMenuData*)data_;
 

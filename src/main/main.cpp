@@ -10,12 +10,12 @@
 #include <engine/Base.h>
 #include <engine/Vector2D.h>
 #include <engine/Console.h>
+#include <engine/Keyboard.h>
 #include <engine/Input.h>
 #include <engine/MessageLog.h>
 #include <engine/ScriptModule.h>
 #include <engine/Console.h>
 #include <engine/DLL.h>
-#include <engine/Path.h>
 #include <inih-master/ini.h>
 
 #include <game/Images.h>
@@ -23,6 +23,7 @@
 #include <game/Game.h>
 #include <game/PlayField.h>
 #include <game/GameStates.h>
+#include <game/GameStateMgr.h>
 #include <game/StartMenu.h>
 #include <game/PauseScreen.h>
 #include <game/PlayGameState.h>
@@ -33,9 +34,9 @@
 namespace
 {
 	
-void ReadGameConfig(GameConfig& config, const char* iniFile);
+bool ReadGameConfig(GameConfig& config, const char* iniFile);
 void RegisterGameStates(Game& game);
-void DisplayScores(const Game& game, Renderer& renderer);
+void DisplayScores(const Game& game, Console& renderer);
 
 }
 
@@ -46,19 +47,13 @@ int main()
 	std::cout << "by Stefano Lanza - steflanz@gmail.com - 2021" << std::endl;
 	std::cout << std::endl;
 
-	//char exePath[MAX_PATH];
-	//getExePath(exePath, sizeof exePath);
-	//cutPath(exePath);
-
 	std::cout << "Reading game config from game.ini" << std::endl;
 	GameConfig gameConfig;
-	ReadGameConfig(gameConfig, "game.ini");
+	if (! ReadGameConfig(gameConfig, "game.ini")) {
+		std::cerr << "Cannot read game config" << std::endl;
+	}
 
 	ScriptModule scriptModule;
-    //char tmp[MAX_PATH];
-	//if (snprintf(tmp, sizeof tmp, "%s%cScripts.dll", exePath, DIR_SEPARATOR) > (int)(sizeof tmp)) {
-	//	return -1;
-	//}
 	const char* scriptsFileName = 
 	#ifdef WINDOWS
 		"Scripts.dll";
@@ -71,9 +66,13 @@ int main()
 		return -1;
 	}
 
-	const Vector2D worldSize { (float)gameConfig.worldWidth, (float)gameConfig.worldHeight };
-	Renderer renderer;
-	if (! renderer.Initialize(gameConfig.worldWidth, gameConfig.worldHeight, gameConfig.fontSize))
+	if (! InitKeyboard()) {
+		std::cerr << "Failed to init keyboard" << std::endl;
+		return -1;
+	}
+
+	Console console;
+	if (! console.Initialize(gameConfig.consoleWidth, gameConfig.consoleHeight, gameConfig.fontSize))
 	{
 		std::cerr << "Cannot initialize console" << std::endl;
 		return -1;
@@ -81,6 +80,7 @@ int main()
 
 	std::default_random_engine rGen;
 	MessageLog messageLog;
+	const Vector2D worldSize { (float)gameConfig.consoleWidth, (float)gameConfig.consoleHeight };
 	PlayField world { worldSize, gameConfig, rGen, messageLog };
 	Game game = NewGame(world, gameConfig, rGen, messageLog, scriptModule);
 	RegisterGameStates(game);
@@ -126,12 +126,12 @@ int main()
 				RunGameState(game, fixedDeltaTime);
 
 				world.GetRenderItems(renderItems);
-				renderer.Clear(Color::black);
-				renderer.DrawSprites(renderItems.data(), (int)renderItems.size());
-				renderer.DisplayMessages(messageLog);
-				DisplayScores(game, renderer);
-				DrawGameState(game, renderer);
-				renderer.DrawCanvas();
+				console.Clear(Color::black);
+				console.DrawSprites(renderItems.data(), (int)renderItems.size());
+				console.DisplayMessages(messageLog);
+				DisplayScores(game, console);
+				DrawGameState(game, console);
+				console.DrawCanvas();
 
 				messageLog.DeleteOldMessages(fixedDeltaTime, 3.f);
 			}
@@ -146,6 +146,7 @@ int main()
 		}
 	}
 
+#if 1
 	// Calculate the mean iteratively to avoid overflows
 	double avgElapsedTime = 0.;
 	double i = 1.;
@@ -154,7 +155,8 @@ int main()
 		avgElapsedTime += (t.count() - avgElapsedTime) / i;
 		++i;
 	}
-//	std::cout << "avgElapsedTime: " << avgElapsedTime << std::endl;
+	std::cout << "avgElapsedTime: " << avgElapsedTime << std::endl;
+#endif
 
 	return 0;
 }
@@ -186,6 +188,9 @@ namespace
 int INIParser(void* user, [[maybe_unused]] const char* section, const char* name, const char* value)
 {
 	GameConfig& config = *(GameConfig*)user;
+	PARSE_INT(consoleWidth, 1, 1000);
+	PARSE_INT(consoleHeight, 1, 1000);
+	PARSE_INT(fontSize, 1, 100);
 	PARSE_INT(maxAlienLasers, 0, 100);
 	PARSE_INT(maxPlayerLasers, 0, 100);
 	PARSE_FLOAT(playerFireRate, 0.f, 1000.f);
@@ -208,9 +213,9 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 #undef PARSE_BOOL
 
 
-void ReadGameConfig(GameConfig& config, const char* iniFileName)
+bool ReadGameConfig(GameConfig& config, const char* iniFileName)
 {
-	ini_parse(iniFileName, INIParser, &config);
+	return 0 == ini_parse(iniFileName, INIParser, &config);
 }
 
 
@@ -225,7 +230,7 @@ void RegisterGameStates(Game& game)
 	RegisterGameState(game, nullptr, nullptr, nullptr, nullptr);
 }
 
-void DisplayScores(const Game& game, Renderer& renderer) {
+void DisplayScores(const Game& game, Console& renderer) {
 	char tmp[256];
 	for (int p = 0; p < game.numPlayers; ++p)
 	{

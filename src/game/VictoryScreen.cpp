@@ -16,7 +16,7 @@ int VictoryScreen(Game& game, void* data, float dt)
 }
 
 
-void DisplayVictoryScreen(Renderer& renderer, const void* data)
+void DisplayVictoryScreen(Console& renderer, const void* data)
 {
 	static const char* str[] =
 	{

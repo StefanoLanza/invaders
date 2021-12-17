@@ -2,12 +2,12 @@
 
 
 struct Game;
-class Renderer;
+class Console;
 
 
 int StartMenu(Game& game, void* data, float dt);
 void EnterStartMenu(void* data, Game& game, int currentState);
-void DisplayStartMenu(Renderer& renderer, const void* gameState);
+void DisplayStartMenu(Console& renderer, const void* gameState);
 
 struct StartMenuData;
 extern StartMenuData startMenuData;

@@ -39,22 +39,22 @@ constexpr WORD charColors[colorCount] =
 constexpr int hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer() :
+Console::Console() :
 	consoleHandle {nullptr},
 	bounds {0,0}
 {
 }
 
 
-Renderer::~Renderer() = default;
+Console::~Console() = default;
 
-const IVector2D& Renderer::GetBounds() const
+const IVector2D& Console::GetBounds() const
 {
 	return bounds;
 }
 
 
-bool Renderer::Initialize(int width, int height, int fontSize)
+bool Console::Initialize(int width, int height, int fontSize)
 {
 	assert(width > 0);
 	assert(height > 0);
@@ -77,7 +77,7 @@ bool Renderer::Initialize(int width, int height, int fontSize)
 	return r;
 }
 
-void Renderer::Clear(Color color)
+void Console::Clear(Color color)
 {
 	CHAR_INFO ch; 
 	ch.Char.UnicodeChar = static_cast<WCHAR>(' ');
@@ -86,14 +86,14 @@ void Renderer::Clear(Color color)
 }
 
 
-void Renderer::DrawCanvas()
+void Console::DrawCanvas()
 {
 	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
 	WriteConsoleOutputW(consoleHandle, canvas.data(), { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, { 0, 0 }, &writeRegion);
 }
 
 
-void Renderer::ClearLine(int row)
+void Console::ClearLine(int row)
 {
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	CHAR_INFO ch; 
@@ -106,7 +106,7 @@ void Renderer::ClearLine(int row)
 }
 
 
-void Renderer::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
+void Console::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
 {
 	assert(str);
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
@@ -125,7 +125,7 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 }
 
 
-void Renderer::DrawSprites(const RenderItem* sprites, int count)
+void Console::DrawSprites(const RenderItem* sprites, int count)
 {
 	for (int i = 0; i < count; ++i)
 	{
@@ -149,7 +149,7 @@ void Renderer::DrawSprites(const RenderItem* sprites, int count)
 }
 
 
-void Renderer::DisplayMessages(const MessageLog& messageLog)
+void Console::DisplayMessages(const MessageLog& messageLog)
 {
 	for (int i = 0; i < std::min(hudRows, messageLog.GetNumMessages()); ++i)
 	{
@@ -160,7 +160,7 @@ void Renderer::DisplayMessages(const MessageLog& messageLog)
 }
 
 
-void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
+void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
 	CHAR_INFO* const dst = canvas.data();
 	if (hAlignment == ImageAlignment::centered)
@@ -202,7 +202,7 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 }
 
 
-void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
+void Console::DrawColoredImage(const Image& image, int x0, int y0)
 {
 	CHAR_INFO* const dst = canvas.data();
 	// Clip
@@ -227,7 +227,7 @@ void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
 }
 
 
-void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
+void DrawImage(Console& renderer, const ImageA& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
 	CHAR_INFO* const dst = renderer.canvas.data();
 	IVector2D bounds = renderer.bounds;

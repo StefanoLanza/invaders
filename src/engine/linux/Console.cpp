@@ -39,17 +39,47 @@ int toColorPair(Color color) {
 	return (int)color + 1;
 }
 
+attr_t toAttr(Color color) {
+	return attrs[(int)color];
+}
+
 }
 
 constexpr int hudRows = 2; // rows reserved for the HUD
 
 
-Renderer::Renderer() :
+Console::Console() :
 	consoleHandle {nullptr},
 	bounds {0,0}
 {
-	setlocale(LC_ALL, "");
+}
+
+
+Console::~Console() {
+	endwin();
+}
+
+
+const IVector2D& Console::GetBounds() const
+{
+	return bounds;
+}
+
+
+bool Console::Initialize(int width, int height, int fontSize)
+{
+	assert(width > 0);
+	assert(height > 0);
+	bounds = { width, height };
+	height += hudRows;
 	initscr();
+	consoleHandle = newwin(height, width, (LINES - height) / 2, (COLS - width) / 2);
+	if (! consoleHandle) {
+		endwin();
+		return false;
+	}
+	canvas.resize(width * height);
+	setlocale(LC_ALL, "");
 	start_color();
 	curs_set(FALSE);
 	cbreak();	
@@ -70,35 +100,10 @@ Renderer::Renderer() :
 	init_pair(12, COLOR_BLUE, COLOR_BLACK);
 	init_pair(13, COLOR_BLUE, COLOR_BLACK);
 	init_pair(14, COLOR_BLUE, COLOR_BLACK);
-}
-
-
-Renderer::~Renderer() {
-	endwin();
-}
-
-
-const IVector2D& Renderer::GetBounds() const
-{
-	return bounds;
-}
-
-
-bool Renderer::Initialize(int width, int height, int fontSize)
-{
-	assert(width > 0);
-	assert(height > 0);
-	bounds = { width, height };
-	height += hudRows;
-	canvas.resize(width * height);
-	consoleHandle = newwin(height, width, (LINES - height) / 2, (COLS - width) / 2);
-	if (! consoleHandle) {
-		return false;
-	}
 	return true;
 }
 
-void Renderer::Clear(Color color)
+void Console::Clear(Color color)
 {
 	CHAR_INFO ch; 
 	setcchar(&ch, L" ", attrs[(int)color], toColorPair(color), NULL);
@@ -106,11 +111,11 @@ void Renderer::Clear(Color color)
 }
 
 
-void Renderer::DrawCanvas()
+void Console::DrawCanvas()
 {
 	WINDOW* win = static_cast<WINDOW*>(consoleHandle);
 
-	box(win, ACS_VLINE, ACS_HLINE);
+//	box(win, ACS_VLINE, ACS_HLINE);
 
 	const cchar_t* s = canvas.data();
 	for (int y = 0; y < bounds.y; ++y) {
@@ -118,7 +123,7 @@ void Renderer::DrawCanvas()
 		s += bounds.x;
 	}
 
-
+#if 0
 //wattron(win, COLOR_PAIR(1));
 int err = OK;
 	cchar_t ch[2];
@@ -129,12 +134,12 @@ int err = OK;
 		err = mvwadd_wchnstr(win, 1, 1, ch, 2);
 		assert(err == OK);
 //				mvwprintw(win, 0, 0, "test");
-
+#endif
 	wrefresh(win);
 }
 
 
-void Renderer::ClearLine(int row)
+void Console::ClearLine(int row)
 {
 	CHAR_INFO ch; 
 	setcchar(&ch, L" ", attrs[(int)Color::black], toColorPair(Color::black), NULL);
@@ -146,13 +151,14 @@ void Renderer::ClearLine(int row)
 }
 
 
-void Renderer::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
+void Console::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
 {
 	assert(str);
 	if (row < 0 || row >= bounds.y) {
 		return;
 	}
 	const int colorPair = toColorPair(color);
+	const attr_t attr = toAttr(color);
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
 	if (hAlignment == ImageAlignment::centered)
 	{
@@ -165,7 +171,7 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 			wchar_t chstr[2];
 			chstr[0] = str[i];
 			chstr[1] = 0;
-			int err = setcchar(&curCanvas[i + col], chstr, attrs[(int)color], colorPair, NULL);
+			int err = setcchar(&curCanvas[i + col], chstr, attr, colorPair, NULL);
 			(void)err;
 			assert(err == OK);
 		}
@@ -173,7 +179,7 @@ void Renderer::DisplayText(const char* str, int col, int row, Color color, Image
 }
 
 
-void Renderer::DrawSprites(const RenderItem* sprites, int count)
+void Console::DrawSprites(const RenderItem* sprites, int count)
 {
 	for (int i = 0; i < count; ++i)
 	{
@@ -197,7 +203,7 @@ void Renderer::DrawSprites(const RenderItem* sprites, int count)
 }
 
 
-void Renderer::DisplayMessages(const MessageLog& messageLog)
+void Console::DisplayMessages(const MessageLog& messageLog)
 {
 	for (int i = 0; i < std::min(hudRows, messageLog.GetNumMessages()); ++i)
 	{
@@ -208,7 +214,7 @@ void Renderer::DisplayMessages(const MessageLog& messageLog)
 }
 
 
-void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
+void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
 	CHAR_INFO* const dst = canvas.data();
 	if (hAlignment == ImageAlignment::centered)
@@ -232,8 +238,8 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
-#ifdef WINDOWS
-	const WORD attrib = charColors[(int)color];
+	const attr_t attr = toAttr(color);
+	const int colorPair = toColorPair(color);
 
 	for (int y = b; y < t; ++y)
 	{
@@ -243,17 +249,19 @@ void Renderer::DrawImage(const Image& image, int x0, int y0, Color color, ImageA
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
-				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
-				c.Attributes = attrib;
+				wchar_t chstr[2];
+				chstr[0] = image.img[s];
+				chstr[1] = 0;
+				int err = setcchar(&c, chstr, attr, colorPair, NULL);
+				(void)err;
+				assert(err == OK);
 			}
 		}
 	}
-#else
-#endif
 }
 
 
-void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
+void Console::DrawColoredImage(const Image& image, int x0, int y0)
 {
 	CHAR_INFO* const dst = canvas.data();
 	// Clip
@@ -270,18 +278,20 @@ void Renderer::DrawColoredImage(const Image& image, int x0, int y0)
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
-#ifdef WINDOWS
-				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
-				c.Attributes = charColors[image.colors[s] - '0'];
-#else
-#endif
+				Color color = static_cast<Color>(image.colors[s] - '0');
+				wchar_t chstr[2];
+				chstr[0] = image.img[s];
+				chstr[1] = 0;
+				int err = setcchar(&c, chstr, toAttr(color), toColorPair(color), NULL);
+				(void)err;
+				assert(err == OK);
 			}
 		}
 	}
 }
 
 
-void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
+void DrawImage(Console& renderer, const ImageA& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
 	CHAR_INFO* const dst = renderer.canvas.data();
 	IVector2D bounds = renderer.bounds;
@@ -307,21 +317,24 @@ void DrawImage(Renderer& renderer, const ImageA& image, int x0, int y0, Color co
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
 
-#ifdef WINDOWS
-	const WORD attrib = charColors[(int)color];
+	const attr_t attr = toAttr(color);
+	const int colorPair = toColorPair(color);
 
 	for (int y = b; y < t; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + (y + Console.hudRows) * bounds.x];
+			auto& c = dst[x + (y + hudRows) * bounds.x];
 			int s = (x - x0) + (y - y0) * (image.width);
 			if (image.img[s] != ' ')
 			{
-				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
-				c.Attributes = attrib;
+				wchar_t chstr[2];
+				chstr[0] = image.img[s];
+				chstr[1] = 0;
+				int err = setcchar(&c, chstr, attr, colorPair, NULL);
+				(void)err;
+				assert(err == OK);
 			}
 		}
 	}
-#endif
 }

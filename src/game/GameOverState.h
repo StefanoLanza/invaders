@@ -2,8 +2,8 @@
 
 
 struct Game;
-class Renderer;
+class Console;
 
 
 int GameOverMenu(Game& game, void* data, float dt);
-void DisplayGameOver(Renderer& renderer, const void* gameState);
+void DisplayGameOver(Console& renderer, const void* gameState);

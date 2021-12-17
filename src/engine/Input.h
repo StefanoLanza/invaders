@@ -1,34 +1,7 @@
 #pragma once
 
 #include <random>
-
-
-enum class KeyCode
-{
-	escape,
-	enter,
-	spaceBar,
-	left,
-	right,
-	up,
-	down,
-	_1,
-	_2,
-	_3,
-	_4,
-	_5,
-	A,
-	D
-};
-constexpr size_t numKeyCodes = static_cast<size_t>(KeyCode::D) + 1;
-
-
-void UpdateKeyStates();
-bool KeyPressed(KeyCode keyCode);
-bool KeyJustPressed(KeyCode keyCode);
-bool KeyJustReleased(KeyCode keyCode);
-bool AnyKeyJustPressed();
-
+#include "Keyboard.h"
 
 class Input
 {
