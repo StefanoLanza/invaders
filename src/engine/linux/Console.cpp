@@ -7,12 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <locale.h>
-
-#ifdef __APPLE__
 #include <ncurses.h>
-#else
-#include <ncursesw/curses.h>
-#endif
 
 namespace
 {

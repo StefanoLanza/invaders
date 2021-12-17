@@ -5,8 +5,8 @@
 GameConfig::GameConfig()
 {
 	// Console
-	consoleWidth = 80;//160;
-	consoleHeight = 20;//54;
+	consoleWidth = 160;
+	consoleHeight = 54;
 	fontSize = 12;
 	// World
 	maxAlienLasers = 10;

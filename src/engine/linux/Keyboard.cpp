@@ -1,10 +1,15 @@
 #include "../Keyboard.h"
 #include <cstring>
+
+#if 0
 #include <cstdio>
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/input.h>
 #include <array>
+#else
+#include <ncurses.h>
+#endif
 
 namespace
 {
@@ -41,6 +46,7 @@ namespace
 
 bool InitKeyboard()
 {
+#if 0
     fd = open("/dev/input/event0", O_RDONLY);
     if (fd < 0)
     {
@@ -69,18 +75,19 @@ bool InitKeyboard()
     memset(bit, 0, sizeof(bit));
     ioctl(fd, EVIOCGBIT(0, EV_MAX), bit[0]);
     printf("Supported events:\n");
-
+#endif
     return true;
 }
 
 void UpdateKeyStates()
 {
+    std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
+    std::memset(keyState, 0, sizeof(prevKeyState));
+#if 0
     if (fd < 0)
     {
         return;
     }
-    std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
-    std::memset(keyState, 0, sizeof(prevKeyState));
 
     struct input_event ev[64];
     int rd = read(fd, ev, sizeof(struct input_event) * 64);
@@ -121,7 +128,7 @@ void UpdateKeyStates()
         perror("\nevtest: error reading");
         return;
     }
-    #if 0
+#else
     const int ch = getch();
     for (size_t i = 0; i < numKeyCodes; ++i)
     {
@@ -131,7 +138,7 @@ void UpdateKeyStates()
             break;
         }
     }
-    #endif
+#endif
 }
 
 bool KeyPressed(KeyCode keyCode)
