@@ -6,26 +6,27 @@ namespace
 {
 
 
-int prevKeyState[numKeyCodes] = { -1 };
-int keyState[numKeyCodes] = { -1 };
+	int prevKeyState[numKeyCodes] = { -1 };
+	int keyState[numKeyCodes] = { -1 };
 
-const int keyCodeToVKey[numKeyCodes] =
-{
-	VK_ESCAPE,
-	VK_RETURN,
-	VK_SPACE,
-	VK_LEFT,
-	VK_RIGHT,
-	VK_UP,
-	VK_DOWN,
-	'1',
-	'2',
-	'3',
-	'4',
-	'5',
-	'A',
-	'D'
-};
+	const int keyCodeToVKey[numKeyCodes] =
+	{
+		VK_ESCAPE,
+		VK_RETURN,
+		VK_SPACE,
+		VK_LEFT,
+		VK_RIGHT,
+		VK_UP,
+		VK_DOWN,
+		'1',
+		'2',
+		'3',
+		'4',
+		'5',
+		'A',
+		'D'
+	};
+}
 
 bool InitKeyboard() {
 	return true;

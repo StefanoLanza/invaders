@@ -61,7 +61,7 @@ const char* const hudMessages[] =
 	"Don't let them reach the bottom!",
 	"Keep moving!",
 };
-constexpr int numHUDMessages = std::size(hudMessages);
+constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 
 namespace
 {
@@ -124,16 +124,16 @@ const Event level2Events[] =
 
 const Level levels[] =
 {
-	{ level0Events, std::size(level0Events) },
-	{ level1Events, std::size(level1Events) },
-	{ level2Events, std::size(level2Events) }
+	{ level0Events, static_cast<int>(std::size(level0Events)) },
+	{ level1Events, static_cast<int>(std::size(level1Events)) },
+	{ level2Events, static_cast<int>(std::size(level2Events)) }
 };
 
 }
 
 int GetNumLevels()
 {
-	return std::size(levels);
+	return static_cast<int>(std::size(levels));
 }
 
 const Level& GetLevel(int index)

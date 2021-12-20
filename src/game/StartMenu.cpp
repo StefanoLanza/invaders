@@ -184,9 +184,8 @@ int StartMenu(Game& game, void* data_, float dt)
 
 void DisplayStartMenu(Console& renderer, const void* data_)
 {
-	const StartMenuData& data = *(const StartMenuData*)data_;
-
 #if XMAS_EDITION
+	const StartMenuData& data = *(const StartMenuData*)data_;
 	const Image& snowFlakeImage = GetImage(ImageId::snowFlake);
 	for (const auto& sf : data.snowFlakes)
 	{
@@ -220,7 +219,7 @@ void DisplayStartMenu(Console& renderer, const void* data_)
 		"Press ESC to quit"
 	};
 	constexpr int row = 22;
-	constexpr int numRows = std::size(str);
+	constexpr int numRows = static_cast<int>(std::size(str));
 	const int col = (renderer.GetBounds().x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)
 	{

@@ -6,7 +6,7 @@
 #include <cstring>
 
 
-int GameOverMenu(Game& game, void* data, float dt)
+int GameOverMenu([[maybe_unused]] Game& game, [[maybe_unused]] void* data, [[maybe_unused]] float dt)
 {
 	GameStateId newState = GameStateId::over;
 	if (AnyKeyJustPressed())
@@ -17,7 +17,7 @@ int GameOverMenu(Game& game, void* data, float dt)
 }
 
 
-void DisplayGameOver(Console& renderer, const void* gameState)
+void DisplayGameOver(Console& renderer, [[maybe_unused]] const void* gameState)
 {
 	static const char* str[] =
 	{
@@ -27,7 +27,7 @@ void DisplayGameOver(Console& renderer, const void* gameState)
 		"Press any key to continue",
 		""
 	};
-	constexpr int numRows = std::size(str);
+	constexpr int numRows = (int)std::size(str);
 	const int row = (renderer.bounds.y - numRows) / 2; // centered
 	const int col = (renderer.bounds.x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)

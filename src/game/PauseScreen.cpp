@@ -31,7 +31,7 @@ void DisplayPauseScreen(Console& renderer, const void* data)
 		"Press ESC to go back to main menu",
 		""
 	};
-	constexpr int numRows = std::size(str);
+	constexpr int numRows = static_cast<int>(std::size(str));
 	const IVector2D& bounds = renderer.GetBounds();
 	const int row = (bounds.y - numRows) / 2; // centered
 	const int col = (bounds.x - (int)strlen(str[1])) / 2;

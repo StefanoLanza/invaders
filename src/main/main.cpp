@@ -146,7 +146,7 @@ int main()
 		}
 	}
 
-#if 1
+#if 0
 	// Calculate the mean iteratively to avoid overflows
 	double avgElapsedTime = 0.;
 	double i = 1.;
@@ -155,7 +155,7 @@ int main()
 		avgElapsedTime += (t.count() - avgElapsedTime) / i;
 		++i;
 	}
-	std::cout << "avgElapsedTime: " << avgElapsedTime << std::endl;
+	std::cout << "avgElapsedTime: " << avgElapsedTime / 1e6 << std::endl;
 #endif
 
 	return 0;

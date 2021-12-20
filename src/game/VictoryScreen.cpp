@@ -26,7 +26,7 @@ void DisplayVictoryScreen(Console& renderer, const void* data)
 		"Press any key to continue",
 		""
 	};
-	constexpr int numRows = std::size(str);
+	constexpr int numRows = static_cast<int>(std::size(str));
 	const int row = (renderer.bounds.y - numRows) / 2; // centered
 	const int col = (renderer.bounds.x - (int)strlen(str[3])) / 2;
 	for (int r = 0; r < numRows; ++r)

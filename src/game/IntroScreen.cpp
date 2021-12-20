@@ -53,7 +53,7 @@ int IntroScreen(Game& game, void* data, float dt)
 
 void DisplayIntroScreen(Console& renderer, const void* data)
 {
-	const IntroScreenData& screenData = *(IntroScreenData*)data;
+	//const IntroScreenData& screenData = *(IntroScreenData*)data;
 
 	renderer.DrawImage(GetImage(GetImageId(GameImageId::planet)), 0, 8, Color::greenIntense, ImageAlignment::centered, ImageAlignment::top);
 #if SP_EDITION
@@ -76,7 +76,7 @@ void DisplayIntroScreen(Console& renderer, const void* data)
 		"Save us all and earn eternal glory !"
 	};
 #endif
-	constexpr int numRows = std::size(str);
+	constexpr int numRows = static_cast<int>(std::size(str));
 	const IVector2D& bounds = renderer.GetBounds();
 	const int row = (bounds.y - numRows) / 2; // centered
 	const int col = (bounds.x - (int)strlen(str[0])) / 2;
