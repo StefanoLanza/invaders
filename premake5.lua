@@ -2,6 +2,8 @@
 
 -- Global settings
 local workspacePath = path.join("build", _ACTION)  -- e.g. build/vs2022, build/gmake
+local rootDir = _MAIN_SCRIPT_DIR
+local rootBinDir = path.join(_MAIN_SCRIPT_DIR, "bin")
 
 -- Filters
 local filter_vs = "action:vs*"
@@ -120,13 +122,14 @@ project("Invaders")
 	filter {}
 
 	-- Copy assets to target dir
-	local rootDir = "%{wks.location}"..path.join("..", "..")
+	local assetDir = path.join(rootDir, "assets")
 	local targetDir = "%{cfg.buildtarget.directory}"
+	local binDir = path.join(rootDir, "bin")
 	postbuildcommands {
 		"{ECHO}, Copying assets to target folder "..targetDir,
-		--"{MKDIR} %{wks.location}../../bin",
-		--"{COPY} %{cfg.buildtarget.directory}/*.exe "..absBinDir,
-		--"{COPY} %{cfg.buildtarget.directory}/*.dll "..absBinDir,
-		"{COPY} "..rootDir.."/assets "..targetDir,
+		--"{MKDIR} "..binDir,
+		--"{COPY} %{cfg.buildtarget.directory}/*.exe "..binDir,
+		--"{COPY} %{cfg.buildtarget.directory}/*.dll "..binDir,
+		"{COPY} "..assetDir.." "..targetDir,
 	}
 	debugdir(path.join(workspacePath, targetDir))
