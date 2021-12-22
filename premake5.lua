@@ -10,13 +10,13 @@ local filter_vs = "action:vs*"
 local filter_make = "action:gmake"
 local filter_xcode = "action:xcode*"
 local filter_x86 = "platforms:x86"
-local filter_x64 = "platforms:x86_64"
+local filter_x64 = "platforms:x64"
 local filter_debug =  "configurations:Debug*"
 local filter_release =  "configurations:Release*"
 
 workspace ("IKA-Invaders")
 	configurations { "Debug", "Release" }
-	platforms { "x86_64" }
+	platforms { "x64" }
 	language "C++"
 	location (workspacePath)
 	characterset "MBCS"
@@ -51,7 +51,7 @@ filter { filter_xcode }
 	system "macosx"
 	systemversion("10.12") -- MACOSX_DEPLOYMENT_TARGET
 	
-filter "platforms:x86_64"
+filter "platforms:x64"
 	architecture "x86_64"
 
 filter "configurations:Debug*"
@@ -130,6 +130,6 @@ project("Invaders")
 		--"{MKDIR} "..binDir,
 		--"{COPY} %{cfg.buildtarget.directory}/*.exe "..binDir,
 		--"{COPY} %{cfg.buildtarget.directory}/*.dll "..binDir,
-		"{COPY} "..assetDir.." "..targetDir,
+		"{COPY} "..assetDir.."/* "..targetDir,
 	}
 	debugdir(path.join(workspacePath, targetDir))

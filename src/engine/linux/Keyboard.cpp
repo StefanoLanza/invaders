@@ -1,15 +1,13 @@
 #include "../Keyboard.h"
 #include <cstring>
 
-#if 0
 #include <cstdio>
 #include <fcntl.h>
 #include <unistd.h>
 #include <linux/input.h>
+#include <dirent.h>
 #include <array>
-#else
 #include <ncurses.h>
-#endif
 
 namespace
 {
@@ -35,7 +33,6 @@ namespace
             'D'};
 
     int fd = -1;
-}
 
 #define BITS_PER_LONG (sizeof(long) * 8)
 #define NBITS(x) ((((x)-1) / BITS_PER_LONG) + 1)
@@ -44,51 +41,18 @@ namespace
 #define LONG(x) ((x) / BITS_PER_LONG)
 #define test_bit(bit, array) ((array[LONG(bit)] >> OFF(bit)) & 1)
 
-bool InitKeyboard()
+int endsWith(const char *str, const char *suffix)
 {
-#if 0
-    fd = open("/dev/input/event0", O_RDONLY);
-    if (fd < 0)
-    {
-        return false;
-    }
-    int version = 0;
-    if (ioctl(fd, EVIOCGVERSION, &version))
-    {
-        // perror("evtest: can't get version");
-        return false;
-    }
-
-    printf("Input driver version is %d.%d.%d\n",
-           version >> 16, (version >> 8) & 0xff, version & 0xff);
-
-    unsigned short id[4];
-    ioctl(fd, EVIOCGID, id);
-    printf("Input device ID: bus 0x%x vendor 0x%x product 0x%x version 0x%x\n",
-           id[ID_BUS], id[ID_VENDOR], id[ID_PRODUCT], id[ID_VERSION]);
-
-    char name[256] = "Unknown";
-    ioctl(fd, EVIOCGNAME(sizeof(name)), name);
-    printf("Input device name: \"%s\"\n", name);
-
-    unsigned long bit[EV_MAX][NBITS(KEY_MAX)];
-    memset(bit, 0, sizeof(bit));
-    ioctl(fd, EVIOCGBIT(0, EV_MAX), bit[0]);
-    printf("Supported events:\n");
-#endif
-    return true;
+    if (!str || !suffix)
+        return 0;
+    size_t lenstr = strlen(str);
+    size_t lensuffix = strlen(suffix);
+    if (lensuffix > lenstr)
+        return 0;
+    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
-void UpdateKeyStates()
-{
-    std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
-    std::memset(keyState, 0, sizeof(prevKeyState));
-#if 0
-    if (fd < 0)
-    {
-        return;
-    }
-
+void UpdateKeyStatesRaw() {
     struct input_event ev[64];
     int rd = read(fd, ev, sizeof(struct input_event) * 64);
     if (rd >= (int)sizeof(struct input_event))
@@ -128,7 +92,10 @@ void UpdateKeyStates()
         perror("\nevtest: error reading");
         return;
     }
-#else
+}
+
+void UpdateKeyStatesGetch() {
+
     const int ch = getch();
     for (size_t i = 0; i < numKeyCodes; ++i)
     {
@@ -138,7 +105,93 @@ void UpdateKeyStates()
             break;
         }
     }
-#endif
+}
+
+}
+
+bool InitKeyboard()
+{
+    // better be safe than sory: while running other programs, switch user to nobody
+    setegid(65534); seteuid(65534);
+
+    const char *inputDirPath = "/dev/input/by-path";
+    DIR *inputDir = opendir(inputDirPath);
+
+    if (!inputDir)
+    {
+        //  DEBUG_LOG("Failed to open input dir\n");
+        return false;
+    }
+
+    struct dirent *entry = readdir(inputDir);
+    unsigned short id[4];
+    char name[256] = "Unknown";
+    unsigned long bit[EV_MAX][NBITS(KEY_MAX)];
+    int version = 0;
+
+    while (entry)
+    {
+        if (endsWith(entry->d_name, "-event-kbd"))
+        {
+            char path[512];
+            snprintf(path, sizeof path, "%s/%s", inputDirPath, entry->d_name);
+            fd = open(path, O_RDONLY | O_NONBLOCK);
+            if (fd < 0)
+            {
+                goto next;
+            }
+            if (ioctl(fd, EVIOCGVERSION, &version))
+            {
+                goto errorFileOpened;
+            }
+
+            printf("Input driver version is %d.%d.%d\n",
+                   version >> 16, (version >> 8) & 0xff, version & 0xff);
+
+            ioctl(fd, EVIOCGID, id);
+            printf("Input device ID: bus 0x%x vendor 0x%x product 0x%x version 0x%x\n",
+                   id[ID_BUS], id[ID_VENDOR], id[ID_PRODUCT], id[ID_VERSION]);
+
+            ioctl(fd, EVIOCGNAME(sizeof(name)), name);
+            printf("Input device name: \"%s\"\n", name);
+
+            memset(bit, 0, sizeof(bit));
+            if (ioctl(fd, EVIOCGBIT(0, EV_MAX), bit[0]) < 0)
+            {
+                goto errorFileOpened;
+            }
+            printf("Supported events:\n");
+
+            break;
+        errorFileOpened:
+            close(fd);
+            fd = -1;
+        }
+    next:
+        entry = readdir(inputDir);
+    }
+    closedir(inputDir);
+    // now we reclaim those root privileges
+  seteuid(0); setegid(0);
+
+  if (fd < 0) {
+      printf("Raw keyboard fail. Using getch\n");
+
+  }
+    return true;
+}
+
+void UpdateKeyStates()
+{
+    std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
+    std::memset(keyState, 0, sizeof(prevKeyState));
+    if (fd >= 0)
+    {
+        UpdateKeyStatesRaw();
+    }
+    else {
+        UpdateKeyStatesGetch();
+    }
 }
 
 bool KeyPressed(KeyCode keyCode)
