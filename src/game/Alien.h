@@ -47,7 +47,7 @@ struct Alien
 };
 
 
-struct ScriptModule;
+struct AIModule;
 
 // Public API
 Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& normalPrefab, 
@@ -55,6 +55,6 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const Alien
 void DestroyAlien(Alien& alien);
 RenderItem GetRenderItem(const Alien& alien);
 Collider GetCollider(Alien& alien);
-void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& config, const ScriptModule& scriptModule);
+void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& config, const AIModule& scriptModule);
 void HitAlien(Alien& alien);
 void Alien_AvoidWall(Alien& alien, const Vector2D& wallPos);

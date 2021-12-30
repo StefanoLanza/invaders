@@ -5,7 +5,7 @@
 #include "GameConfig.h"
 #include <engine/Collision.h>
 #include "Images.h"
-#include <engine/ScriptModule.h>
+#include "AIModule.h"
 #include <random>
 #include <algorithm>
 #include <cassert>
@@ -22,7 +22,7 @@ const AlienPrefab& GetActivePrefab(const Alien& alien)
 }
 
 
-void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig, const ScriptModule& scriptModule)
+void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig, const AIModule& aiModule)
 {
 	const Image& image = GetImage( GetActivePrefab(alien).anim.images[alien.animState.frame] );
 	alien.body.size = { (float)image.width, (float)image.height };
@@ -34,10 +34,10 @@ void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	alien.visual.imageId = prefab.anim.images[alien.animState.frame];
 	alien.visual.color =  prefab.color;
 
-	if (scriptModule.ai)
+	if (aiModule.procedure)
 	{
 		ScriptArgs scriptArgs = { dt, nullptr, &world, &gameConfig };
-		scriptModule.ai(alien.scriptId, alien, scriptArgs);
+		aiModule.procedure(alien.scriptId, alien, scriptArgs);
 	}
 }
 

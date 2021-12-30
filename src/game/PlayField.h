@@ -17,7 +17,7 @@ struct GameConfig;
 struct RenderItem;
 class MessageLog;
 class CollisionSpace;
-struct ScriptModule;
+struct AIModule;
 
 
 class PlayField
@@ -57,7 +57,7 @@ public:
 	void DeletePlayers();
 
 	// TODO Remove gamePlay from PlayField
-	void Update(float dt, const ScriptModule& scriptModule);
+	void Update(float dt, const AIModule& scriptModule);
 
 	void DestroyAll();
 

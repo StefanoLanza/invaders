@@ -13,7 +13,6 @@
 #include <engine/Keyboard.h>
 #include <engine/Input.h>
 #include <engine/MessageLog.h>
-#include <engine/ScriptModule.h>
 #include <engine/Console.h>
 #include <engine/DLL.h>
 #include <inih-master/ini.h>
@@ -30,6 +29,7 @@
 #include <game/GameOverState.h>
 #include <game/IntroScreen.h>
 #include <game/VictoryScreen.h>
+#include <game/AIModule.h>
 
 namespace
 {
@@ -53,14 +53,14 @@ int main()
 		std::cerr << "Cannot read game config" << std::endl;
 	}
 
-	ScriptModule scriptModule;
-	const char* scriptsFileName = 
+	AIModule aiModule;
+	const char* aiDLLFileName = 
 	#ifdef WINDOWS
 		"Scripts.dll";
 	#else
-		"libScripts.so";
+		"./libScripts.so";
 	#endif
-	if (! InitScriptModule(scriptModule, scriptsFileName))
+	if (! InitAIModule(aiModule, aiDLLFileName))
 	{
 		std::cerr << "Cannot initialize DLL" << std::endl;
 		return -1;
@@ -82,7 +82,7 @@ int main()
 	MessageLog messageLog;
 	const Vector2D worldSize { (float)gameConfig.consoleWidth, (float)gameConfig.consoleHeight };
 	PlayField world { worldSize, gameConfig, rGen, messageLog };
-	Game game = NewGame(world, gameConfig, rGen, messageLog, scriptModule);
+	Game game = NewGame(world, gameConfig, rGen, messageLog, aiModule);
 	RegisterGameStates(game);
 
 	InitGameImages();
@@ -104,7 +104,7 @@ int main()
 	while (game.stateId != (int)GameStateId::quit)
 	{
 		//ReloadDLL(consoleDLL);
-		ReloadScriptModule(scriptModule);
+		ReloadScriptModule(aiModule);
 
 		auto t1 = std::chrono::steady_clock::now();
 		const auto elapsedTime = t1 - t0; // includes logic, rendering and sleeping

@@ -180,7 +180,7 @@ const Vector2D& PlayField::GetBounds() const
 }
 
 
-void PlayField::Update(float dt, const ScriptModule& scriptModule)
+void PlayField::Update(float dt, const AIModule& scriptModule)
 {
 	// First move all game objects
 	for (auto& player : players)

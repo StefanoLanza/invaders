@@ -8,7 +8,7 @@ struct AlienWave;
 struct WallInfo;
 struct BossInfo;
 struct Event;
-struct ScriptModule;
+struct AIModule;
 struct GameState;
 
 struct Game
@@ -27,7 +27,7 @@ struct Game
 	const GameConfig &config;
 	std::default_random_engine &rGen;
 	MessageLog &messageLog;
-	const ScriptModule &scriptModule;
+	const AIModule &scriptModule;
 	PlayField &world;
 	std::vector<GameState> states;
 	Mode mode;
@@ -36,4 +36,4 @@ struct Game
 	int numPlayers;
 };
 
-Game NewGame(PlayField &world, const GameConfig &config, std::default_random_engine &rGen, MessageLog &messageLog, const ScriptModule &scriptModule);
+Game NewGame(PlayField &world, const GameConfig &config, std::default_random_engine &rGen, MessageLog &messageLog, const AIModule &scriptModule);
