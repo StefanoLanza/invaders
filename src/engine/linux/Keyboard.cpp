@@ -96,7 +96,6 @@ void UpdateKeyStatesRaw() {
 }
 
 void UpdateKeyStatesGetch() {
-
     for (;;) {
         const int ch = getch();
         if (ch == ERR) {
@@ -197,7 +196,7 @@ void UpdateKeyStates()
         UpdateKeyStatesRaw();
     }
     else {
-        if (getchFrequency++ % 30) {
+        if ((getchFrequency++ % 10) == 0) {
             std::memset(keyState, 0, sizeof(prevKeyState));
         }
         UpdateKeyStatesGetch();
@@ -221,14 +220,12 @@ bool KeyJustReleased(KeyCode keyCode)
 
 bool AnyKeyJustPressed()
 {
-    bool res = false;
     for (size_t i = 0; i < numKeyCodes; ++i)
     {
         if (KeyJustPressed((KeyCode)i))
         {
-            res = true;
-            break;
+            return true;
         }
     }
-    return res;
+    return false;
 }

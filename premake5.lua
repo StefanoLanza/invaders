@@ -14,7 +14,7 @@ local filter_x64 = "platforms:x64"
 local filter_debug =  "configurations:Debug*"
 local filter_release =  "configurations:Release*"
 
-workspace ("IKA-Invaders")
+workspace ("Invaders")
 	configurations { "Debug", "Release" }
 	platforms { "x64" }
 	language "C++"
