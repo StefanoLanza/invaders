@@ -33,6 +33,7 @@ namespace
             'D'};
 
     int fd = -1;
+    unsigned int getchFrequency = 0; 
 
 #define BITS_PER_LONG (sizeof(long) * 8)
 #define NBITS(x) ((((x)-1) / BITS_PER_LONG) + 1)
@@ -96,13 +97,18 @@ void UpdateKeyStatesRaw() {
 
 void UpdateKeyStatesGetch() {
 
-    const int ch = getch();
-    for (size_t i = 0; i < numKeyCodes; ++i)
-    {
-        if (ch == keyCodeToVKey[i])
-        {
-            keyState[i] = 1;
+    for (;;) {
+        const int ch = getch();
+        if (ch == ERR) {
             break;
+        }
+        for (size_t i = 0; i < numKeyCodes; ++i)
+        {
+            if (ch == keyCodeToVKey[i])
+            {
+                keyState[i] = 1;
+                break;
+            }
         }
     }
 }
@@ -176,6 +182,7 @@ bool InitKeyboard()
 
   if (fd < 0) {
       printf("Raw keyboard fail. Using getch\n");
+      timeout(0); // non blocking input
 
   }
     return true;
@@ -184,12 +191,15 @@ bool InitKeyboard()
 void UpdateKeyStates()
 {
     std::memcpy(prevKeyState, keyState, sizeof(prevKeyState));
-    std::memset(keyState, 0, sizeof(prevKeyState));
     if (fd >= 0)
     {
+        std::memset(keyState, 0, sizeof(prevKeyState));
         UpdateKeyStatesRaw();
     }
     else {
+        if (getchFrequency++ % 30) {
+            std::memset(keyState, 0, sizeof(prevKeyState));
+        }
         UpdateKeyStatesGetch();
     }
 }

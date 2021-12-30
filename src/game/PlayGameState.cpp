@@ -177,8 +177,17 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		collisionSpace.Add(GetCollisionArea(wall));
 	}
 
+	uint64_t collisionMask = 0;
+	collisionMask |= MakeBit(ColliderId::player,  ColliderId::alien);
+	collisionMask |= MakeBit(ColliderId::player,  ColliderId::alienLaser);
+	collisionMask |= MakeBit(ColliderId::player,  ColliderId::powerUp);
+	collisionMask |= MakeBit(ColliderId::alien,  ColliderId::playerLaser);
+	collisionMask |= MakeBit(ColliderId::alien,  ColliderId::wall);
+	collisionMask |= MakeBit(ColliderId::playerLaser,  ColliderId::wall);
+	collisionMask |= MakeBit(ColliderId::alienLaser,  ColliderId::playerLaser);
+
 	CollisionInfo collisions[64];
-	const int nc = collisionSpace.Execute(collisions, (int)std::size(collisions));
+	const int nc = collisionSpace.Execute(collisions, (int)std::size(collisions), collisionMask);
 	CollisionInfo* c = collisions;
 
 	using Callback = void (*) (const CollisionContext&, void*, void*);
@@ -258,12 +267,6 @@ void Collision_AlienVSLaser(const CollisionContext& context, void* ud0, void* ud
 			context.stateData->numHits =  0;
 		}
 	}
-
-	// FIXME
-	//static int b = 0; if (!b++) {
-	//context.world->SpawnPowerUp( { context.world->bounds.x/2, 10.f }, PowerUp::Type::invulnerability);
-	//context.world->SpawnPowerUp( { context.world->bounds.x/2 - 10, 10.f }, PowerUp::Type::invulnerability);
-//}
 }
 
 

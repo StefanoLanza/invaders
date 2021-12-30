@@ -27,13 +27,6 @@ const wchar_t invadersTxt[] =
 {
 	#include "texts/invaders.txt"
 };
-#if SP_EDITION
-const wchar_t socialPointLogo[] =
-{
-	#include "texts/SocialPoint.txt"
-};
-const Image socialPointImg = { socialPointLogo, nullptr, 56, 5 };
-#endif
 const Image ikaImg = { ikaLogo, nullptr, 18, 5 };
 const Image raidersImg = { raidersTxt, nullptr, 46, 6 };
 const Image invadersImg = { invadersTxt, nullptr, 45, 5 };
@@ -62,7 +55,7 @@ struct StartMenuData
 StartMenuData startMenuData;
 
 #if XMAS_EDITION
-void CreateSnowFlake(StartMenuData& data, const PlayField& world)
+void CreateSnowFlake(StartMenuData& data, PlayField& world)
 {
 	float x;
 	do
@@ -84,7 +77,7 @@ void CreateSnowFlake(StartMenuData& data, const PlayField& world)
 	}
 }
 
-void AnimateFlakes(StartMenuData& data, const PlayField& world, float dt)
+void AnimateFlakes(StartMenuData& data, PlayField& world, float dt)
 {
 	data.snow_t += dt;
 	static float interval = 0.25f;
@@ -186,18 +179,14 @@ void DisplayStartMenu(Console& renderer, const void* data_)
 {
 #if XMAS_EDITION
 	const StartMenuData& data = *(const StartMenuData*)data_;
-	const Image& snowFlakeImage = GetImage(ImageId::snowFlake);
+	const Image& snowFlakeImage = GetImage(GetImageId(GameImageId::snowFlake));
 	for (const auto& sf : data.snowFlakes)
 	{
 		renderer.DrawImage(snowFlakeImage, (int)std::floor(sf.pos.x), (int)std::floor(sf.pos.y), Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
 	}
 #endif
 
-#if SP_EDITION
-	renderer.DrawImage(socialPointImg, 0, 4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::top);
-#else
 	renderer.DrawImage(ikaImg, 0, 4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::top);
-#endif
 	renderer.DrawImage(invadersImg, 0, 11, Color::yellowIntense, ImageAlignment::centered,  ImageAlignment::top);
 
 #if XMAS_EDITION
@@ -228,9 +217,9 @@ void DisplayStartMenu(Console& renderer, const void* data_)
 	}
 
 #if XMAS_EDITION
-	renderer.DrawImage(GetImage(ImageId::gift), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
-	renderer.DrawImage(GetImage(ImageId::happyHolidays), 0, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
-	renderer.DrawImage(GetImage(ImageId::xmasLeaf), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
+	renderer.DrawImage(GetImage(GetImageId(GameImageId::gift)), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
+	renderer.DrawImage(GetImage(GetImageId(GameImageId::happyHolidays)), 0, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
+	renderer.DrawImage(GetImage(GetImageId(GameImageId::xmasLeaf)), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
 #endif
 }
 

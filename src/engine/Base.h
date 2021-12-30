@@ -41,5 +41,4 @@ typedef uint32_t dword;
     #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
-#define XMAS_EDITION 0
-#define SP_EDITION 0
+#define XMAS_EDITION 1

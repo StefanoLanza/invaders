@@ -110,26 +110,12 @@ void Console::DrawCanvas()
 {
 	WINDOW* win = static_cast<WINDOW*>(consoleHandle);
 
-//	box(win, ACS_VLINE, ACS_HLINE);
-
 	const cchar_t* s = canvas.data();
-	for (int y = 0; y < bounds.y; ++y) {
+	for (int y = 0; y < bounds.y + hudRows; ++y) {
 		mvwadd_wchnstr(win, y, 0, s, bounds.x);
 		s += bounds.x;
 	}
 
-#if 0
-//wattron(win, COLOR_PAIR(1));
-int err = OK;
-	cchar_t ch[2];
-	err = setcchar(ch, L"T", attrs[0], 1/*toColorPair(Color::white)*/, NULL);
-		assert(err == OK);
-	err = setcchar(ch + 1, L"▀", attrs[1], 3/*toColorPair(Color::white)*/, NULL);
-		assert(err == OK);
-		err = mvwadd_wchnstr(win, 1, 1, ch, 2);
-		assert(err == OK);
-//				mvwprintw(win, 0, 0, "test");
-#endif
 	wrefresh(win);
 }
 
