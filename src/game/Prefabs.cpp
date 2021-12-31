@@ -67,8 +67,8 @@ const AlienPrefab& GetBossPrefab(int index)
 
 const PlayerPrefab playerPrefabs[] =
 {
-	{ GetImageId(GameImageId::player), Color::white, Color::yellow, 30.f, 3.f },
-	{ GetImageId(GameImageId::player), Color::yellow, Color::white, 30.f, 3.f },
+	{ GetImageId(GameImageId::player), Color::white, Color::yellow, 30.f, 4.f },
+	{ GetImageId(GameImageId::player), Color::yellow, Color::white, 30.f, 4.f },
 };
 
 const PlayerPrefab& GetPlayerPrefab(int index)

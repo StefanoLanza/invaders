@@ -4,10 +4,67 @@
 #include <engine/Input.h>
 #include "Images.h"
 #include "Prefabs.h"
+#include "GameConfig.h"
 #include <engine/Collision.h>
 #include <random>
 #include <algorithm>
 #include <cassert>
+
+void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate)
+{
+	if (ship.fireTimer == 0.f)
+	{
+		ship.fireTimer = fireRate * ship.fireBoost;
+	}
+	ship.fireTimer -= dt;
+
+	constexpr Visual laserVisual[3] =
+	{
+		{ GetImageId(GameImageId::playerLaser), Color::lightBlueIntense },
+		{ GetImageId(GameImageId::playerLaserLeft), Color::lightBlueIntense },
+		{ GetImageId(GameImageId::playerLaserRight), Color::lightBlueIntense },
+	};
+
+	// Randomly shoot laser shots
+	if (ship.fireTimer < 0.f)
+	{
+		ship.fireTimer = 0.f; // reset it
+		const float l = laserVelocity;
+		const Vector2D laserPos_l = { ship.pos.x - ship.prefab->laserOffset, ship.pos.y - ship.size.y }; // spawn in front
+		const Vector2D laserPos_r = { ship.pos.x + ship.prefab->laserOffset, ship.pos.y - ship.size.y }; // spawn in front
+		const Vector2D laserPos_m = { ship.pos.x, ship.pos.y - ship.size.y }; // spawn in front
+		if (ship.doubleFire)
+		{
+			if (world.GetAvailablePlayerLasers() >= 2)
+			{
+				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+			}
+			else
+			{
+				// Try shooting later
+			}
+		}
+		else if (ship.tripleFire)
+		{
+			if (world.GetAvailablePlayerLasers() >= 3)
+			{
+				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+			}
+			else
+			{
+				// Try shooting later
+			}
+		}
+		else // single fire
+		{
+			world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );  // straight
+		}
+		++ship.laserShots;
+	}
+}
 
 
 PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input_)
@@ -35,7 +92,7 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 }
 
 
-void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds)
+void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig)
 {
 	// Update input state
 	ship.input->Update(dt);
@@ -54,6 +111,9 @@ void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds)
 		ship.pos.x += ship.prefab->velocity * ship.speedBoost * dt;
 		ship.pos.x = std::min(ship.pos.x, worldBounds.x - halfWidth);
 	}
+	if (ship.input->Fire()) {
+		ShootLasers(ship, dt, world, gameConfig.playerLaserVelocity, gameConfig.playerFireRate);
+	}
 
 	// Boosts lasts a certain amount of time
 	ship.powerUpTimer -= dt;
@@ -63,8 +123,8 @@ void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds)
 		ship.powerUpTimer = 0.f;
 		ship.speedBoost = 1.f;
 		ship.fireBoost = 1.f;
-		ship.tripleFire = false;
 		ship.doubleFire = false;
+		ship.tripleFire = false;
 	}
 
 	ship.accumTime += dt; // useful for time based effects
@@ -82,64 +142,6 @@ void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds)
 		ship.hasShield = false;
 	}
 	ship.visual.imageId = ship.prefab->imageId;
-}
-
-
-void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate, 
-	std::uniform_real_distribution<float>& rndFloat01, std::default_random_engine& rGen)
-{
-	if (ship.fireTimer == 0.f)
-	{
-		ship.fireTimer = fireRate * (1.f + rndFloat01(rGen)) * ship.fireBoost;
-	}
-	ship.fireTimer -= dt;
-
-	constexpr Visual laserVisual[3] =
-	{
-		{ GetImageId(GameImageId::playerLaser), Color::lightBlueIntense },
-		{ GetImageId(GameImageId::playerLaserLeft), Color::lightBlueIntense },
-		{ GetImageId(GameImageId::playerLaserRight), Color::lightBlueIntense },
-	};
-
-	// Randomly shoot laser shots
-	if (ship.fireTimer < 0.f)
-	{
-		ship.fireTimer = 0.f; // reset it
-		const float l = laserVelocity;
-		const Vector2D laserPos = { ship.pos.x + ship.prefab->laserOffset * ((ship.laserShots % 2) ? -1.f : 1.f), ship.pos.y - ship.size.y }; // spawn in front
-		if (ship.tripleFire)
-		{
-			if (world.GetAvailablePlayerLasers() >= 3)
-			{
-				world.SpawnPlayerLaser( NewLaser(laserPos, {  0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );  // straight
-				world.SpawnPlayerLaser( NewLaser(laserPos, { -l * 0.5f, -l * 0.5f }, laserVisual[1], ship.id, ColliderId::playerLaser) );  // 45 left
-				world.SpawnPlayerLaser( NewLaser(laserPos, { +l * 0.5f, -l * 0.5f }, laserVisual[2], ship.id, ColliderId::playerLaser) );  // 45 right
-			}
-			else
-			{
-				// Try shooting later
-			}
-		}
-		else if (ship.doubleFire)
-		{
-			if (world.GetAvailablePlayerLasers() >= 2)
-			{
-				const Vector2D laserPos_l = { ship.pos.x - ship.prefab->laserOffset, ship.pos.y - ship.size.y }; // spawn in front
-				const Vector2D laserPos_r = { ship.pos.x + ship.prefab->laserOffset, ship.pos.y - ship.size.y }; // spawn in front
-				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );  // straight
-				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );  // straight
-			}
-			else
-			{
-				// Try shooting later
-			}
-		}
-		else // single fire
-		{
-			world.SpawnPlayerLaser( NewLaser(laserPos, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );  // straight
-		}
-		++ship.laserShots;
-	}
 }
 
 
@@ -176,8 +178,8 @@ void PlayerShip::SetFireBoost(float boost)
 
 void PlayerShip::SetDoubleFire()
 {
-	tripleFire = false;
 	doubleFire = true;
+	tripleFire = false;
 	powerUpTimer = 10.f;
 }
 

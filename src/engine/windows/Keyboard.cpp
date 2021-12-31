@@ -4,8 +4,6 @@
 
 namespace
 {
-
-
 	int prevKeyState[numKeyCodes] = { -1 };
 	int keyState[numKeyCodes] = { -1 };
 
@@ -18,6 +16,8 @@ namespace
 		VK_RIGHT,
 		VK_UP,
 		VK_DOWN,
+		VK_LCONTROL,
+		VK_RCONTROL,
 		'1',
 		'2',
 		'3',

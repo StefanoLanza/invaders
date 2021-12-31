@@ -1,9 +1,9 @@
+// FIXME In game, not engine
 enum class EventType
 {
 	wait,
 	message,
 	spawnWave,
-	spawnWalls,
 	boss,
 };
 

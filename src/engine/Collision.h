@@ -30,17 +30,6 @@ struct Collider
 	Vector2D     size;
 };
 
-
-struct CollisionInfo
-{
-//	Vector2D point;
-//	Vector2D normal;
-	void*       ud0;
-	void*       ud1;
-	ColliderId id0;
-	ColliderId id1;
-};
-
 struct Rectangle
 {
 	Vector2D v0;

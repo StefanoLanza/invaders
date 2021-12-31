@@ -1,12 +1,6 @@
 #pragma once
 
-#include <stdint.h>
-
-#define UNUSED( x ) ( &reinterpret_cast< const size_t& >( x ) )
-
-#ifndef BIT
-#define BIT(i) (1u << (unsigned)(i))
-#endif
+#include <cstdint>
 
 typedef unsigned char  uchar;
 typedef unsigned short ushort;
@@ -41,4 +35,4 @@ typedef uint32_t dword;
     #pragma warning Unknown dynamic link import/export semantics.
 #endif
 
-#define XMAS_EDITION 1
+#define XMAS_EDITION 0

@@ -31,10 +31,15 @@ bool RndInput::Right() const
 	return state == 2; 
 }
 
+bool RndInput::Fire() const {
+	return true;
+}
 
-KeyboardInput::KeyboardInput(KeyCode left, KeyCode right) : 
+
+KeyboardInput::KeyboardInput(KeyCode left, KeyCode right, KeyCode fire) : 
 	left { left },
-	right { right }
+	right { right },
+	fire { fire }
 {}
 
 
@@ -51,4 +56,8 @@ bool KeyboardInput::Left() const
 bool KeyboardInput::Right() const
 { 
 	return KeyPressed(right);
+}
+
+bool KeyboardInput::Fire() const {
+	return KeyPressed(fire);
 }

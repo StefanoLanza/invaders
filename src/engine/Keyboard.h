@@ -9,6 +9,8 @@ enum class KeyCode
 	right,
 	up,
 	down,
+	lctrl,
+	rctrl,
 	_1,
 	_2,
 	_3,

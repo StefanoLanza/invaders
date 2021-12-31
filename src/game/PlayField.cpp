@@ -185,7 +185,7 @@ void PlayField::Update(float dt, const AIModule& scriptModule)
 	// First move all game objects
 	for (auto& player : players)
 	{
-		Move(player,dt, bounds);
+		Move(player,dt, bounds, *this, config);
 	}
 	for (auto& powerUp : powerUps)
 	{
@@ -195,18 +195,9 @@ void PlayField::Update(float dt, const AIModule& scriptModule)
 	{
 		MoveLaser(laser, dt, bounds);
 	}
-
 	for (auto& alienShip : aliens)
 	{
 		UpdateAlien(alienShip, dt, *this, config, scriptModule);
-	}
-
-	if (aliens.empty() == false)
-	{
-		for (auto& player : players)
-		{
-			ShootLasers(player, dt, *this, config.playerLaserVelocity, config.playerFireRate, rndFloat01, rGen);
-		}
 	}
 
 	// Loop over game objects and delete dead ones. The "swap and pop_back" technique is used to delete items
@@ -260,6 +251,17 @@ void PlayField::DestroyWalls()
 	walls.clear();
 }
 
+
+void PlayField::DestroyAllLasers()
+{
+	lasers.clear();
+}
+
+
+void PlayField::DestroyAllExplosions()
+{
+	explosions.clear();
+}
 
 int PlayField::GetAvailablePlayerLasers() const 
 {

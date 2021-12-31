@@ -43,25 +43,21 @@ struct CollisionContext
 	PlayGameStateData* stateData;
 };
 
-// Collision matrix
 void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameStateData& stateData);
 // Collision callbacks
-void Collision_LaserVSLaser(const CollisionContext&, void* ud0, void* ud1);
-void Collision_AlienVSLaser(const CollisionContext&, void* ud0, void* ud1);
-void Collision_PlayerVSLaser(const CollisionContext&, void* ud0, void* ud1);
-void Collision_PlayerVSPowerUp(const CollisionContext&, void* ud0, void* ud1);
-void Collision_PlayerVSAlien(const CollisionContext&, void* ud0, void* ud1);
-void Collision_LaserVSWall(const CollisionContext&, void* ud0, void* ud1);
-void Collision_AlienVSWall(const CollisionContext&, void* ud0, void* ud1);
-void Collision_AlienVSAlien(const CollisionContext&, void* ud0, void* ud1);
+void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1);
+void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1);
+void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1);
+void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1);
+void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1);
+void Collision_LaserVSWall(void* ctx, void* ud0, void* ud1);
+void Collision_AlienVSWall(void* ctx, void* ud0, void* ud1);
 void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
-//void SpawnBoss(const BossInfo& boss);
-void SetLevel(int levelIndex, PlayGameStateData& data);
+void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world);
 void RestartGame(PlayGameStateData& stateData, Game& game);
 void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
 void SpawnAlienWave(const AlienWave& wave, PlayField& world, const GameConfig& config);
 void SpawnBoss(const BossInfo& boss, PlayField& world, const GameConfig& config);
-void SpawnWall(PlayField& world, const WallInfo& wall);
 void Start(Game& game, const GameConfig& config, Game::Mode mode);
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
 
@@ -80,14 +76,12 @@ void EnterPlayGame(void* data, Game& game, int currentState)
 
 int PlayGame(Game& game, void* data, float dt)
 {
-	GameStateId newState = GameStateId::running;
 	PlayGameStateData& stateData = *(PlayGameStateData*)data;
 	PlayField& world = game.world;
 	if (world.GetPlayers().empty())
 	{
 		game.messageLog.Clear();
-		newState = GameStateId::over;
-		return (int)newState;
+		return (int)GameStateId::over;
 	}
 
 	// Update score
@@ -103,13 +97,13 @@ int PlayGame(Game& game, void* data, float dt)
 		if (stateData.levelIndex < GetNumLevels() - 1)
 		{
 			// Next level
-			SetLevel(stateData.levelIndex + 1, stateData);
+			SetLevel(stateData.levelIndex + 1, stateData, world);
+			return (int)GameStateId::running;
 		}
 		else
 		{
-			newState = GameStateId::victory;
+			return (int)GameStateId::victory;
 		}
-		return (int)newState;
 	}
 
 	stateData.levelTime += dt;
@@ -117,6 +111,7 @@ int PlayGame(Game& game, void* data, float dt)
 	{
 		stateData.showLevel = false;
 	}
+	// TODO Replace with a more generic system, with events with associated (timed?) actions
 	if (stateData.eventIndex < level.numEvents && stateData.levelTime > level.events[stateData.eventIndex].time)
 	{
 		ProcessEvent(level.events[stateData.eventIndex], game.messageLog, game.world, game.config);
@@ -125,7 +120,7 @@ int PlayGame(Game& game, void* data, float dt)
 
 	if (KeyJustPressed(KeyCode::escape))
 	{
-		newState = GameStateId::paused;
+		return (int)GameStateId::paused;
 	}
 	if (! stateData.showLevel)
 	{
@@ -133,7 +128,7 @@ int PlayGame(Game& game, void* data, float dt)
 		CheckCollisions(world, stateData.collisionSpace, stateData);
 	}
 
-	return (int)newState;
+	return (int)GameStateId::running;
 }
 
 
@@ -177,31 +172,10 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		collisionSpace.Add(GetCollisionArea(wall));
 	}
 
-	uint64_t collisionMask = 0;
-	collisionMask |= MakeBit(ColliderId::player,  ColliderId::alien);
-	collisionMask |= MakeBit(ColliderId::player,  ColliderId::alienLaser);
-	collisionMask |= MakeBit(ColliderId::player,  ColliderId::powerUp);
-	collisionMask |= MakeBit(ColliderId::alien,  ColliderId::playerLaser);
-	collisionMask |= MakeBit(ColliderId::alien,  ColliderId::wall);
-	collisionMask |= MakeBit(ColliderId::playerLaser,  ColliderId::wall);
-	collisionMask |= MakeBit(ColliderId::alienLaser,  ColliderId::playerLaser);
-
-	CollisionInfo collisions[64];
-	const int nc = collisionSpace.Execute(collisions, (int)std::size(collisions), collisionMask);
-	CollisionInfo* c = collisions;
-
-	using Callback = void (*) (const CollisionContext&, void*, void*);
-	struct CallbackInfo
-	{
-		ColliderId id0;
-		ColliderId id1;
-		Callback   fnc;
-	};
-	static const CallbackInfo callbacks[] = 
+	static const CollisionCallbackInfo callbacks[] = 
 	{
 		{ ColliderId::player, ColliderId::alienLaser, Collision_PlayerVSLaser },
 		{ ColliderId::player, ColliderId::powerUp, Collision_PlayerVSPowerUp },
-		{ ColliderId::alien, ColliderId::alien, Collision_AlienVSAlien },
 		{ ColliderId::alien, ColliderId::playerLaser, Collision_AlienVSLaser },
 		{ ColliderId::alien, ColliderId::wall, Collision_AlienVSWall },
 		{ ColliderId::playerLaser, ColliderId::alienLaser, Collision_LaserVSLaser },
@@ -209,36 +183,20 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		{ ColliderId::player, ColliderId::alien, Collision_PlayerVSAlien },
 	};
 
-	const CollisionContext context =
+	CollisionContext context =
 	{
 		&world,
 		&world.config,
 		&world.messageLog,
 		&stateData
 	};
-
-	for (int i = 0; i < nc; ++i, ++c)
-	{
-		for (const auto& cbk : callbacks)
-		{
-			// Collision matrix
-			if (c->id0 == cbk.id0 && c->id1 == cbk.id1)
-			{
-				cbk.fnc(context, c->ud0, c->ud1);
-				break;
-			}
-			if (c->id0 == cbk.id1 && c->id1 == cbk.id0)
-			{
-				cbk.fnc(context, c->ud1, c->ud0);
-				break;
-			}
-		}
-	}
+	collisionSpace.Execute(callbacks, (int)std::size(callbacks), &context);
 }
 
 
-void Collision_LaserVSLaser(const CollisionContext& context, void* ud0, void* ud1)
+void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1)
 {
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	Laser& playerLaser = *static_cast<Laser*>(ud0);
 	Laser& alienLaser = *static_cast<Laser*>(ud1);
 	// Spawn explosion, kill this and the alien laser
@@ -249,8 +207,9 @@ void Collision_LaserVSLaser(const CollisionContext& context, void* ud0, void* ud
 }
 
 
-void Collision_AlienVSLaser(const CollisionContext& context, void* ud0, void* ud1)
+void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 {
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	Alien& alien = *(Alien*)ud0;
 	Laser& playerLaser = *(Laser*)ud1;
 	DestroyLaser(playerLaser);
@@ -271,8 +230,9 @@ void Collision_AlienVSLaser(const CollisionContext& context, void* ud0, void* ud
 
 
 // FIXME Collision with shield actually
-void Collision_PlayerVSLaser(const CollisionContext& context, void* ud0, void* ud1)
+void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 {
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	PlayerShip& player = *(PlayerShip*)ud0;
 	Laser& alienLaser = *(Laser*)ud1;
 	//Spawn explosion, destroy player and laser
@@ -290,8 +250,9 @@ void Collision_PlayerVSLaser(const CollisionContext& context, void* ud0, void* u
 }
 
 
-void Collision_PlayerVSAlien(const CollisionContext& context, void* ud0, void* ud1)
+void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 {
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	PlayerShip& player = *(PlayerShip*)ud0;
 	Alien& alien = *(Alien*)ud1;
 	//Spawn explosion, destroy player and alien
@@ -304,8 +265,9 @@ void Collision_PlayerVSAlien(const CollisionContext& context, void* ud0, void* u
 }
 
 
-void Collision_PlayerVSPowerUp(const CollisionContext& context, void* ud0, void* ud1)
+void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1)
 {
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	PlayerShip& player = *(PlayerShip*)ud0;
 	PowerUp& powerUp = *(PowerUp*)ud1;
 	ActivatePowerUp(player, powerUp, *context.messageLog, *context.world, *context.gameConfig);
@@ -313,8 +275,9 @@ void Collision_PlayerVSPowerUp(const CollisionContext& context, void* ud0, void*
 }
 
 
-void Collision_LaserVSWall(const CollisionContext& context, void* ud0, void* ud1)
+void Collision_LaserVSWall(void* ctx, void* ud0, void* ud1)
 {
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	Laser& playerLaser = *static_cast<Laser*>(ud0);
 	Wall& wall = *static_cast<Wall*>(ud1);
 	DestroyLaser(playerLaser);
@@ -324,16 +287,11 @@ void Collision_LaserVSWall(const CollisionContext& context, void* ud0, void* ud1
 }
 
 
-void Collision_AlienVSWall(const CollisionContext& /*context*/, void* ud0, void* ud1)
+void Collision_AlienVSWall(void* ctx, void* ud0, void* ud1)
 {
 	Alien& alien = *static_cast<Alien*>(ud0);
 	Wall& wall = *static_cast<Wall*>(ud1);
 	Alien_AvoidWall(alien, wall.pos);
-}
-
-
-void Collision_AlienVSAlien(const CollisionContext& /*context*/, void* /*ud0*/, void* /*ud1*/)
-{
 }
 
 
@@ -375,9 +333,10 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 }
 
 
-void SetLevel(int levelIndex, PlayGameStateData& data)
+void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 {
-	//FIXME game.world.DestroyWalls();
+	world.DestroyAllLasers();
+	world.DestroyAllExplosions();
 	data.levelIndex = levelIndex;
 	data.levelTime = 0.f;
 	data.eventIndex = 0;
@@ -389,7 +348,7 @@ void SetLevel(int levelIndex, PlayGameStateData& data)
 void RestartGame(PlayGameStateData& stateData, Game& game)
 {
 	Start(game, game.config, game.mode);
-	SetLevel(0, stateData);
+	SetLevel(0, stateData, game.world);
 }
 
 
@@ -403,9 +362,6 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 		case EventType::spawnWave:
 			SpawnAlienWave(*(const AlienWave*)event.data, world, gameConfig);
 			break;
-		case EventType::spawnWalls:
-			SpawnWall(world, *(const WallInfo*)event.data);
-			break;
 		case EventType::boss:
 			SpawnBoss(*(const BossInfo*)event.data, world, gameConfig);
 			break;
@@ -414,18 +370,6 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 		default:
 			break;
 	};
-}
-
-
-void SpawnWall(PlayField& world, const WallInfo& wall)
-{
-	float x = wall.x;
-	const float y = wall.y;
-	for (int k = 0; k < wall.n; k++)
-	{
-		world.AddWall( { x, y } );
-		x += 4.f;
-	}
 }
 
 
@@ -487,7 +431,7 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 
 	if (mode == Game::Mode::p1 || mode == Game::Mode::p1cpu2 || mode == Game::Mode::p1p2)
 	{
-		input0 = std::make_unique<KeyboardInput>(KeyCode::left, KeyCode::right);
+		input0 = std::make_unique<KeyboardInput>(KeyCode::left, KeyCode::right, KeyCode::rctrl);
 	}
 	else
 	{
@@ -495,7 +439,7 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 	}
 	if (mode == Game::Mode::p1p2)
 	{
-		input1 = std::make_unique<KeyboardInput>(KeyCode::A, KeyCode::D);
+		input1 = std::make_unique<KeyboardInput>(KeyCode::A, KeyCode::D, KeyCode::lctrl);
 	}
 	else if (mode == Game::Mode::p1cpu2 || mode == Game::Mode::cpu1cpu2)
 	{

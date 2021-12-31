@@ -2,6 +2,17 @@
 #include <algorithm>
 
 
+namespace {
+
+constexpr uint64 MakeBit(ColliderId id0, ColliderId id1)
+{
+	uint64_t bit = (uint64_t)id0 * (uint64_t)ColliderId::count + (uint64_t)id1;
+	return (uint64)1u << bit;
+}
+
+}
+
+
 CollisionSpace::CollisionSpace() = default;
 
 
@@ -26,36 +37,7 @@ void CollisionSpace::Clear()
 	rectangles.clear();
 }
 
-
-int CollisionSpace::Execute(CollisionInfo collisionInfo[], int maxCollisions, uint64_t collisionMask) const
-{
-	const int nc = (int)colliderData.size();
-	int nci = 0;
-	const ColliderData* c0 = colliderData.data();
-	const Rectangle* r0 = rectangles.data();
-
-	for (int x = 0; x < nc - 1; ++x, ++c0, ++r0)
-	{
-		const ColliderData* c1 = c0 + 1;
-		const Rectangle* r1 = r0 + 1;
-		for (int y = 0; y < nc - x - 1; ++y, ++c1, ++r1)
-		{
-			const uint64_t pairIdx = MakeBit(c0->id, c1->id) | MakeBit(c1->id, c0->id);
-			if ((collisionMask & pairIdx) && c0->userData != c1->userData && Intersect(*r0, *r1))
-			{
-				collisionInfo[nci] = { c0->userData, c1->userData, c0->id, c1->id };
-				nci++;
-				if (nci >= maxCollisions)
-				{
-					return nci;
-				}
-			}
-		}
-	}
-	return nci;
-}
-
-void CollisionSpace::Execute(const CollisionCallbackInfo callbackInfo[], int numCallbacks) const
+void CollisionSpace::Execute(const CollisionCallbackInfo callbackInfo[], int numCallbacks, void* context) const
 {
 	uint64_t collisionMask = 0;
 	for (int i = 0; i < numCallbacks; ++i) {
@@ -73,17 +55,17 @@ void CollisionSpace::Execute(const CollisionCallbackInfo callbackInfo[], int num
 		for (int y = 0; y < nc - x - 1; ++y, ++c1, ++r1)
 		{
 			const uint64_t pairIdx = MakeBit(c0->id, c1->id) | MakeBit(c1->id, c0->id);
-			if ((collisionMask & pairIdx) && c0->userData != c1->userData && Intersect(*r0, *r1))
+			if ((collisionMask & pairIdx) && Intersect(*r0, *r1))
 			{
 				// Callback
 				for (int i = 0; i < numCallbacks; ++i) {
 					const CollisionCallbackInfo& cbk = callbackInfo[i];
 					if (c0->id == cbk.id0 && c1->id == cbk.id1) {
-						cbk.fnc(cbk.userData, c0->userData, c1->userData);
+						cbk.fnc(context, c0->userData, c1->userData);
 						break;
 					}
 					if (c1->id == cbk.id0 && c0->id == cbk.id1) {
-						cbk.fnc(cbk.userData, c1->userData, c0->userData);
+						cbk.fnc(context, c1->userData, c0->userData);
 						break;
 					}
 				}

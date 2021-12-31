@@ -11,6 +11,7 @@ public:
 	virtual void Update(float dt) = 0;
 	virtual bool Left() const = 0;
 	virtual bool Right() const = 0;
+	virtual bool Fire() const = 0;
 };
 
 class RndInput final : public Input
@@ -22,6 +23,7 @@ public:
 	void Update(float dt) override;
 	bool Left() const override;
 	bool Right() const override;
+	bool Fire() const override;
 
 private:
 
@@ -36,16 +38,18 @@ class KeyboardInput final : public Input
 {
 public:	
 
-	KeyboardInput(KeyCode left, KeyCode right);
+	KeyboardInput(KeyCode left, KeyCode right, KeyCode fire);
 
 	void Update(float dt) override;
 	bool Left() const override;
 	bool Right() const override;
+	bool Fire() const override;
 
 private:
 
 	KeyCode left;
 	KeyCode right;
+	KeyCode fire;
 };
 
 

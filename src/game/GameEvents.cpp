@@ -72,9 +72,7 @@ const Event level0Events[] =
 	{ EventType::spawnWave, 0.f, &alienWavesLevel0[0], },
 	{ EventType::message, 0.f, hudMessages[0], },
 	{ EventType::spawnWave, 6.f, &alienWavesLevel0[1], },
-//	{ EventType::spawnWalls, 12.f, &walls[0], },
 	{ EventType::spawnWave, 12.f, &alienWavesLevel0[2], },
-//	{ EventType::spawnWalls, 24.f, &walls[1], },
 	{ EventType::message, 18.f, hudMessages[1], },
 	{ EventType::spawnWave, 18.f, &alienWavesLevel0[3], },
 	{ EventType::message, 24.f, hudMessages[2], },
@@ -90,9 +88,7 @@ const Event level1Events[] =
 	{ EventType::spawnWave, 0.f, &alienWavesLevel1[0], },
 	{ EventType::message, 0.f, hudMessages[3], },
 	{ EventType::spawnWave, 6.f, &alienWavesLevel1[1], },
-//	{ EventType::spawnWalls, 12.f, &walls[0], },
 	{ EventType::spawnWave, 12.f, &alienWavesLevel1[2], },
-//	{ EventType::spawnWalls, 24.f, &walls[1], },
 	{ EventType::message, 12.f, hudMessages[4], },
 	{ EventType::spawnWave, 18.f, &alienWavesLevel1[3], },
 	{ EventType::spawnWave, 24.f, &alienWavesLevel1[4], },
@@ -126,7 +122,8 @@ const Level levels[] =
 {
 	{ level0Events, static_cast<int>(std::size(level0Events)) },
 	{ level1Events, static_cast<int>(std::size(level1Events)) },
-	{ level2Events, static_cast<int>(std::size(level2Events)) }
+	{ level2Events, static_cast<int>(std::size(level2Events)) },
+	// TODO Add at least 2 levels
 };
 
 }

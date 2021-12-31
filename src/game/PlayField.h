@@ -63,6 +63,10 @@ public:
 
 	void DestroyWalls();
 
+	void DestroyAllLasers();
+
+	void DestroyAllExplosions();
+
 	int GetAvailablePlayerLasers() const;
 
 public:

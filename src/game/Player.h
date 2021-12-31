@@ -15,7 +15,6 @@ struct Collider;
 
 struct PlayerShip
 {
-
 	enum class State
 	{
 		normal,
@@ -54,8 +53,6 @@ struct PlayerShip
 };
 
 
-PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input_);
+PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input);
 Collider GetCollisionArea(PlayerShip& ship);
-void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds);
-void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate,
-	std::uniform_real_distribution<float>& rndFloat01, std::default_random_engine& rGen);
+void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig);
