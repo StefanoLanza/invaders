@@ -243,6 +243,7 @@ void PlayField::DestroyAll()
 	explosions.clear();
 	powerUps.clear();
 	walls.clear();
+	alienWaves.clear();
 }
 
 

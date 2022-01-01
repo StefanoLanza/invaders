@@ -29,17 +29,17 @@ const Animation alien3Anim =
 
 const AlienPrefab alienPrefabs[] =
 {
-	{ alien0Anim, Color::white, 1, 20.f, },
-	{ alien0Anim, Color::redIntense, 2, 40.f, },
+	{ alien0Anim, Color::white, 1, 10.f, },
+	{ alien0Anim, Color::redIntense, 2, 20.f, },
 
-	{ alien1Anim, Color::green, 1, 20.f, },
-	{ alien1Anim, Color::redIntense, 2, 40.f, },
+	{ alien1Anim, Color::green, 1, 10.f, },
+	{ alien1Anim, Color::redIntense, 2, 20.f, },
 
-	{ alien2Anim, Color::blue, 1, 20.f, },
-	{ alien2Anim, Color::redIntense, 2, 40.f, },
+	{ alien2Anim, Color::blue, 1, 10.f, },
+	{ alien2Anim, Color::redIntense, 2, 20.f, },
 
-	{ alien3Anim, Color::blue, 1, 20.f, },
-	{ alien3Anim, Color::redIntense, 2, 40.f, },
+	{ alien3Anim, Color::blue, 1, 10.f, },
+	{ alien3Anim, Color::redIntense, 2, 20.f, },
 };
 
 

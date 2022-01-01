@@ -3,14 +3,20 @@
 #include <engine/Colors.h>
 
 
-struct AlienWave
+struct AlienSquad 
 {
-	int   n;
-	float y;
+	int w;
+	int h;
 	float dx;
-	float direction;
-	int   alienType;
-	int   betterAlienType;
+	float dy;
+	const char* squad;
+};
+
+struct AlienWaveInfo
+{
+	const AlienSquad* squad;
+	float start_y;
+	float initialDirection;
 };
 
 

@@ -28,7 +28,6 @@ void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	alien.body.size = { (float)image.width, (float)image.height };
 
 	UpdateAnimation(alien.animState, alien.state == Alien::State::better ? alien.betterPrefab->anim : alien.normalPrefab->anim, dt);
-//	RunAIScript(alien.aiScriptId, alien, scriptArgs);
 
 	const AlienPrefab& prefab = GetActivePrefab(alien);
 	alien.visual.imageId = prefab.anim.images[alien.animState.frame];
@@ -54,6 +53,8 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const Alien
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
 	alien.state = Alien::State::normal;
+	alien.waveIndex = -1;
+	alien.indexInWave = -1;
 	return alien;
 }
 
@@ -70,36 +71,17 @@ Collider GetCollider(Alien& alien)
 }
 
 
-void Alien_AvoidWall(Alien& alien, const Vector2D& wallPos)
-{
-	Body& body = alien.body;
-	const Vector2D size = alien.body.size;
-	// Reflect trajectory against wall (quad shape)
-	const Vector2D wallNormal = ComputeClosestNormal(body.velocity);
-	Vector2D vr = Reflect(body.velocity, wallNormal);
-	vr = Normalize(vr);
-	Vector2D closestWallPoint = Mad(wallPos, wallNormal, 2.f); 
-	Vector2D collisionPoint = closestWallPoint;
-	// Push alien position a safe distance away from the wall so that it doesn't get stuck in a collision loop
-	body.prevPos = body.pos;
-	body.pos = Mad(collisionPoint, vr, size.x * 1.5f); // FIXME
-	// Update velocity
-	body.velocity = Mul(vr, Length(body.velocity));
-	body.velocity.y = std::max(0.f, body.velocity.y); // don't go upwards
-}
-
-
-void HitAlien(Alien& alien)
+bool HitAlien(Alien& alien)
 { 
 	alien.gameState.health -= 1; 
-	if (alien.gameState.health <= 0)
-	{
-		alien.state = Alien::State::dead;
-	}
+	return alien.gameState.health <= 0;
 }
 
 
-void DestroyAlien(Alien& alien)
+void DestroyAlien(Alien& alien, AlienWave& wave)
 {
 	alien.state = Alien::State::dead;
+	assert(wave.numAliens > 0);
+	--wave.numAliens;
+	wave.mask[alien.indexInWave] = 0;
 }

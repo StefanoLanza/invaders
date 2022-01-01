@@ -13,25 +13,27 @@
 namespace
 {
 
-
-void MoveReflect(Body& body, float dt, const Vector2D& worldBounds)
+void MoveReflect(Body& body, AlienWave& wave, float dt, const Vector2D& worldBounds)
 {
 	const float halfWidth = body.size.x * 0.5f;
 	body.prevPos = body.pos;
+	body.velocity.x = std::abs(body.velocity.x) * wave.direction;
 	body.pos = Mad(body.pos, body.velocity, dt);
 
 	// Border check
 	if (body.pos.x < halfWidth)
 	{
 		body.pos.x = halfWidth;
-		body.pos.y += body.size.y;
+		//body.pos.y += body.size.y;
 		body.velocity.x = std::abs(body.velocity.x);
+		wave.direction = 1;
 	}
 	else if (body.pos.x > worldBounds.x - halfWidth)
 	{
 		body.pos.x = (float)worldBounds.x - halfWidth;
 		body.velocity.x = -std::abs(body.velocity.x);
-		body.pos.y += body.size.y;
+		wave.direction = -1;
+		//body.pos.y += body.size.y;
 	}
 }
 
@@ -53,32 +55,42 @@ void AlienTransformIntoBetter(Alien& alien)
 }
 
 
+bool AlienCanShoot(const Alien& alien, const AlienWave& wave) {
+	int col = alien.indexInWave % 8;
+	for (int row = alien.indexInWave / 8 + 1; row < 4; ++row) {
+		if (wave.mask[row * 8 + col]) { // FIXME layout by col
+			return false;
+		}
+	}
+   	return true;
+}
+
 void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
-	Body& body = alien.body;
-	MoveReflect(body, dt, world.GetBounds());
+	AlienWave& wave = world.alienWaves[alien.waveIndex];
 
-	AlienGameState& gameState = alien.gameState;
-	const Vector2D size = body.size;
+	MoveReflect(alien.body, wave, dt, world.bounds);
+
+	const Vector2D size = alien.body.size;
 	// Border check vertical:
-	if (body.pos.y >= world.GetBounds().y - size.y)
+	if (alien.body.pos.y >= world.bounds.y - size.y)
 	{
 		// If an alien ship reaches the bottom of the screen the players die
 		world.DeletePlayers();
 	}
-	if (body.pos.y > world.GetBounds().y - size.y * 0.5f)
+	if (alien.body.pos.y > world.bounds.y - size.y * 0.5f)
 	{
-		alien.state = Alien::State::dead;  // destroy the ship
+		DestroyAlien(alien, wave);
 	}
 
 	// The amount of energy increases randomly per frame
-	gameState.energy += gameConfig.alienUpdateRate;
+	alien.gameState.energy += gameConfig.alienUpdateRate;
 
 	// State machine
 	switch (alien.state)
 	{
 		case Alien::State::normal:
-			if (gameState.energy >= gameConfig.alienTransformEnergy)
+			if (alien.gameState.energy >= gameConfig.alienTransformEnergy)
 			{
 				// Transform into a better alien
 				AlienTransformIntoBetter(alien);
@@ -88,17 +100,19 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			break;
 	};
 
-	if (gameState.fireTimer == 0.f)
+	if (alien.gameState.fireTimer == 0.f)
 	{ 
+		// Randomly shoot lasers
 		AlienSetFireTimer(alien, gameConfig, world.rndFloat01, world.rGen);
 	}
-	gameState.fireTimer -= dt;
-	// Randomly shoot lasers
-	if (gameState.fireTimer < 0.f)
+	alien.gameState.fireTimer -= dt;
+	if (alien.gameState.fireTimer < 0.f)
 	{
-		const Vector2D laserPos = { body.pos.x, body.pos.y + size.y * 0.5f }; // spawn in front
-		world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GetImageId(GameImageId::alienLaser), Color::greenIntense }, -1, ColliderId::alienLaser) );
-		gameState.fireTimer = 0.f; // reset it
+		if (AlienCanShoot(alien, wave)) {
+			const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
+			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GetImageId(GameImageId::alienLaser), Color::greenIntense }, -1, ColliderId::alienLaser) );
+			alien.gameState.fireTimer = 0.f; // reset it
+		}
 	}
 }
 

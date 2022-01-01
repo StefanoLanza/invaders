@@ -9,6 +9,7 @@
 
 struct PlayerShip;
 struct Alien;
+struct AlienWave;
 struct Laser;
 struct Explosion;
 struct PowerUp;
@@ -84,6 +85,8 @@ public:
 	std::vector<Explosion>   explosions;
 	std::vector<PowerUp>     powerUps;
 	std::vector<Wall>        walls;
+
+	std::vector<AlienWave> alienWaves;
 
 	Vector2D                 bounds;
 	std::uniform_real_distribution<float> rndFloat01;

@@ -6,16 +6,38 @@
 #include <array> // std::size
 
 
-const AlienWave alienWavesLevel0[] =
+const AlienSquad alienSquad0 = 
 {
-	{ 2,  2.5, 16.f,  1.f, 0, 1, },
-	{ 2,  2.5, 16.f, -1.f, 0, 1, },
-	{ 4,  2.5, 16.f,  1.f, 0, 1, },
-	{ 4,  2.5, 16.f, -1.f, 0, 1, },
-	{ 6,  2.5, 16.f,  1.f, 0, 1, },
-	{ 6,  2.5, 16.f, -1.f, 0, 1, },
+	8, 4,
+	12.f,
+	4.f,
+	"11111111"
+	"01111110"
+	"00111100"
+	"00011000",
 };
 
+const AlienSquad alienSquad1 = 
+{
+	8, 4,
+	8.f,
+	4.f,
+	"02222220"
+	"02222220"
+	"01111110"
+	"01111110",
+};
+
+const AlienWaveInfo alienWavesLevel0[] =
+{
+	{ &alienSquad0,  2.5,  1.f,  },
+	{ &alienSquad1,  2.5, -1.f,  },
+	{ &alienSquad0,  2.5,  1.f,  },
+	{ &alienSquad0,  2.5, -1.f,  },
+	{ &alienSquad0,  2.5, 1.f,  },
+	{ &alienSquad0,  2.5, -1.f,  },
+};
+/*
 const AlienWave alienWavesLevel1[] =
 {
 	{ 2,  2.5, 16.f,  1.f, 2, 3, },
@@ -38,7 +60,7 @@ const AlienWave alienWavesLevel2[] =
 	{ 8,  4.5, 16.f, 1.f,  4, 5, },
 	{ 8,  4.5, 16.f, -1.f, 4, 5, },
 };
-
+*/
 const WallInfo walls[] =
 {
 	6, 40.f, 20.f,
@@ -71,17 +93,17 @@ const Event level0Events[] =
 	{ EventType::wait, 2.f, nullptr },
 	{ EventType::spawnWave, 0.f, &alienWavesLevel0[0], },
 	{ EventType::message, 0.f, hudMessages[0], },
-	{ EventType::spawnWave, 6.f, &alienWavesLevel0[1], },
-	{ EventType::spawnWave, 12.f, &alienWavesLevel0[2], },
+	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
+	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
 	{ EventType::message, 18.f, hudMessages[1], },
-	{ EventType::spawnWave, 18.f, &alienWavesLevel0[3], },
+	//{ EventType::spawnWave, 18.f, &alienWavesLevel0[0], },
 	{ EventType::message, 24.f, hudMessages[2], },
-	{ EventType::spawnWave, 24.f, &alienWavesLevel0[4], },
-	{ EventType::spawnWave, 30.f, &alienWavesLevel0[5], },
-	{ EventType::boss, 42.f, &bossInfo[0], },
+	//{ EventType::spawnWave, 24.f, &alienWavesLevel0[0], },
+	//{ EventType::spawnWave, 30.f, &alienWavesLevel0[0], },
+	//{ EventType::boss, 42.f, &bossInfo[0], },
 	{ EventType::message, 42.f, "Oh no, the boss!", },
 };
-
+#if 0
 const Event level1Events[] =
 {
 	{ EventType::wait, 2.f, nullptr },
@@ -117,12 +139,13 @@ const Event level2Events[] =
 	{ EventType::boss, 54.f, &bossInfo[2], },
 	{ EventType::message, 54.f, "Kill the final boss!", },
 };
+#endif
 
 const Level levels[] =
 {
 	{ level0Events, static_cast<int>(std::size(level0Events)) },
-	{ level1Events, static_cast<int>(std::size(level1Events)) },
-	{ level2Events, static_cast<int>(std::size(level2Events)) },
+	//{ level1Events, static_cast<int>(std::size(level1Events)) },
+	//{ level2Events, static_cast<int>(std::size(level2Events)) },
 	// TODO Add at least 2 levels
 };
 

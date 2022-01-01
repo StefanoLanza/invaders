@@ -176,8 +176,8 @@ LR"(
 const wchar_t playerShipStr[] =
 LR"(
      ▄     
- █  ▄█▄  █ 
-▄█████████▄
+ █   █   █ 
+▄█▄█████▄█▄
 )";
 const byte playerShipColors[] =
 R"(

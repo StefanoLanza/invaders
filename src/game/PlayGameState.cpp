@@ -51,12 +51,11 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1);
 void Collision_LaserVSWall(void* ctx, void* ud0, void* ud1);
-void Collision_AlienVSWall(void* ctx, void* ud0, void* ud1);
 void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
 void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world);
 void RestartGame(PlayGameStateData& stateData, Game& game);
 void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
-void SpawnAlienWave(const AlienWave& wave, PlayField& world, const GameConfig& config);
+void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config);
 void SpawnBoss(const BossInfo& boss, PlayField& world, const GameConfig& config);
 void Start(Game& game, const GameConfig& config, Game::Mode mode);
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
@@ -177,7 +176,6 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		{ ColliderId::player, ColliderId::alienLaser, Collision_PlayerVSLaser },
 		{ ColliderId::player, ColliderId::powerUp, Collision_PlayerVSPowerUp },
 		{ ColliderId::alien, ColliderId::playerLaser, Collision_AlienVSLaser },
-		{ ColliderId::alien, ColliderId::wall, Collision_AlienVSWall },
 		{ ColliderId::playerLaser, ColliderId::alienLaser, Collision_LaserVSLaser },
 		{ ColliderId::playerLaser, ColliderId::wall, Collision_LaserVSWall },
 		{ ColliderId::player, ColliderId::alien, Collision_PlayerVSAlien },
@@ -211,9 +209,14 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 {
 	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	Alien& alien = *(Alien*)ud0;
+	AlienWave& wave = context.world->alienWaves[alien.waveIndex];
 	Laser& playerLaser = *(Laser*)ud1;
 	DestroyLaser(playerLaser);
-	HitAlien(alien);
+	if (HitAlien(alien))
+	{
+		DestroyAlien(alien, wave);
+	}
+
 	//Spawn explosion 
 	context.world->AddScore( alien.state == Alien::State::normal ? 10 : 20, playerLaser.ownerId);
 	context.world->AddExplosion(alien.body.pos, context.gameConfig->explosionTimer);
@@ -256,7 +259,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	PlayerShip& player = *(PlayerShip*)ud0;
 	Alien& alien = *(Alien*)ud1;
 	//Spawn explosion, destroy player and alien
-	DestroyAlien(alien);
+	DestroyAlien(alien, context.world->alienWaves[alien.waveIndex]);
 	if (! context.gameConfig->godMode)
 	{
 		player.Destroy();
@@ -284,14 +287,6 @@ void Collision_LaserVSWall(void* ctx, void* ud0, void* ud1)
 	HitWall(wall);
 	const Vector2D pos = { wall.pos.x,  wall.pos.y + 1.f };
 	context.world->AddExplosion(pos, context.gameConfig->explosionTimer);
-}
-
-
-void Collision_AlienVSWall(void* ctx, void* ud0, void* ud1)
-{
-	Alien& alien = *static_cast<Alien*>(ud0);
-	Wall& wall = *static_cast<Wall*>(ud1);
-	Alien_AvoidWall(alien, wall.pos);
 }
 
 
@@ -360,7 +355,7 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);
 			break;
 		case EventType::spawnWave:
-			SpawnAlienWave(*(const AlienWave*)event.data, world, gameConfig);
+			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
 			break;
 		case EventType::boss:
 			SpawnBoss(*(const BossInfo*)event.data, world, gameConfig);
@@ -380,17 +375,48 @@ void SpawnBoss(const BossInfo& boss, PlayField& world, const GameConfig& config)
 }
 
 
-void SpawnAlienWave(const AlienWave& wave, PlayField& world, const GameConfig& config)
+void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config)
 {
-	float x = (world.GetBounds().x - (wave.n * wave.dx)) / 2.f;
-	float y = wave.y;
-	for (int k = 0; k < wave.n; k++, x += wave.dx)
-	{
-		float direction = wave.direction;
-		const AlienPrefab& alienPrefab = GetAlienPrefab(wave.alienType);
-		const AlienPrefab& betterAlienPrefab = GetAlienPrefab(wave.betterAlienType);
-		Vector2D velocity = { alienPrefab.speed * direction * config.alienSpeedMul, config.alienDownVelocity };
-		world.AddAlienShip( NewAlien( { x, y }, velocity, alienPrefab, betterAlienPrefab ) );
+	// Look for empty wave
+	int waveIndex = 0;
+	for (; waveIndex < (int)world.alienWaves.size(); ++waveIndex) {
+		if (world.alienWaves[waveIndex].numAliens == 0) {
+			break;
+		}
+	}
+	if (waveIndex == world.alienWaves.size()) {
+		world.alienWaves.resize(waveIndex + 1);
+	}
+	AlienWave& wave = world.alienWaves[waveIndex];
+	wave.numAliens = 0;
+	wave.direction = waveInfo.initialDirection;
+
+	const AlienSquad& squad = *waveInfo.squad;
+	float x0 = (world.GetBounds().x - (squad.w * squad.dx)) / 2.f;
+	float y = waveInfo.start_y;
+	const char* c = squad.squad;
+	for (int j = 0, indexInWave = 0; j < squad.h; ++j, y += squad.dy) {
+		float x = x0;
+		for (int k = 0; k < squad.w; k++, x += squad.dx, ++indexInWave)
+		{
+			if (*c != '0') 
+			{
+				const AlienPrefab& alienPrefab = GetAlienPrefab(*c - '0' - 1);
+				const AlienPrefab& betterAlienPrefab = alienPrefab; //GetAlienPrefab(wave.betterAlienType);
+				Vector2D velocity = { alienPrefab.speed * waveInfo.initialDirection * config.alienSpeedMul, config.alienDownVelocity };
+				Alien alien = NewAlien( { x, y }, velocity, alienPrefab, betterAlienPrefab );
+				alien.waveIndex = waveIndex;
+				alien.indexInWave = indexInWave;
+				world.AddAlienShip(alien);
+				++wave.numAliens;
+				wave.mask[indexInWave] = 1;
+			}
+			else 
+			{
+				wave.mask[indexInWave] = 0;
+			}
+			++c;
+		}
 	}
 }
 
