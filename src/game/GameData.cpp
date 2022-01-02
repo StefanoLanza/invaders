@@ -87,19 +87,19 @@ namespace
 
 const Event level0Events[] =
 {
-	{ EventType::showStage, 0.f, nullptr },
-	{ EventType::hideStage, 2.f, nullptr },
-	{ EventType::spawnWave, 2.f, &alienWavesLevel0[0], },
-	{ EventType::message, 2.f, hudMessages[0], },
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &alienWavesLevel0[0], },
+	{ GameEventId::message, 2.f, hudMessages[0], },
 	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
 	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
-	{ EventType::message, 18.f, hudMessages[1], },
+	{ GameEventId::message, 18.f, hudMessages[1], },
 	//{ EventType::spawnWave, 18.f, &alienWavesLevel0[0], },
-	{ EventType::message, 24.f, hudMessages[2], },
+	{ GameEventId::message, 24.f, hudMessages[2], },
 	//{ EventType::spawnWave, 24.f, &alienWavesLevel0[0], },
 	//{ EventType::spawnWave, 30.f, &alienWavesLevel0[0], },
-	{ EventType::boss, 12.f, &bossInfo[0], },
-	{ EventType::message, 42.f, "Oh no, the boss!", },
+	{ GameEventId::boss, 12.f, &bossInfo[0], },
+	{ GameEventId::message, 42.f, "Oh no, the boss!", },
 };
 #if 0
 const Event level1Events[] =

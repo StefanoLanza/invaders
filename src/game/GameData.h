@@ -1,4 +1,3 @@
-#include <engine/Event.h>
 #include <engine/Colors.h>
 #include <engine/RenderItem.h>
 #include <scripts/Scripts.h>
@@ -38,9 +37,8 @@ struct BossInfo
 };
 
 using EventId = int;
-struct Event;
 
-enum EventType : EventId
+enum GameEventId : EventId
 {
 	wait,
 	message,
@@ -49,6 +47,8 @@ enum EventType : EventId
 	spawnWave,
 	boss,
 };
+
+struct Event;
 
 struct Level
 {

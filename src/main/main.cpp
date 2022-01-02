@@ -167,12 +167,11 @@ int main()
 namespace
 {
 
-int INIParser(void* user, [[maybe_unused]] const char* section, const char* name, const char* value)
-{
 #define PARSE_INT(varName, minv, maxv) \
 	if (!strcmp(name, #varName)) \
 	{ \
 		config.varName = std::max(minv, std::min(maxv, std::atoi(value))); \
+		return 1; \
 	}
 
 #define PARSE_FLOAT(varName, minv, maxv) \
@@ -180,15 +179,21 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 		if (!strcmp(name, #varName)) \
 		{ \
 			config.varName = std::max(minv, std::min(maxv, (float)std::atof(value))); \
+			return 1; \
 		} \
 	} while(0)
 
 #define PARSE_BOOL(varName) \
-	if (!strcmp(name, #varName)) \
-	{ \
-		config.varName = strcmp(value, "true") ? false : true; \
-	}
+	do { \
+		if (!strcmp(name, #varName)) \
+		{ \
+			config.varName = strcmp(value, "true") ? false : true; \
+			return 1; \
+		} \
+	} while(0)
 
+int INIParser(void* user, [[maybe_unused]] const char* section, const char* name, const char* value)
+{
 	GameConfig& config = *(GameConfig*)user;
 	PARSE_INT(consoleWidth, 1, 1000);
 	PARSE_INT(consoleHeight, 1, 1000);
@@ -200,7 +205,6 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 	PARSE_FLOAT(alienWaveSpeedInc, 0.f, 100.f);
 	PARSE_FLOAT(alienWaveFireRateInc, 0.f, 100.f);
 	PARSE_FLOAT(alienLaserVelocity, 0.f, 1000.f);
-	PARSE_FLOAT(alienTransformEnergy, 0.f, 1000.f);
 	PARSE_FLOAT(alienDownVelocity, 0.f, 1000.f);
 	PARSE_FLOAT(explosionTimer, 0.f, 100.f);
 	PARSE_FLOAT(powerUpVelocity, 0.f, 100.f);
@@ -208,11 +212,12 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 	PARSE_FLOAT(powerUpFireBoost, 1.f, 10.f);
 	PARSE_BOOL(godMode);
 	return 1;
+}
+
 
 #undef PARSE_FLOAT
 #undef PARSE_INT
 #undef PARSE_BOOL
-}
 
 
 bool ReadGameConfig(GameConfig& config, const char* iniFileName)

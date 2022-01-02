@@ -12,12 +12,6 @@
 
 void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate)
 {
-	if (ship.fireTimer == 0.f)
-	{
-		ship.fireTimer = fireRate * ship.fireBoost;
-	}
-	ship.fireTimer -= dt;
-
 	constexpr Visual laserVisual[3] =
 	{
 		{ GameImageId::playerLaser, Color::lightBlueIntense },
@@ -26,9 +20,10 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 	};
 
 	// Randomly shoot laser shots
+	ship.fireTimer -= dt;
 	if (ship.fireTimer < 0.f)
 	{
-		ship.fireTimer = 0.f; // reset it
+		ship.fireTimer = 1.f / (fireRate * ship.fireBoost);
 		const float l = laserVelocity;
 		// Spawn lasers in front
 		const Vector2D laserPos_l = { ship.pos.x - ship.prefab->laserOffset, ship.pos.y - ship.size.y * 0.5f };
@@ -171,8 +166,8 @@ void PlayerShip::SetSpeedBoost(float value)
 
 void PlayerShip::SetFireBoost(float boost)
 {
-	assert(boost > 0.f);
-	fireBoost = 1.f / boost; // it decrease interval between shots
+	assert(boost > 1.f);
+	fireBoost = boost;
 	powerUpTimer = 10.f; // Note specified in the rules, I'm giving the fire boost a fixed amount of time too
 }
 

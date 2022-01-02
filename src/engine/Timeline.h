@@ -18,7 +18,7 @@ using EventCbk = std::function<void(const Event&)>;
 class Timeline 
 {
 public:
-	Timeline(EventCbk callback);
+	Timeline();
 
 	void SetCallback(EventCbk callback);
 	void SetEvents(const Event* events, size_t numEvents);

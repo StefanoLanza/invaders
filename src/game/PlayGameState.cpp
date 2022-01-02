@@ -21,11 +21,8 @@
 #include <functional>
 
 
-
-
 namespace
 {
-
 
 struct PlayGameStateData
 {
@@ -35,7 +32,7 @@ struct PlayGameStateData
 	int            numHits;
 };
 PlayGameStateData playGameStateData;
-Timeline timeline(nullptr);
+Timeline timeline;
 
 struct CollisionContext
 {
@@ -350,22 +347,22 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 {
 	switch (event.id)
 	{
-		case EventType::showStage:
+		case GameEventId::showStage:
 			playGameStateData.showLevel = true;
 			break;
-		case EventType::hideStage:
+		case GameEventId::hideStage:
 			playGameStateData.showLevel = false;
 			break;
-		case EventType::message:
+		case GameEventId::message:
 			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);
 			break;
-		case EventType::spawnWave:
+		case GameEventId::spawnWave:
 			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
 			break;
-		case EventType::boss:
+		case GameEventId::boss:
 			SpawnBoss(*(const BossInfo*)event.data, world, gameConfig);
 			break;
-		case EventType::wait:
+		case GameEventId::wait:
 			break;
 		default:
 			break;
