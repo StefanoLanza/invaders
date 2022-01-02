@@ -20,9 +20,9 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 
 	constexpr Visual laserVisual[3] =
 	{
-		{ GetImageId(GameImageId::playerLaser), Color::lightBlueIntense },
-		{ GetImageId(GameImageId::playerLaserLeft), Color::lightBlueIntense },
-		{ GetImageId(GameImageId::playerLaserRight), Color::lightBlueIntense },
+		{ GameImageId::playerLaser, Color::lightBlueIntense },
+		{ GameImageId::playerLaserLeft, Color::lightBlueIntense },
+		{ GameImageId::playerLaserRight, Color::lightBlueIntense },
 	};
 
 	// Randomly shoot laser shots

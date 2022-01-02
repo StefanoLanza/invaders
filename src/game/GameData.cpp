@@ -1,4 +1,4 @@
-#include "GameEvents.h"
+#include "GameData.h"
 #include "Prefabs.h"
 #include <cstdlib>
 #include <cassert>
@@ -17,17 +17,22 @@ const AlienSquad alienSquad0 =
 
 const AlienSquad alienSquad1 = 
 {
-	8, 4,
-	"02222220"
-	"02222220"
+	8, 1,
 	"01111110"
-	"01111110",
+	"00111100"
+	"00011000",
+};
+
+const AlienSquad alienSquad2 = 
+{
+	8, 1,
+	"00111100"
+	"00011000",
 };
 
 const AlienWaveInfo alienWavesLevel0[] =
 {
-	{ &alienSquad0, 12.f, 4.f, 2.5,  1.f, 10.f, /*.initialFireRate =*/ 0.5f,},
-	{ &alienSquad1, 12.f, 4.f, 2.5,  1.f, 10.f, /*.initialFireRate =*/ 0.5f,},
+	{ &alienSquad0, 12.f, 4.f, 2.5,  1.f, 10.f, /*.initialFireRate =*/ 0.5f, /*bounds=*/40},
 };
 /*
 const AlienWave alienWavesLevel1[] =
@@ -151,4 +156,78 @@ int GetNumLevels()
 const Level& GetLevel(int index)
 {
 	return levels[index];
+}
+
+
+
+namespace
+{
+
+// Rules:
+// it takes two laser shots to destroy a better alien ship.
+const Animation alien0Anim = 
+{
+	{ GameImageId::alien0_0, GameImageId::alien0_1 }, .5f
+};
+const Animation alien1Anim = 
+{
+	{ GameImageId::alien1_0, GameImageId::alien1_1 }, .5f
+};
+const Animation alien2Anim = 
+{
+	{ GameImageId::alien2_0, GameImageId::alien2_1 }, .5f
+};
+const Animation alien3Anim = 
+{
+	{ GameImageId::alien3_0, GameImageId::alien3_1 }, .5f
+};
+
+const AlienPrefab alienPrefabs[] =
+{
+	{ alien0Anim, Color::white, 1, 0, },
+	{ alien0Anim, Color::redIntense, 2, 1, },
+
+	{ alien1Anim, Color::green, 1, 0, },
+	{ alien1Anim, Color::redIntense, 2, 1, },
+
+	{ alien2Anim, Color::blue, 1, 0, },
+	{ alien2Anim, Color::redIntense, 2, 1, },
+
+	{ alien3Anim, Color::blue, 1, 0, },
+	{ alien3Anim, Color::redIntense, 2, 1, },
+};
+
+
+const AlienPrefab bossPrefabs[] =
+{
+	{ { { GameImageId::boss0_0, GameImageId::boss0_1 }, 0.25f }, Color::violet, 8, 0, }, // FIXME BossScript, not 0
+	{ { { GameImageId::boss1_0, GameImageId::boss1_1 }, 0.25f }, Color::violet, 10, 0, },
+	{ { { GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f }, Color::violet, 12, 0, },
+};
+
+}
+
+const AlienPrefab& GetAlienPrefab(int index)
+{
+	assert(index >= 0 && index < (int)std::size(alienPrefabs));
+	return alienPrefabs[index];
+}
+
+const AlienPrefab& GetBossPrefab(int index)
+{
+	assert(index >= 0 && index < (int)std::size(bossPrefabs));
+	return bossPrefabs[index];
+}
+
+
+const PlayerPrefab playerPrefabs[] =
+{
+	{ GameImageId::player, Color::white, Color::yellow, 30.f, 4.f },
+	{ GameImageId::player, Color::yellow, Color::white, 30.f, 4.f },
+};
+
+const PlayerPrefab& GetPlayerPrefab(int index)
+{
+	assert(index >= 0 && index < (int)std::size(playerPrefabs));
+	return playerPrefabs[index];
 }

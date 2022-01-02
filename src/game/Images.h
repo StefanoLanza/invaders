@@ -3,9 +3,9 @@
 #include <engine/Image.h>
 #include <cstddef>
 
-enum class GameImageId
+enum GameImageId : ImageId
 {
-	planet,
+	planet = 1,
 	alien0_0,
 	alien0_1,
 	alien1_0,
@@ -48,9 +48,5 @@ enum class GameImageId
 	_2,
 	_3
 };
-
-constexpr ImageId GetImageId(GameImageId gameImageId) {
-	return static_cast<ImageId>(static_cast<int>(gameImageId) + 1);
-}
 
 void InitGameImages();

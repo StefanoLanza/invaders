@@ -19,6 +19,7 @@ struct AlienWaveInfo
 	float initialDirection;
 	float initialSpeed;
 	float initialFireRate;
+	float bound;
 };
 
 
@@ -41,5 +42,11 @@ struct Level
 	int numEvents;
 };
 
+struct AlienPrefab;
+struct PlayerPrefab;
+
 int GetNumLevels();
 const Level& GetLevel(int index);
+const AlienPrefab& GetAlienPrefab(int index);
+const AlienPrefab& GetBossPrefab(int index);
+const PlayerPrefab& GetPlayerPrefab(int index);

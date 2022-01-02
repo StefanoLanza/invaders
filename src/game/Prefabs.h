@@ -19,6 +19,3 @@ struct PlayerPrefab
 	float   laserOffset;
 };
 
-const AlienPrefab& GetAlienPrefab(int index);
-const AlienPrefab& GetBossPrefab(int index);
-const PlayerPrefab& GetPlayerPrefab(int index);

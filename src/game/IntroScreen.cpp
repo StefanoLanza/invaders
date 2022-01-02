@@ -40,7 +40,7 @@ void DisplayIntroScreen(Console& renderer, const void* data)
 {
 	//const IntroScreenData& screenData = *(IntroScreenData*)data;
 
-	renderer.DrawImage(GetImage(GetImageId(GameImageId::planet)), 0, 8, Color::greenIntense, ImageAlignment::centered, ImageAlignment::top);
+	renderer.DrawImage(GetImage(GameImageId::planet), 0, 8, Color::greenIntense, ImageAlignment::centered, ImageAlignment::top);
 	static const char* str[] =
 	{
 		"The invaders from planet IKA are attacking!",

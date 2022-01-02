@@ -22,9 +22,8 @@ struct ImageA
 
 bool LoadTxtImage(ImageA& image, int width, int height, const char* fileName);
 
-enum class ImageId : int {
-	null
-};
+using ImageId = int;
+constexpr ImageId nullImageId = 0;
 
 void SetImage(ImageId imageId, const Image& image);
 void SetImages(ImageId firstImageId, int imageCount, const Image* images);

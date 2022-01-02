@@ -433,7 +433,7 @@ long GetFileSize(const char* fileName)
 
 
 void InitGameImages() {
-	SetImages(GetImageId(GameImageId::planet), numGameImages, gameImages);
+	SetImages(GameImageId::planet, numGameImages, gameImages);
 
 }
 

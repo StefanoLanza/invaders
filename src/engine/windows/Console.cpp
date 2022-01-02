@@ -132,7 +132,7 @@ void Console::DrawSprites(const RenderItem* sprites, int count)
 		const auto& ri = sprites[i];
 		int x = (int)std::floor(ri.pos.x);
 		int y = (int)std::floor(ri.pos.y);
-		if (ri.visual.imageId != ImageId::null) {
+		if (ri.visual.imageId != nullImageId) {
 			const Image& image = GetImage(ri.visual.imageId);
 			x -= image.width / 2;
 			y -= image.height / 2;

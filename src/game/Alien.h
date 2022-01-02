@@ -29,6 +29,7 @@ struct AlienWave {
 	float direction;
 	float speed;
 	float fireRate;
+	float bound;
 	uint8_t mask[4 * 8]; // FIXME optimize
 };
 
@@ -52,6 +53,7 @@ struct Alien
 
 	int waveIndex;
 	int indexInWave;
+	float randomOffset; // [0,1]
 
 	// Scripts
 	AlienScriptId scriptId;
@@ -61,9 +63,9 @@ struct Alien
 struct AIModule;
 
 // Public API
-Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& prefab);
-void DestroyAlien(Alien& alien, AlienWave& wave);
-RenderItem GetRenderItem(const Alien& alien);
-Collider GetCollider(Alien& alien);
-void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& config);
-bool HitAlien(Alien& alien);
+Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& prefab, float randomOffset);
+void AlienDestroy(Alien& alien, AlienWave& wave);
+RenderItem AlienGetRenderItem(const Alien& alien);
+Collider AlienGetCollider(Alien& alien);
+void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config);
+bool AlienHit(Alien& alien);

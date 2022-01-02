@@ -82,20 +82,20 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 	}
 	if (alien.body.pos.y > world.bounds.y - size.y * 0.5f)
 	{
-		DestroyAlien(alien, wave);
+		AlienDestroy(alien, wave);
 	}
 
 	if (alien.gameState.fireTimer == 0.f)
 	{ 
 		// Randomly shoot lasers
-		alien.gameState.fireTimer = (1.f / wave.fireRate) * (1.f + world.rndFloat01(world.rGen));
+		alien.gameState.fireTimer = (1.f / wave.fireRate) * (1.f + alien.randomOffset);
 	}
 	alien.gameState.fireTimer -= dt;
 	if (alien.gameState.fireTimer < 0.f)
 	{
 		if (AlienCanShoot(alien, wave)) {
 			const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
-			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GetImageId(GameImageId::alienLaser), Color::greenIntense }, -1, ColliderId::alienLaser) );
+			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GameImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
 			alien.gameState.fireTimer = 0.f; // reset it
 		}
 	}

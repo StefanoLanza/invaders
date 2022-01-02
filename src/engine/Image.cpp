@@ -7,14 +7,14 @@ namespace {
 }
 
 void SetImage(ImageId imageId, const Image& image) {
-	assert(imageId != ImageId::null);
+	assert(imageId != nullImageId);
 	const int idx = static_cast<int>(imageId) - 1;
 	imageMap.resize(idx + 1);
 	imageMap[idx] = image;
 }
 
 void SetImages(ImageId firstImageId, int imageCount, const Image* images) {
-	assert(firstImageId != ImageId::null);
+	assert(firstImageId != nullImageId);
 	assert(imageCount > 0);
 	const int idx = static_cast<int>(firstImageId) - 1;
 	imageMap.resize(idx + imageCount);

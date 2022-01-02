@@ -7,7 +7,7 @@ Wall NewWall(const Vector2D& pos, int maxHits)
 {
 	return {
 		pos,
-		{ GetImageId(GameImageId::solidWall), Color::white },
+		{ GameImageId::solidWall, Color::white },
 		Wall::State::normal,
 		maxHits };
 }
@@ -22,7 +22,7 @@ Collider GetCollisionArea(Wall& wall)
 void HitWall(Wall& wall)
 {
 	wall.hits--;
-	wall.visual.imageId = GetImageId(GameImageId::brittleWall);
+	wall.visual.imageId = GameImageId::brittleWall;
 	if (wall.hits <= 0)
 	{
 		wall.state = Wall::State::dead;

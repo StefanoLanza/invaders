@@ -12,7 +12,7 @@
 #include "Prefabs.h"
 #include <engine/Input.h>
 #include <engine/MessageLog.h>
-#include "GameEvents.h"
+#include "GameData.h"
 #include <engine/Console.h>
 #include <engine/CollisionSpace.h>
 #include <cassert>
@@ -138,7 +138,7 @@ void DisplayPlayGame(Console& renderer, const void* data)
 	{
 		ImageId imageId = (ImageId)(stateData.levelIndex + (int)GameImageId::_1);
 		renderer.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
-		renderer.DrawImage(GetImage(GetImageId(GameImageId::level)), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
+		renderer.DrawImage(GetImage(GameImageId::level), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
 }
 
@@ -156,7 +156,7 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	}
 	for (auto& alien : world.aliens)
 	{
-		collisionSpace.Add(GetCollider(alien));
+		collisionSpace.Add(AlienGetCollider(alien));
 	}
 	for (auto& playerLaser : world.lasers)
 	{
@@ -213,11 +213,11 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 	AlienWave& wave = context.world->alienWaves[alien.waveIndex];
 	Laser& playerLaser = *(Laser*)ud1;
 	DestroyLaser(playerLaser);
-	if (HitAlien(alien))
+	if (AlienHit(alien))
 	{
 		wave.speed += gameConfig.alienWaveSpeedInc;
 		wave.fireRate += gameConfig.alienWaveFireRateInc;
-		DestroyAlien(alien, wave);
+		AlienDestroy(alien, wave);
 		context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
 	}
 
@@ -262,7 +262,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	PlayerShip& player = *(PlayerShip*)ud0;
 	Alien& alien = *(Alien*)ud1;
 	//Spawn explosion, destroy player and alien
-	DestroyAlien(alien, context.world->alienWaves[alien.waveIndex]);
+	AlienDestroy(alien, context.world->alienWaves[alien.waveIndex]);
 	if (! context.gameConfig->godMode)
 	{
 		player.Destroy();
@@ -374,7 +374,8 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 void SpawnBoss(const BossInfo& bossInfo, PlayField& world, const GameConfig& config)
 {
 	const AlienPrefab& prefab = GetBossPrefab(bossInfo.alienType);
-	world.AddAlienShip( NewAlien( { bossInfo.x, bossInfo.y }, { bossInfo.speed, config.alienDownVelocity }, prefab ) );
+	Alien boss = NewAlien( { bossInfo.x, bossInfo.y }, { bossInfo.speed, config.alienDownVelocity }, prefab, 0.f );
+	world.AddAlienShip(boss); 
 }
 
 
@@ -397,6 +398,7 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	wave.speed = waveInfo.initialSpeed;
 	wave.direction = waveInfo.initialDirection;
 	wave.fireRate = waveInfo.initialFireRate;
+	wave.bound = waveInfo.bound;
 
 	const AlienSquad& squad = *waveInfo.squad;
 	float x0 = (world.GetBounds().x - (squad.numCols * waveInfo.dx)) / 2.f;
@@ -410,7 +412,7 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 			{
 				const AlienPrefab& alienPrefab = GetAlienPrefab(*c - '0' - 1);
 				Vector2D velocity = { waveInfo.initialSpeed * waveInfo.initialDirection, config.alienDownVelocity };
-				Alien alien = NewAlien( { x, y }, velocity, alienPrefab );
+				Alien alien = NewAlien( { x, y }, velocity, alienPrefab, world.rndFloat01(world.rGen) );
 				alien.waveIndex = waveIndex;
 				alien.indexInWave = indexInWave;
 				world.AddAlienShip(alien);

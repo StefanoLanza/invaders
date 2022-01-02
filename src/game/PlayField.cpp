@@ -97,12 +97,12 @@ void PlayField::SpawnPowerUp(const Vector2D& position, int type)
 	constexpr int c = (int)PowerUp::count;
 	constexpr Visual visuals[c] =
 	{
-		{ GetImageId(GameImageId::sPowerUp), Color::yellowIntense, },
-		{ GetImageId(GameImageId::fPowerUp), Color::yellowIntense, },
-		{ GetImageId(GameImageId::dPowerUp), Color::yellowIntense, },
-		{ GetImageId(GameImageId::tPowerUp), Color::yellowIntense, },
-		{ GetImageId(GameImageId::iPowerUp), Color::yellowIntense, },
-		{ GetImageId(GameImageId::bomb),     Color::yellowIntense, },
+		{ GameImageId::sPowerUp, Color::yellowIntense, },
+		{ GameImageId::fPowerUp, Color::yellowIntense, },
+		{ GameImageId::dPowerUp, Color::yellowIntense, },
+		{ GameImageId::tPowerUp, Color::yellowIntense, },
+		{ GameImageId::iPowerUp, Color::yellowIntense, },
+		{ GameImageId::bomb,     Color::yellowIntense, },
 	};
 	powerUps.push_back( NewPowerUp(position, visuals[type], { 5.f, 3.f }, config.powerUpVelocity, (PowerUp::Type)type) );
 }
@@ -121,7 +121,7 @@ void PlayField::SpawnBomb()
 	// FIXME Check collision explosion vs alien instead ? Otherwise the bomb has effect in this moment only
 	for (auto& alien : aliens)
 	{
-		HitAlien(alien);
+		AlienHit(alien);
 	}
 }
 
@@ -153,12 +153,12 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 		if (player.hasShield)
 		{
 			Color shieldColor = std::sin(20.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
-			ritems.push_back( { Add(player.pos, { 0, -2, }), { GetImageId(GameImageId::shield), shieldColor } } );
+			ritems.push_back( { Add(player.pos, { 0, -2, }), { GameImageId::shield, shieldColor } } );
 		}
 	}
 	for (const auto& alienShip : aliens)
 	{
-		ritems.push_back( GetRenderItem(alienShip));
+		ritems.push_back( AlienGetRenderItem(alienShip));
 	}
 	for (const auto& laser : lasers)
 	{
@@ -205,7 +205,7 @@ void PlayField::Update(float dt, const AIModule& aiModule)
 	}
 	for (auto& alienShip : aliens)
 	{
-		UpdateAlien(alienShip, dt, *this, config);
+		AlienUpdate(alienShip, dt, *this, config);
 	}
 	if (aiModule.alienScript)
 	{
