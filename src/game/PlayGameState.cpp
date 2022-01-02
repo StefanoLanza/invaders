@@ -9,31 +9,33 @@
 #include "Laser.h"
 #include "PowerUp.h"
 #include "Wall.h"
-#include "Prefabs.h"
+#include "GameData.h"
+
+#include <engine/Timeline.h>
 #include <engine/Input.h>
 #include <engine/MessageLog.h>
-#include "GameData.h"
 #include <engine/Console.h>
 #include <engine/CollisionSpace.h>
+
 #include <cassert>
 #include <functional>
+
+
+
+
+namespace
+{
 
 
 struct PlayGameStateData
 {
 	CollisionSpace collisionSpace;
 	int            levelIndex = -1;
-	float          levelTime;
 	bool           showLevel;
-	int            eventIndex;
 	int            numHits;
 };
 PlayGameStateData playGameStateData;
-
-
-namespace
-{
-
+Timeline timeline(nullptr);
 
 struct CollisionContext
 {
@@ -65,17 +67,18 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
 
 void EnterPlayGame(void* data, Game& game, int currentState)
 {
-	PlayGameStateData& stateData = *(PlayGameStateData*)data;
+	timeline.SetCallback([&game](const Event& event) { 
+		ProcessEvent(event, game.messageLog, game.world, game.config); });
+
 	if (currentState != (int)GameStateId::paused)
 	{
-		RestartGame(stateData, game);
+		RestartGame(playGameStateData, game);
 	}
 }
 
 
 int PlayGame(Game& game, void* data, float dt)
 {
-	PlayGameStateData& stateData = *(PlayGameStateData*)data;
 	PlayField& world = game.world;
 	if (world.GetPlayers().empty())
 	{
@@ -90,13 +93,12 @@ int PlayGame(Game& game, void* data, float dt)
 		game.score[player.id] = player.score;
 	}
 
-	const Level& level = GetLevel(stateData.levelIndex);
-	if (stateData.eventIndex >= level.numEvents && world.NoAliens())
+	if (timeline.IsOver() && world.NoAliens())
 	{
-		if (stateData.levelIndex < GetNumLevels() - 1)
+		if (playGameStateData.levelIndex < GetNumLevels() - 1)
 		{
 			// Next level
-			SetLevel(stateData.levelIndex + 1, stateData, world);
+			SetLevel(playGameStateData.levelIndex + 1, playGameStateData, world);
 			return (int)GameStateId::running;
 		}
 		else
@@ -104,27 +106,17 @@ int PlayGame(Game& game, void* data, float dt)
 			return (int)GameStateId::victory;
 		}
 	}
+	timeline.Advance(dt);
 
-	stateData.levelTime += dt;
-	if (stateData.levelTime > 2.f)
-	{
-		stateData.showLevel = false;
-	}
-	// TODO Replace with a more generic system, with events with associated (timed?) actions
-	if (stateData.eventIndex < level.numEvents && stateData.levelTime > level.events[stateData.eventIndex].time)
-	{
-		ProcessEvent(level.events[stateData.eventIndex], game.messageLog, game.world, game.config);
-		++stateData.eventIndex;
-	}
 
 	if (KeyJustPressed(KeyCode::escape))
 	{
 		return (int)GameStateId::paused;
 	}
-	if (! stateData.showLevel)
+	if (! playGameStateData.showLevel)
 	{
 		world.Update(dt, game.scriptModule);
-		CheckCollisions(world, stateData.collisionSpace, stateData);
+		CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
 	}
 
 	return (int)GameStateId::running;
@@ -133,10 +125,9 @@ int PlayGame(Game& game, void* data, float dt)
 
 void DisplayPlayGame(Console& renderer, const void* data)
 {
-	const PlayGameStateData& stateData = *(const PlayGameStateData*)data;
-	if (stateData.showLevel)
+	if (playGameStateData.showLevel)
 	{
-		ImageId imageId = (ImageId)(stateData.levelIndex + (int)GameImageId::_1);
+		ImageId imageId = (playGameStateData.levelIndex + (int)GameImageId::_1);
 		renderer.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 		renderer.DrawImage(GetImage(GameImageId::level), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
@@ -210,15 +201,21 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	const GameConfig& gameConfig = *context.gameConfig;
 	Alien& alien = *(Alien*)ud0;
-	AlienWave& wave = context.world->alienWaves[alien.waveIndex];
 	Laser& playerLaser = *(Laser*)ud1;
 	DestroyLaser(playerLaser);
 	if (AlienHit(alien))
 	{
-		wave.speed += gameConfig.alienWaveSpeedInc;
-		wave.fireRate += gameConfig.alienWaveFireRateInc;
-		AlienDestroy(alien, wave);
-		context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
+		if (alien.waveIndex >= 0) {
+			AlienWave& wave = context.world->alienWaves[alien.waveIndex];
+			wave.speed += gameConfig.alienWaveSpeedInc;
+			wave.fireRate += gameConfig.alienWaveFireRateInc;
+			AlienDestroy(alien, wave);
+			context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
+		}
+		else {
+			BossDestroy(alien); // FIXME separate class for bosses ?
+			context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
+		}
 	}
 
 	// Spawn explosion 
@@ -336,10 +333,9 @@ void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 	world.DestroyAllLasers();
 	world.DestroyAllExplosions();
 	data.levelIndex = levelIndex;
-	data.levelTime = 0.f;
-	data.eventIndex = 0;
 	data.showLevel = true;
 	data.numHits = 0;
+	timeline.SetEvents(GetLevel(levelIndex).events, GetLevel(levelIndex).numEvents);
 }
 
 
@@ -352,8 +348,14 @@ void RestartGame(PlayGameStateData& stateData, Game& game)
 
 void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig)
 {
-	switch (event.type)
+	switch (event.id)
 	{
+		case EventType::showStage:
+			playGameStateData.showLevel = true;
+			break;
+		case EventType::hideStage:
+			playGameStateData.showLevel = false;
+			break;
 		case EventType::message:
 			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);
 			break;

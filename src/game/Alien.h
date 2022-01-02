@@ -54,9 +54,6 @@ struct Alien
 	int waveIndex;
 	int indexInWave;
 	float randomOffset; // [0,1]
-
-	// Scripts
-	AlienScriptId scriptId;
 };
 
 
@@ -65,6 +62,7 @@ struct AIModule;
 // Public API
 Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& prefab, float randomOffset);
 void AlienDestroy(Alien& alien, AlienWave& wave);
+void BossDestroy(Alien& alien);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);
 void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config);

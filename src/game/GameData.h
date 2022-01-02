@@ -1,7 +1,8 @@
 #include <engine/Event.h>
-#include "Images.h"
 #include <engine/Colors.h>
-
+#include <engine/RenderItem.h>
+#include <scripts/Scripts.h>
+#include "Images.h"
 
 struct AlienSquad 
 {
@@ -36,14 +37,43 @@ struct BossInfo
 	float speed;
 };
 
+using EventId = int;
+struct Event;
+
+enum EventType : EventId
+{
+	wait,
+	message,
+	showStage,
+	hideStage,
+	spawnWave,
+	boss,
+};
+
 struct Level
 {
 	const Event* events;
 	int numEvents;
 };
 
-struct AlienPrefab;
-struct PlayerPrefab;
+struct AlienPrefab
+{
+	Animation anim;
+	Color     color;
+	int       health;
+	AlienScriptId behaviour;
+};
+
+
+struct PlayerPrefab
+{
+	ImageId imageId;
+	Color   color;
+	Color   invulnColor;
+	float   velocity;
+	float   laserOffset;
+};
+
 
 int GetNumLevels();
 const Level& GetLevel(int index);

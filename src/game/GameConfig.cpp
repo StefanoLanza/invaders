@@ -19,6 +19,8 @@ GameConfig::GameConfig()
 	alienUpdateRate = 0.003f;
 	alienTransformEnergy = 1.f;
 	alienDownVelocity = 0.5f;
+	// Bosses
+	bossFireRate = 1.f; 
 	// Explosions
 	explosionTimer = 0.25f;
 	// Power ups

@@ -1,5 +1,5 @@
 #include "Alien.h"
-#include "Prefabs.h"
+#include "GameData.h"
 #include "PlayField.h"
 #include "GameConfig.h"
 #include "Images.h"
@@ -13,7 +13,6 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const Alien
 	Alien alien;
 	alien.body = { initialPos, initialPos, velocity, {0.f, 0.f} };
 	alien.prefab = &prefab;
-	alien.scriptId = AlienScriptId::alien;
 	// Set default
 	alien.gameState.health = prefab.health;
 	alien.gameState.fireTimer  = 0.f;
@@ -56,11 +55,20 @@ bool AlienHit(Alien& alien)
 
 void AlienDestroy(Alien& alien, AlienWave& wave)
 {
-	if (alien.state != Alien::State::dead) {
+	if (alien.state != Alien::State::dead) 
+	{
 		alien.state = Alien::State::dead;
 		assert(wave.numAliens > 0);
 		--wave.numAliens;
 		assert(wave.mask[alien.indexInWave] == 1);
 		wave.mask[alien.indexInWave] = 0;
+	}
+}
+
+void BossDestroy(Alien& alien)
+{
+	if (alien.state != Alien::State::dead)
+	{
+		alien.state = Alien::State::dead;
 	}
 }

@@ -1,6 +1,6 @@
 #include "Scripts.h"
 #include <game/Alien.h>
-#include <game/Prefabs.h>
+#include <game/GameData.h>
 #include <game/PlayField.h>
 #include <game/Laser.h>
 #include <game/GameConfig.h>
@@ -35,7 +35,7 @@ void MoveNormalAlien(Body& body, AlienWave& wave, float dt, const Vector2D& worl
 	}
 }
 
-void MoveSentinelAlien(Body& body, float dt, const Vector2D& worldBounds)
+void MoveBossAlien(Body& body, float dt, const Vector2D& worldBounds)
 {
 	const float halfWidth = body.size.x * 0.5f;
 	body.prevPos = body.pos;
@@ -109,7 +109,22 @@ void SentinelAlienScript(Alien& alien, float dt, PlayField& world, const GameCon
 
 void BossAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
+	MoveBossAlien(alien.body, dt, world.bounds);
 
+	const Vector2D size = alien.body.size;
+
+	if (alien.gameState.fireTimer == 0.f)
+	{ 
+		// Randomly shoot lasers
+		alien.gameState.fireTimer = (1.f / gameConfig.bossFireRate);
+	}
+	alien.gameState.fireTimer -= dt;
+	if (alien.gameState.fireTimer < 0.f)
+	{
+		const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
+		world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GameImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
+		alien.gameState.fireTimer = 0.f; // reset it
+	}
 }
 
 using AIScript = void (*)(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig);

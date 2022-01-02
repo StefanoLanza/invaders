@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Laser.h"
 #include "Alien.h"
+#include "GameData.h"
 #include "Explosion.h"
 #include "PowerUp.h"
 #include "Wall.h"
@@ -211,7 +212,7 @@ void PlayField::Update(float dt, const AIModule& aiModule)
 	{
 		for (auto& alien : aliens)
 		{
-			aiModule.alienScript(alien.scriptId, alien, scriptArgs);
+			aiModule.alienScript(alien.prefab->behaviour, alien, scriptArgs);
 		}
 	}
 
