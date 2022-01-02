@@ -14,12 +14,11 @@ GameConfig::GameConfig()
 	// Player
 	playerFireRate = 0.3f;
 	// Alien
-	alienSpeedMul = 1.f;
+	alienWaveSpeedInc = 2.f;
+	alienWaveFireRateInc = 0.1f;
 	alienUpdateRate = 0.003f;
 	alienTransformEnergy = 1.f;
 	alienDownVelocity = 0.5f;
-	alienFireRate = 2.0f;
-	betterAlienFireRate = 0.75f;
 	// Explosions
 	explosionTimer = 0.25f;
 	// Power ups
@@ -27,6 +26,7 @@ GameConfig::GameConfig()
 	powerUpVelocity = 8.f;
 	powerUpInvulnerabilityTime = 10.f;
 	powerUpFireBoost = 1.5f;
+	alienDestroyedScore = 10;
 	// Lasers
 	alienLaserVelocity = 30.f;
 	playerLaserVelocity = 50.f;

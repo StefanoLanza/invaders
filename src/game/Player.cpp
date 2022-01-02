@@ -30,9 +30,10 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 	{
 		ship.fireTimer = 0.f; // reset it
 		const float l = laserVelocity;
-		const Vector2D laserPos_l = { ship.pos.x - ship.prefab->laserOffset, ship.pos.y - ship.size.y }; // spawn in front
-		const Vector2D laserPos_r = { ship.pos.x + ship.prefab->laserOffset, ship.pos.y - ship.size.y }; // spawn in front
-		const Vector2D laserPos_m = { ship.pos.x, ship.pos.y - ship.size.y }; // spawn in front
+		// Spawn lasers in front
+		const Vector2D laserPos_l = { ship.pos.x - ship.prefab->laserOffset, ship.pos.y - ship.size.y * 0.5f };
+		const Vector2D laserPos_r = { ship.pos.x + ship.prefab->laserOffset, ship.pos.y - ship.size.y * 0.5f };
+		const Vector2D laserPos_m = { ship.pos.x, ship.pos.y - ship.size.y * 0.5f };
 		if (ship.doubleFire)
 		{
 			if (world.GetAvailablePlayerLasers() >= 2)

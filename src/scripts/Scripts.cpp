@@ -13,11 +13,32 @@
 namespace
 {
 
-void MoveReflect(Body& body, AlienWave& wave, float dt, const Vector2D& worldBounds)
+void MoveNormalAlien(Body& body, AlienWave& wave, float dt, const Vector2D& worldBounds)
 {
 	const float halfWidth = body.size.x * 0.5f;
 	body.prevPos = body.pos;
-	body.velocity.x = std::abs(body.velocity.x) * wave.direction;
+	body.velocity.x = wave.speed * wave.direction;
+	body.pos = Mad(body.pos, body.velocity, dt);
+
+	// Border check
+	if (body.pos.x < halfWidth)
+	{
+		body.pos.x = halfWidth;
+		//body.pos.y += body.size.y;
+		wave.direction = 1;
+	}
+	else if (body.pos.x > worldBounds.x - halfWidth)
+	{
+		body.pos.x = (float)worldBounds.x - halfWidth;
+		wave.direction = -1;
+		//body.pos.y += body.size.y;
+	}
+}
+
+void MoveSentinelAlien(Body& body, float dt, const Vector2D& worldBounds)
+{
+	const float halfWidth = body.size.x * 0.5f;
+	body.prevPos = body.pos;
 	body.pos = Mad(body.pos, body.velocity, dt);
 
 	// Border check
@@ -26,38 +47,18 @@ void MoveReflect(Body& body, AlienWave& wave, float dt, const Vector2D& worldBou
 		body.pos.x = halfWidth;
 		//body.pos.y += body.size.y;
 		body.velocity.x = std::abs(body.velocity.x);
-		wave.direction = 1;
 	}
 	else if (body.pos.x > worldBounds.x - halfWidth)
 	{
 		body.pos.x = (float)worldBounds.x - halfWidth;
 		body.velocity.x = -std::abs(body.velocity.x);
-		wave.direction = -1;
 		//body.pos.y += body.size.y;
 	}
 }
 
-void AlienSetFireTimer(Alien& alien, const GameConfig& gameConfig, std::uniform_real_distribution<float>& rndFloat01, std::default_random_engine& rGen)
-{
-	alien.gameState.fireTimer = alien.state == Alien::State::normal ? gameConfig.alienFireRate : gameConfig.betterAlienFireRate;
-	// Randomize it
-	alien.gameState.fireTimer *= (1.f + rndFloat01(rGen));
-}
-
-
-void AlienTransformIntoBetter(Alien& alien)
-{
-	alien.state = Alien::State::better;
-	alien.animState.frame = 0;
-	const float sign = alien.body.velocity.x > 0.f ? +1.f : -1.f;
-	alien.body.velocity.x = alien.betterPrefab->speed * sign;
-	alien.gameState.health = alien.betterPrefab->health;
-}
-
-
 bool AlienCanShoot(const Alien& alien, const AlienWave& wave) {
-	int col = alien.indexInWave % 8;
-	for (int row = alien.indexInWave / 8 + 1; row < 4; ++row) {
+	int col = alien.indexInWave % wave.numCols;
+	for (int row = alien.indexInWave / wave.numCols + 1; row < wave.numRows; ++row) {
 		if (wave.mask[row * 8 + col]) { // FIXME layout by col
 			return false;
 		}
@@ -65,11 +66,12 @@ bool AlienCanShoot(const Alien& alien, const AlienWave& wave) {
    	return true;
 }
 
-void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
+
+void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
 	AlienWave& wave = world.alienWaves[alien.waveIndex];
 
-	MoveReflect(alien.body, wave, dt, world.bounds);
+	MoveNormalAlien(alien.body, wave, dt, world.bounds);
 
 	const Vector2D size = alien.body.size;
 	// Border check vertical:
@@ -83,27 +85,10 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 		DestroyAlien(alien, wave);
 	}
 
-	// The amount of energy increases randomly per frame
-	alien.gameState.energy += gameConfig.alienUpdateRate;
-
-	// State machine
-	switch (alien.state)
-	{
-		case Alien::State::normal:
-			if (alien.gameState.energy >= gameConfig.alienTransformEnergy)
-			{
-				// Transform into a better alien
-				AlienTransformIntoBetter(alien);
-			}
-			break;
-		default:
-			break;
-	};
-
 	if (alien.gameState.fireTimer == 0.f)
 	{ 
 		// Randomly shoot lasers
-		AlienSetFireTimer(alien, gameConfig, world.rndFloat01, world.rGen);
+		alien.gameState.fireTimer = (1.f / wave.fireRate) * (1.f + world.rndFloat01(world.rGen));
 	}
 	alien.gameState.fireTimer -= dt;
 	if (alien.gameState.fireTimer < 0.f)
@@ -117,12 +102,23 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 }
 
 
+void SentinelAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
+{
+
+}
+
+void BossAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
+{
+
+}
+
 using AIScript = void (*)(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig);
 const AIScript aiScripts[numAlienScripts] = 
 {
-	AlienScript
+	NormalAlienScript,
+	SentinelAlienScript,
+	BossAlienScript,
 };
-
 
 }
 
@@ -132,6 +128,10 @@ extern "C"
 DLL_EXPORT void ExecuteAlienScript(AlienScriptId scriptId, Alien& alien, const ScriptArgs& args)
 {
 	aiScripts[(int)scriptId](alien, args.dt, *args.world, *args.gameConfig);
+}
+
+DLL_EXPORT void ExecuteAlienWaveScript(AlienWave* wave, Alien* aliens, const ScriptArgs& args)
+{
 }
 
 }

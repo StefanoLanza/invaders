@@ -13,12 +13,11 @@ struct GameConfig
 	// Player
 	float playerFireRate;
 	// Alien
-	float alienSpeedMul;
+	float alienWaveSpeedInc;
+	float alienWaveFireRateInc;
 	float alienUpdateRate;
 	float alienTransformEnergy;
-	float alienFireRate;  // #lasers / s
 	float alienDownVelocity;
-	float betterAlienFireRate; // #lasers / s
 	int powerUpHits;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
 	// Lasers
 	float playerLaserVelocity;
@@ -29,6 +28,7 @@ struct GameConfig
 	float powerUpVelocity;
 	float powerUpInvulnerabilityTime;
 	float powerUpFireBoost;
+	int  alienDestroyedScore;
 	// Walls
 	int wallMaxHits;
 	// Simulation

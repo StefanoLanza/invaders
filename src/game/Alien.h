@@ -24,7 +24,11 @@ struct AlienGameState
 
 struct AlienWave {
 	int numAliens;
+	int numCols;
+	int numRows;
 	float direction;
+	float speed;
+	float fireRate;
 	uint8_t mask[4 * 8]; // FIXME optimize
 };
 
@@ -32,14 +36,12 @@ struct Alien
 {
 	enum class State
 	{
-		normal,
-		better,
+		alive,
 		dead
 	};
 
 	// Dependencies
-	const AlienPrefab* normalPrefab;
-	const AlienPrefab* betterPrefab;
+	const AlienPrefab* prefab;
 
 	// Components
 	Body      body;
@@ -59,10 +61,9 @@ struct Alien
 struct AIModule;
 
 // Public API
-Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& normalPrefab, 
-		const AlienPrefab& betterPrefab);
+Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& prefab);
 void DestroyAlien(Alien& alien, AlienWave& wave);
 RenderItem GetRenderItem(const Alien& alien);
 Collider GetCollider(Alien& alien);
-void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& config, const AIModule& aiModule);
+void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& config);
 bool HitAlien(Alien& alien);

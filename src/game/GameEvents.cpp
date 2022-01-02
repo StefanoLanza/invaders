@@ -9,8 +9,6 @@
 const AlienSquad alienSquad0 = 
 {
 	8, 4,
-	12.f,
-	4.f,
 	"11111111"
 	"01111110"
 	"00111100"
@@ -20,8 +18,6 @@ const AlienSquad alienSquad0 =
 const AlienSquad alienSquad1 = 
 {
 	8, 4,
-	8.f,
-	4.f,
 	"02222220"
 	"02222220"
 	"01111110"
@@ -30,12 +26,8 @@ const AlienSquad alienSquad1 =
 
 const AlienWaveInfo alienWavesLevel0[] =
 {
-	{ &alienSquad0,  2.5,  1.f,  },
-	{ &alienSquad1,  2.5, -1.f,  },
-	{ &alienSquad0,  2.5,  1.f,  },
-	{ &alienSquad0,  2.5, -1.f,  },
-	{ &alienSquad0,  2.5, 1.f,  },
-	{ &alienSquad0,  2.5, -1.f,  },
+	{ &alienSquad0, 12.f, 4.f, 2.5,  1.f, 10.f, /*.initialFireRate =*/ 0.5f,},
+	{ &alienSquad1, 12.f, 4.f, 2.5,  1.f, 10.f, /*.initialFireRate =*/ 0.5f,},
 };
 /*
 const AlienWave alienWavesLevel1[] =
@@ -70,9 +62,9 @@ const WallInfo walls[] =
 
 const BossInfo bossInfo[] =
 {
-	{ 80, 8, 0/* boss id*/ },
-	{ 80, 8, 1/* boss id*/ },
-	{ 80, 8, 2/* boss id*/ },
+	{ 80, 8, 0/* boss id*/, 4.f, },
+	{ 80, 8, 1/* boss id*/, 4.f },
+	{ 80, 8, 2/* boss id*/, 4.f },
 };
 
 const char* const hudMessages[] =

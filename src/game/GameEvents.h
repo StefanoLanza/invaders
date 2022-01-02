@@ -5,18 +5,20 @@
 
 struct AlienSquad 
 {
-	int w;
-	int h;
-	float dx;
-	float dy;
+	int numCols;
+	int numRows;
 	const char* squad;
 };
 
 struct AlienWaveInfo
 {
 	const AlienSquad* squad;
+	float dx;
+	float dy;
 	float start_y;
 	float initialDirection;
+	float initialSpeed;
+	float initialFireRate;
 };
 
 
@@ -30,6 +32,7 @@ struct BossInfo
 {
 	float x, y;
 	int   alienType;
+	float speed;
 };
 
 struct Level

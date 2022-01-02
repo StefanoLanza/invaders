@@ -11,48 +11,29 @@
 #include <cassert>
 
 
-namespace
+void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
-
-const AlienPrefab& GetActivePrefab(const Alien& alien)
-{
-	return *(alien.state == Alien::State::better ? alien.betterPrefab : alien.normalPrefab);
-}
-
-}
-
-
-void UpdateAlien(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig, const AIModule& aiModule)
-{
-	const Image& image = GetImage( GetActivePrefab(alien).anim.images[alien.animState.frame] );
+	const Image& image = GetImage( alien.prefab->anim.images[alien.animState.frame] );
 	alien.body.size = { (float)image.width, (float)image.height };
 
-	UpdateAnimation(alien.animState, alien.state == Alien::State::better ? alien.betterPrefab->anim : alien.normalPrefab->anim, dt);
+	UpdateAnimation(alien.animState, alien.prefab->anim, dt);
 
-	const AlienPrefab& prefab = GetActivePrefab(alien);
-	alien.visual.imageId = prefab.anim.images[alien.animState.frame];
-	alien.visual.color =  prefab.color;
-
-	if (aiModule.procedure)
-	{
-		ScriptArgs scriptArgs = { dt, nullptr, &world, &gameConfig };
-		aiModule.procedure(alien.scriptId, alien, scriptArgs);
-	}
+	alien.visual.imageId = alien.prefab->anim.images[alien.animState.frame];
+	alien.visual.color =  alien.prefab->color;
 }
 
 
-Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& normalPrefab, const AlienPrefab& betterPrefab)
+Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& prefab)
 {
 	Alien alien;
 	alien.body = { initialPos, initialPos, velocity, {0.f, 0.f} };
-	alien.normalPrefab = &normalPrefab;
-	alien.betterPrefab = &betterPrefab;
+	alien.prefab = &prefab;
 	alien.scriptId = AlienScriptId::alien;
 	// Set default
-	alien.gameState.health = normalPrefab.health;
+	alien.gameState.health = prefab.health;
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
-	alien.state = Alien::State::normal;
+	alien.state = Alien::State::alive;
 	alien.waveIndex = -1;
 	alien.indexInWave = -1;
 	return alien;
@@ -80,8 +61,11 @@ bool HitAlien(Alien& alien)
 
 void DestroyAlien(Alien& alien, AlienWave& wave)
 {
-	alien.state = Alien::State::dead;
-	assert(wave.numAliens > 0);
-	--wave.numAliens;
-	wave.mask[alien.indexInWave] = 0;
+	if (alien.state != Alien::State::dead) {
+		alien.state = Alien::State::dead;
+		assert(wave.numAliens > 0);
+		--wave.numAliens;
+		assert(wave.mask[alien.indexInWave] == 1);
+		wave.mask[alien.indexInWave] = 0;
+	}
 }

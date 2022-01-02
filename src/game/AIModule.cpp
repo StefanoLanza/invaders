@@ -5,8 +5,13 @@ namespace
 
 bool GetProcedures(AIModule& module)
 {
-	module.procedure = nullptr;
-	if (DLLError err = GetDLLProcedure(&module.procedure, module.dll, "ExecuteAlienScript"); err != DLLError::ok)
+	module.alienScript = nullptr;
+	module.alienWaveScript = nullptr;
+	if (DLLError err = GetDLLProcedure(&module.alienScript, module.dll, "ExecuteAlienScript"); err != DLLError::ok)
+	{
+		return false;
+	}
+	if (DLLError err = GetDLLProcedure(&module.alienWaveScript, module.dll, "ExecuteAlienWaveScript"); err != DLLError::ok)
 	{
 		return false;
 	}

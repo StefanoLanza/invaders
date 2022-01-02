@@ -10,6 +10,7 @@
 #include <engine/Utils.h>
 #include <engine/MessageLog.h>
 #include "Images.h"
+#include "AIModule.h"
 #include <algorithm>
 #include <cassert>
 #include <functional>
@@ -180,8 +181,15 @@ const Vector2D& PlayField::GetBounds() const
 }
 
 
-void PlayField::Update(float dt, const AIModule& scriptModule)
+void PlayField::Update(float dt, const AIModule& aiModule)
 {
+	// Update all waves
+	const ScriptArgs scriptArgs = { dt, nullptr, this, &config };
+	for (auto& wave : alienWaves)
+	{
+		aiModule.alienWaveScript(&wave, aliens.data(), scriptArgs);
+	}
+
 	// First move all game objects
 	for (auto& player : players)
 	{
@@ -197,7 +205,14 @@ void PlayField::Update(float dt, const AIModule& scriptModule)
 	}
 	for (auto& alienShip : aliens)
 	{
-		UpdateAlien(alienShip, dt, *this, config, scriptModule);
+		UpdateAlien(alienShip, dt, *this, config);
+	}
+	if (aiModule.alienScript)
+	{
+		for (auto& alien : aliens)
+		{
+			aiModule.alienScript(alien.scriptId, alien, scriptArgs);
+		}
 	}
 
 	// Loop over game objects and delete dead ones. The "swap and pop_back" technique is used to delete items

@@ -4,9 +4,11 @@
 
 enum class AlienScriptId
 {
-	alien = 0
+	alien = 0,
+	sentinel = 1,
+	boss = 2
 };
-constexpr size_t numAlienScripts = static_cast<size_t>(AlienScriptId::alien) + 1;
+constexpr size_t numAlienScripts = 3;
 
 
 struct Game;

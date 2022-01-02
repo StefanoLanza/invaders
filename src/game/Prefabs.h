@@ -6,7 +6,7 @@ struct AlienPrefab
 	Animation anim;
 	Color     color;
 	int       health;
-	float     speed;
+	int       behaviour;
 };
 
 

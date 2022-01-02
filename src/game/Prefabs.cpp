@@ -29,25 +29,25 @@ const Animation alien3Anim =
 
 const AlienPrefab alienPrefabs[] =
 {
-	{ alien0Anim, Color::white, 1, 10.f, },
-	{ alien0Anim, Color::redIntense, 2, 20.f, },
+	{ alien0Anim, Color::white, 1, 0, },
+	{ alien0Anim, Color::redIntense, 2, 1, },
 
-	{ alien1Anim, Color::green, 1, 10.f, },
-	{ alien1Anim, Color::redIntense, 2, 20.f, },
+	{ alien1Anim, Color::green, 1, 0, },
+	{ alien1Anim, Color::redIntense, 2, 1, },
 
-	{ alien2Anim, Color::blue, 1, 10.f, },
-	{ alien2Anim, Color::redIntense, 2, 20.f, },
+	{ alien2Anim, Color::blue, 1, 0, },
+	{ alien2Anim, Color::redIntense, 2, 1, },
 
-	{ alien3Anim, Color::blue, 1, 10.f, },
-	{ alien3Anim, Color::redIntense, 2, 20.f, },
+	{ alien3Anim, Color::blue, 1, 0, },
+	{ alien3Anim, Color::redIntense, 2, 1, },
 };
 
 
 const AlienPrefab bossPrefabs[] =
 {
-	{ { { GetImageId(GameImageId::boss0_0), GetImageId(GameImageId::boss0_1) }, 0.25f }, Color::violet, 8, 40.f, },
-	{ { { GetImageId(GameImageId::boss1_0), GetImageId(GameImageId::boss1_1) }, 0.25f }, Color::violet, 10, 40.f, },
-	{ { { GetImageId(GameImageId::boss2_0), GetImageId(GameImageId::boss2_1) }, 0.25f }, Color::violet, 12, 40.f, },
+	{ { { GetImageId(GameImageId::boss0_0), GetImageId(GameImageId::boss0_1) }, 0.25f }, Color::violet, 8, 0, }, // FIXME BossScript, not 0
+	{ { { GetImageId(GameImageId::boss1_0), GetImageId(GameImageId::boss1_1) }, 0.25f }, Color::violet, 10, 0, },
+	{ { { GetImageId(GameImageId::boss2_0), GetImageId(GameImageId::boss2_1) }, 0.25f }, Color::violet, 12, 0, },
 };
 
 }

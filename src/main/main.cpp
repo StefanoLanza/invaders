@@ -44,7 +44,7 @@ void DisplayScores(const Game& game, Console& renderer);
 int main()
 {
 	std::cout << "IKA Invaders" << std::endl;
-	std::cout << "by Stefano Lanza - steflanz@gmail.com - 2021" << std::endl;
+	std::cout << "by Stefano Lanza - steflanz@gmail.com - 2022" << std::endl;
 	std::cout << std::endl;
 
 	std::cout << "Reading game config from game.ini" << std::endl;
@@ -60,22 +60,24 @@ int main()
 	#else
 		"./libScripts.so";
 	#endif
+	std::cout << "Initializing AI module" << std::endl;
 	if (! InitAIModule(aiModule, aiDLLFileName))
 	{
 		std::cerr << "Cannot initialize DLL" << std::endl;
-		return -1;
+		return 1;
 	}
 
 	if (! InitKeyboard()) {
 		std::cerr << "Failed to init keyboard" << std::endl;
-		return -1;
+		return 1;
 	}
 
+	std::cout << "Initialize console" << std::endl;
 	Console console;
 	if (! console.Initialize(gameConfig.consoleWidth, gameConfig.consoleHeight, gameConfig.fontSize))
 	{
 		std::cerr << "Cannot initialize console" << std::endl;
-		return -1;
+		return 1;
 	}
 
 	std::default_random_engine rGen;
@@ -165,6 +167,8 @@ int main()
 namespace
 {
 
+int INIParser(void* user, [[maybe_unused]] const char* section, const char* name, const char* value)
+{
 #define PARSE_INT(varName, minv, maxv) \
 	if (!strcmp(name, #varName)) \
 	{ \
@@ -185,8 +189,6 @@ namespace
 		config.varName = strcmp(value, "true") ? false : true; \
 	}
 
-int INIParser(void* user, [[maybe_unused]] const char* section, const char* name, const char* value)
-{
 	GameConfig& config = *(GameConfig*)user;
 	PARSE_INT(consoleWidth, 1, 1000);
 	PARSE_INT(consoleHeight, 1, 1000);
@@ -195,22 +197,22 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 	PARSE_INT(maxPlayerLasers, 0, 100);
 	PARSE_FLOAT(playerFireRate, 0.f, 1000.f);
 	PARSE_FLOAT(playerLaserVelocity, 0.f, 1000.f);
-	PARSE_BOOL(godMode);
-	PARSE_FLOAT(alienSpeedMul, 0.f, 100.f);
+	PARSE_FLOAT(alienWaveSpeedInc, 0.f, 100.f);
+	PARSE_FLOAT(alienWaveFireRateInc, 0.f, 100.f);
 	PARSE_FLOAT(alienLaserVelocity, 0.f, 1000.f);
 	PARSE_FLOAT(alienTransformEnergy, 0.f, 1000.f);
 	PARSE_FLOAT(alienDownVelocity, 0.f, 1000.f);
-	PARSE_FLOAT(alienFireRate, 0.f, 1000.f);
-	PARSE_FLOAT(betterAlienFireRate, 0.f, 1000.f);
 	PARSE_FLOAT(explosionTimer, 0.f, 100.f);
 	PARSE_FLOAT(powerUpVelocity, 0.f, 100.f);
 	PARSE_INT(powerUpHits, 0, 100);
 	PARSE_FLOAT(powerUpFireBoost, 1.f, 10.f);
+	PARSE_BOOL(godMode);
 	return 1;
-}
+
 #undef PARSE_FLOAT
 #undef PARSE_INT
 #undef PARSE_BOOL
+}
 
 
 bool ReadGameConfig(GameConfig& config, const char* iniFileName)
