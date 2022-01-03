@@ -16,10 +16,8 @@ struct AlienWaveInfo
 	float dx;
 	float dy;
 	float start_y;
-	float initialDirection;
 	float initialSpeed;
 	float initialFireRate;
-	float bound;
 };
 
 
@@ -61,7 +59,9 @@ struct AlienPrefab
 	Animation anim;
 	Color     color;
 	int       health;
-	AlienScriptId behaviour;
+	const char* actionSeq;
+	float hspeed;
+	float vspeed;
 };
 
 

@@ -9,7 +9,7 @@
 const AlienSquad alienSquad0 = 
 {
 	8, 4,
-	"11111111"
+	"22222222"
 	"01111110"
 	"00111100"
 	"00011000",
@@ -17,22 +17,25 @@ const AlienSquad alienSquad0 =
 
 const AlienSquad alienSquad1 = 
 {
-	8, 1,
-	"01111110"
+	8, 4,
+	"22222222"
+	"02222220"
 	"00111100"
-	"00011000",
+	"00033000",
 };
 
 const AlienSquad alienSquad2 = 
 {
-	8, 1,
-	"00111100"
-	"00011000",
+	8, 4,
+	"22222222"
+	"22222222"
+	"00001111"
+	"00001111",
 };
 
 const AlienWaveInfo alienWavesLevel0[] =
 {
-	{ &alienSquad0, 12.f, 4.f, 2.5,  1.f, /*initial speed */ 10.f, /*.initialFireRate =*/ 0.5f, /*bounds=*/40},
+	{ &alienSquad2, 10.f, 4.f, 2.5, /*initial speed */ 1.f, /*.initialFireRate =*/ 0.25f},
 };
 /*
 const AlienWave alienWavesLevel1[] =
@@ -98,7 +101,7 @@ const Event level0Events[] =
 	{ GameEventId::message, 24.f, hudMessages[2], },
 	//{ EventType::spawnWave, 24.f, &alienWavesLevel0[0], },
 	//{ EventType::spawnWave, 30.f, &alienWavesLevel0[0], },
-	{ GameEventId::boss, 12.f, &bossInfo[0], },
+	//{ GameEventId::boss, 12.f, &bossInfo[0], },
 	{ GameEventId::message, 42.f, "Oh no, the boss!", },
 };
 #if 0
@@ -183,27 +186,52 @@ const Animation alien3Anim =
 	{ GameImageId::alien3_0, GameImageId::alien3_1 }, .5f
 };
 
+const char* moveSeqNull = {
+	""
+};
+
+const char* moveSeq0 = {
+	"rrrrllllbllllrrrrb"
+};
+
+const char* moveSeq1 = {
+	"llrrrrllb"
+};
+
+const char* moveSeq2 = {
+	"llrrllrrb"
+};
+
+const char* moveSeq3 = {
+	"rrllrrllb"
+};
+
+const char* moveSeq4 = {
+	"brbrblblltltrtrt"
+};
+
 const AlienPrefab alienPrefabs[] =
 {
-	{ alien0Anim, Color::white, 1, AlienScriptId::alien, },
-	{ alien0Anim, Color::redIntense, 2, AlienScriptId::alien, },
+	{ alien0Anim, Color::white, 1, moveSeq2, 10.f, 5.f },
+	{ alien0Anim, Color::white, 1, moveSeq3, 10.f, 5.f },
+	{ alien0Anim, Color::redIntense, 2, moveSeq0, 20.f, 5.f, },
 
-	{ alien1Anim, Color::green, 1, AlienScriptId::alien, },
-	{ alien1Anim, Color::redIntense, 2, AlienScriptId::alien, },
+	{ alien1Anim, Color::green, 1, moveSeq2, 10.f },
+	{ alien1Anim, Color::redIntense, 2, },
 
-	{ alien2Anim, Color::blue, 1, AlienScriptId::alien, },
-	{ alien2Anim, Color::redIntense, 2, AlienScriptId::alien, },
+	{ alien2Anim, Color::blue, 1, },
+	{ alien2Anim, Color::redIntense, 2, },
 
-	{ alien3Anim, Color::blue, 1, AlienScriptId::alien, },
-	{ alien3Anim, Color::redIntense, 2, AlienScriptId::alien, },
+	{ alien3Anim, Color::blue, 1, },
+	{ alien3Anim, Color::redIntense, 2, },
 };
 
 
 const AlienPrefab bossPrefabs[] =
 {
-	{ { { GameImageId::boss0_0, GameImageId::boss0_1 }, 0.25f }, Color::violet, 8, AlienScriptId::boss, },
-	{ { { GameImageId::boss1_0, GameImageId::boss1_1 }, 0.25f }, Color::violet, 10, AlienScriptId::boss, },
-	{ { { GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f }, Color::violet, 12, AlienScriptId::boss, },
+	{ { { GameImageId::boss0_0, GameImageId::boss0_1 }, 0.25f }, Color::violet, 8,  },
+	{ { { GameImageId::boss1_0, GameImageId::boss1_1 }, 0.25f }, Color::violet, 10,  },
+	{ { { GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f }, Color::violet, 12,  },
 };
 
 }

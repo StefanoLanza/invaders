@@ -12,16 +12,16 @@ struct GameConfig
 	int   maxPlayerLasers;
 	// Player
 	float playerFireRate;
+	float playerLaserVelocity;
 	// Alien
 	float alienWaveSpeedInc;
 	float alienWaveFireRateInc;
 	float alienDownVelocity;
+	float alienLaserVelocity;
 	int powerUpHits;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
 	// Bosses
 	float bossFireRate;
-	// Lasers
-	float playerLaserVelocity;
-	float alienLaserVelocity;
+	float bossDownVelocity;
 	// Explosions
 	float explosionTimer;  // explosion lasts some time  before it disappears
 	// Power ups
@@ -29,6 +29,7 @@ struct GameConfig
 	float powerUpInvulnerabilityTime;
 	float powerUpFireBoost;
 	int  alienDestroyedScore;
+	int bossDestroyedScore;
 	// Walls
 	int wallMaxHits;
 	// Simulation

@@ -13,49 +13,6 @@
 namespace
 {
 
-void MoveNormalAlien(Body& body, AlienWave& wave, float dt, const Vector2D& worldBounds)
-{
-	const float halfWidth = body.size.x * 0.5f;
-	body.prevPos = body.pos;
-	body.velocity.x = wave.speed * wave.direction;
-	body.pos = Mad(body.pos, body.velocity, dt);
-
-	// Border check
-	if (body.pos.x < halfWidth)
-	{
-		body.pos.x = halfWidth;
-		//body.pos.y += body.size.y;
-		wave.direction = 1;
-	}
-	else if (body.pos.x > worldBounds.x - halfWidth)
-	{
-		body.pos.x = (float)worldBounds.x - halfWidth;
-		wave.direction = -1;
-		//body.pos.y += body.size.y;
-	}
-}
-
-void MoveBossAlien(Body& body, float dt, const Vector2D& worldBounds)
-{
-	const float halfWidth = body.size.x * 0.5f;
-	body.prevPos = body.pos;
-	body.pos = Mad(body.pos, body.velocity, dt);
-
-	// Border check
-	if (body.pos.x < halfWidth)
-	{
-		body.pos.x = halfWidth;
-		//body.pos.y += body.size.y;
-		body.velocity.x = std::abs(body.velocity.x);
-	}
-	else if (body.pos.x > worldBounds.x - halfWidth)
-	{
-		body.pos.x = (float)worldBounds.x - halfWidth;
-		body.velocity.x = -std::abs(body.velocity.x);
-		//body.pos.y += body.size.y;
-	}
-}
-
 bool AlienCanShoot(const Alien& alien, const AlienWave& wave) {
 	int col = alien.indexInWave % wave.numCols;
 	for (int row = alien.indexInWave / wave.numCols + 1; row < wave.numRows; ++row) {
@@ -71,8 +28,6 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 {
 	AlienWave& wave = world.alienWaves[alien.waveIndex];
 
-	MoveNormalAlien(alien.body, wave, dt, world.bounds);
-
 	const Vector2D size = alien.body.size;
 	// Border check vertical:
 	if (alien.body.pos.y >= world.bounds.y - size.y)
@@ -82,7 +37,7 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 	}
 	if (alien.body.pos.y > world.bounds.y - size.y * 0.5f)
 	{
-		AlienDestroy(alien, wave);
+		AlienDestroy(alien, wave);// FIXME only mark as dead
 	}
 
 	if (alien.gameState.fireTimer == 0.f)
@@ -93,7 +48,7 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 	alien.gameState.fireTimer -= dt;
 	if (alien.gameState.fireTimer < 0.f)
 	{
-		if (AlienCanShoot(alien, wave)) {
+		{ //if (AlienCanShoot(alien, wave)) {
 			const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
 			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GameImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
 			alien.gameState.fireTimer = 0.f; // reset it
@@ -101,52 +56,14 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 	}
 }
 
-
-void SentinelAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
-{
-
-}
-
-void BossAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
-{
-	MoveBossAlien(alien.body, dt, world.bounds);
-
-	const Vector2D size = alien.body.size;
-
-	if (alien.gameState.fireTimer == 0.f)
-	{ 
-		// Randomly shoot lasers
-		alien.gameState.fireTimer = (1.f / gameConfig.bossFireRate);
-	}
-	alien.gameState.fireTimer -= dt;
-	if (alien.gameState.fireTimer < 0.f)
-	{
-		const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
-		world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GameImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
-		alien.gameState.fireTimer = 0.f; // reset it
-	}
-}
-
-using AIScript = void (*)(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig);
-const AIScript aiScripts[numAlienScripts] = 
-{
-	NormalAlienScript,
-	SentinelAlienScript,
-	BossAlienScript,
-};
-
 }
 
 extern "C"
 {
 
-DLL_EXPORT void ExecuteAlienScript(AlienScriptId scriptId, Alien& alien, const ScriptArgs& args)
+DLL_EXPORT void ExecuteAlienScript(Alien& alien, const ScriptArgs& args)
 {
-	aiScripts[(int)scriptId](alien, args.dt, *args.world, *args.gameConfig);
-}
-
-DLL_EXPORT void ExecuteAlienWaveScript(AlienWave* wave, Alien* aliens, const ScriptArgs& args)
-{
+	NormalAlienScript(alien, args.dt, *args.world, *args.gameConfig);
 }
 
 }

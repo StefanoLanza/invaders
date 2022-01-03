@@ -19,17 +19,24 @@ struct AlienGameState
 	int          health;
 	float        energy;
 	float        fireTimer;
+	float        speed;
 };
 
+
+struct ActionSeq 
+{
+	const char* seq;
+	int ticks;
+	int l;
+	int a;
+};
 
 struct AlienWave {
 	int numAliens;
 	int numCols;
 	int numRows;
-	float direction;
 	float speed;
 	float fireRate;
-	float bound;
 	uint8_t mask[4 * 8]; // FIXME optimize
 };
 
@@ -51,6 +58,7 @@ struct Alien
 	AlienGameState gameState;
 	State   state;
 
+	ActionSeq actionSeq;
 	int waveIndex;
 	int indexInWave;
 	float randomOffset; // [0,1]
@@ -60,9 +68,8 @@ struct Alien
 struct AIModule;
 
 // Public API
-Alien NewAlien(const Vector2D& initialPos, const Vector2D& velocity, const AlienPrefab& prefab, float randomOffset);
+Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float randomOffset);
 void AlienDestroy(Alien& alien, AlienWave& wave);
-void BossDestroy(Alien& alien);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);
 void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config);

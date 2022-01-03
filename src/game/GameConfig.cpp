@@ -1,7 +1,5 @@
 #include "GameConfig.h"
 
-
-// Game configuration
 GameConfig::GameConfig()
 {
 	// Console
@@ -13,10 +11,12 @@ GameConfig::GameConfig()
 	maxPlayerLasers = 4;
 	// Player
 	playerFireRate = 0.2f;
+	playerLaserVelocity = 50.f;
 	// Alien
 	alienWaveSpeedInc = 2.f;
 	alienWaveFireRateInc = 0.1f;
 	alienDownVelocity = 1.0f;
+	alienLaserVelocity = 30.f;
 	// Bosses
 	bossFireRate = 1.f; 
 	// Explosions
@@ -27,9 +27,7 @@ GameConfig::GameConfig()
 	powerUpInvulnerabilityTime = 10.f;
 	powerUpFireBoost = 1.5f;
 	alienDestroyedScore = 10;
-	// Lasers
-	alienLaserVelocity = 30.f;
-	playerLaserVelocity = 50.f;
+	bossDestroyedScore = 100;
 	// Walls
 	wallMaxHits = 2;
 

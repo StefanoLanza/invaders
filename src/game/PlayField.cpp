@@ -119,7 +119,6 @@ void PlayField::SpawnBomb()
 		AddExplosion( { x, y }, config.explosionTimer, delay);
 	}
 	// All aliens take damage
-	// FIXME Check collision explosion vs alien instead ? Otherwise the bomb has effect in this moment only
 	for (auto& alien : aliens)
 	{
 		AlienHit(alien);
@@ -186,10 +185,6 @@ void PlayField::Update(float dt, const AIModule& aiModule)
 {
 	// Update all waves
 	const ScriptArgs scriptArgs = { dt, nullptr, this, &config };
-	for (auto& wave : alienWaves)
-	{
-		aiModule.alienWaveScript(&wave, aliens.data(), scriptArgs);
-	}
 
 	// First move all game objects
 	for (auto& player : players)
@@ -212,7 +207,7 @@ void PlayField::Update(float dt, const AIModule& aiModule)
 	{
 		for (auto& alien : aliens)
 		{
-			aiModule.alienScript(alien.prefab->behaviour, alien, scriptArgs);
+			aiModule.alienScript(alien, scriptArgs);
 		}
 	}
 
