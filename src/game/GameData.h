@@ -3,21 +3,14 @@
 #include <scripts/Scripts.h>
 #include "Images.h"
 
-struct AlienSquad 
-{
-	int numCols;
-	int numRows;
-	const char* squad;
-};
-
 struct AlienWaveInfo
 {
-	const AlienSquad* squad;
+	const char* mask;
+	int numCols;
+	int numRows;
 	float dx;
 	float dy;
 	float start_y;
-	float initialSpeed;
-	float initialFireRate;
 };
 
 
@@ -25,13 +18,6 @@ struct WallInfo
 {
 	int n;
 	float x, y;
-};
-
-struct BossInfo
-{
-	float x, y;
-	int   alienType;
-	float speed;
 };
 
 using EventId = int;
@@ -43,7 +29,6 @@ enum GameEventId : EventId
 	showStage,
 	hideStage,
 	spawnWave,
-	boss,
 };
 
 struct Event;
@@ -62,6 +47,7 @@ struct AlienPrefab
 	const char* actionSeq;
 	float hspeed;
 	float vspeed;
+	float fireRate;
 };
 
 
@@ -78,5 +64,4 @@ struct PlayerPrefab
 int GetNumLevels();
 const Level& GetLevel(int index);
 const AlienPrefab& GetAlienPrefab(int index);
-const AlienPrefab& GetBossPrefab(int index);
 const PlayerPrefab& GetPlayerPrefab(int index);

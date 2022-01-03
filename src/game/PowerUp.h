@@ -22,9 +22,8 @@ struct PowerUp
 		fireBoost,
 		doubleFire,
 		tripleFire,
-		invulnerability,
-		bomb,
 		shield,
+		bomb,
 		count
 	};
 

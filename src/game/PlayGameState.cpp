@@ -299,16 +299,12 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 		messageLog.AddMessage("Triple Fire!");
 		player.SetTripleFire();
 		break;
-	case PowerUp::invulnerability:
-		messageLog.AddMessage("Invulnerability!");
+	case PowerUp::shield:
+		messageLog.AddMessage("Shield!");
 		player.SetInvulnerable(gameConfig.powerUpInvulnerabilityTime);
 		break;
 	case PowerUp::bomb:
 		messageLog.AddMessage("Bomb!");
-		world.SpawnBomb();
-		break;
-	case PowerUp::shield:
-		messageLog.AddMessage("Shield!");
 		world.SpawnBomb();
 		break;
 	default:
@@ -351,22 +347,15 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 		case GameEventId::spawnWave:
 			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
 			break;
-		case GameEventId::boss:
-			SpawnBoss(*(const BossInfo*)event.data, world, gameConfig);
-			break;
+//		case GameEventId::boss:
+	//		SpawnBoss(*(const BossInfo*)event.data, world, gameConfig);
+		
+			//break;
 		case GameEventId::wait:
 			break;
 		default:
 			break;
 	};
-}
-
-
-void SpawnBoss(const BossInfo& bossInfo, PlayField& world, const GameConfig& config)
-{
-	const AlienPrefab& prefab = GetBossPrefab(bossInfo.alienType);
-	Alien boss = NewAlien( { bossInfo.x, bossInfo.y }, prefab, 0.f );
-	world.AddAlienShip(boss); 
 }
 
 
@@ -384,18 +373,17 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	}
 	AlienWave& wave = world.alienWaves[waveIndex];
 	wave.numAliens = 0;
-	wave.numCols = waveInfo.squad->numCols;
-	wave.numRows = waveInfo.squad->numRows;
-	wave.speed = waveInfo.initialSpeed;
-	wave.fireRate = waveInfo.initialFireRate;
+	wave.numCols = waveInfo.numCols;
+	wave.numRows = waveInfo.numRows;
+	wave.speed = 0.f;
+	wave.fireRate = 0.f;
 
-	const AlienSquad& squad = *waveInfo.squad;
-	float x0 = (world.bounds.x - (squad.numCols * waveInfo.dx)) / 2.f;
+	const float x0 = (world.bounds.x - (waveInfo.numCols * waveInfo.dx)) / 2.f + (waveInfo.dx / 2);
 	float y = waveInfo.start_y;
-	const char* c = squad.squad;
-	for (int j = 0, indexInWave = 0; j < squad.numRows; ++j, y += waveInfo.dy) {
+	const char* c = waveInfo.mask;
+	for (int j = 0, indexInWave = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy) {
 		float x = x0;
-		for (int k = 0; k < squad.numCols; k++, x += waveInfo.dx, ++indexInWave)
+		for (int k = 0; k < waveInfo.numCols; k++, x += waveInfo.dx, ++indexInWave)
 		{
 			if (*c != ' ') 
 			{

@@ -6,37 +6,126 @@
 #include <array> // std::size
 
 
-const AlienSquad alienSquad0 = 
+
+namespace
 {
-	8, 4,
-	"22222222"
-	"01111110"
-	"00111100"
-	"00011000",
+
+const Animation alien0Anim = 
+{
+	{ GameImageId::alien0_0, GameImageId::alien0_1 }, .5f
+};
+const Animation alien1Anim = 
+{
+	{ GameImageId::alien1_0, GameImageId::alien1_1 }, .5f
+};
+const Animation alien2Anim = 
+{
+	{ GameImageId::alien2_0, GameImageId::alien2_1 }, .5f
+};
+const Animation alien3Anim = 
+{
+	{ GameImageId::alien3_0, GameImageId::alien3_1 }, .5f
+};
+const Animation boss0Anim = 
+{
+	{ GameImageId::boss0_0, GameImageId::boss0_1 }, 0.25f
+};
+const Animation boss1Anim = 
+{
+	{ GameImageId::boss1_0, GameImageId::boss1_1 }, 0.25f
+};
+const Animation boss2Anim = 
+{
+	{ GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f
 };
 
-const AlienSquad alienSquad1 = 
-{
-	8, 4,
-	"22222222"
-	"02222220"
-	"00111100"
-	"00033000",
+const char* alienSeqNull = {
+	""
 };
 
-const AlienSquad alienSquad2 = 
+const char* alienSeq0 = {
+	"llrrllrrb"
+	"llllrrrrb"
+};
+
+const char* alienSeq1 = {
+	"rrllrrllb"
+	"rrrrllllb"
+};
+
+const char* alienSeq2 = {
+	"rrrrllllbllllrrrrb"
+};
+
+const char* alienSeq3 = {
+	"llrrllrrb"
+};
+
+const char* alienSeq4 = {
+	"brbrblblltltrtrt"
+};
+
+const char* boss0Seq = {
+	"brbrblblltltrtrt"
+};
+
+const char* boss1Seq = {
+	"brbrblblltltrtrt"
+};
+
+const char* boss2Seq = {
+	"brbrblblltltrtrt"
+};
+
+// TODO
+//Action: move down wave
+
+constexpr int oneHit = 1;
+constexpr int twoHits = 2;
+constexpr float fastFire = 0.5f;
+constexpr float normalFire = 0.25f;
+constexpr float boosFireRate = 2.f;
+
+const AlienPrefab alienPrefabs[] =
 {
-	8, 4,
-	"22222222"
-	"22222222"
+	// Stage 0
+	{ alien0Anim, Color::white, oneHit, alienSeq0, 10.f, 5.f, normalFire, },
+	{ alien0Anim, Color::white, oneHit, alienSeq1, 10.f, 5.f, normalFire, },
+	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, 10.f, 5.f, fastFire, },
+	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, 10.f, 5.f, fastFire, },
+
+	{ alien1Anim, Color::green, 1, alienSeq2, 10.f },
+	{ alien2Anim, Color::blue, 1, alienSeq2, 10.f, },
+	{ boss0Anim,  Color::violet, 8, boss0Seq, 20.f, 10.f, boosFireRate, },
+	{ boss1Anim,  Color::violet, 10, boss1Seq, 20.f, 10.f, boosFireRate, },
+	{ boss2Anim,  Color::violet, 12, boss2Seq, 20.f, 10.f, boosFireRate, },
+};
+
+const PlayerPrefab playerPrefabs[] =
+{
+	{ GameImageId::player, Color::white, Color::yellow, 30.f, 4.f },
+	{ GameImageId::player, Color::yellow, Color::white, 30.f, 4.f },
+};
+
+const AlienWaveInfo boss0 = 
+{
+	"7",
+	1, 1,
+	16.f, 16.f, 
+	2.5
+};
+
+const AlienWaveInfo stage0 =
+{
+	"22223333"
+	"22223333"
 	"00001111"
 	"00001111",
+	8, 4,
+	10.f, 4.f, 
+	2.5
 };
 
-const AlienWaveInfo alienWavesLevel0[] =
-{
-	{ &alienSquad2, 10.f, 4.f, 2.5, /*initial speed */ 1.f, /*.initialFireRate =*/ 0.25f},
-};
 /*
 const AlienWave alienWavesLevel1[] =
 {
@@ -61,19 +150,6 @@ const AlienWave alienWavesLevel2[] =
 	{ 8,  4.5, 16.f, -1.f, 4, 5, },
 };
 */
-const WallInfo walls[] =
-{
-	6, 40.f, 20.f,
-	6, 100.f, 24.f,
-	6, 60.f, 30.f,
-};
-
-const BossInfo bossInfo[] =
-{
-	{ 80, 8, 0/* boss id*/, /*speed*/16.f, },
-	{ 80, 8, 1/* boss id*/, 16.f },
-	{ 80, 8, 2/* boss id*/, 16.f },
-};
 
 const char* const hudMessages[] =
 {
@@ -85,14 +161,12 @@ const char* const hudMessages[] =
 };
 constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 
-namespace
-{
-
 const Event level0Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &alienWavesLevel0[0], },
+	{ GameEventId::spawnWave, 2.f, &stage0, },
+	//{ GameEventId::spawnWave, 2.f, &stage1[0], },
 	{ GameEventId::message, 2.f, hudMessages[0], },
 	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
 	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
@@ -164,96 +238,11 @@ const Level& GetLevel(int index)
 
 
 
-namespace
-{
-
-// Rules:
-// it takes two laser shots to destroy a better alien ship.
-const Animation alien0Anim = 
-{
-	{ GameImageId::alien0_0, GameImageId::alien0_1 }, .5f
-};
-const Animation alien1Anim = 
-{
-	{ GameImageId::alien1_0, GameImageId::alien1_1 }, .5f
-};
-const Animation alien2Anim = 
-{
-	{ GameImageId::alien2_0, GameImageId::alien2_1 }, .5f
-};
-const Animation alien3Anim = 
-{
-	{ GameImageId::alien3_0, GameImageId::alien3_1 }, .5f
-};
-
-const char* moveSeqNull = {
-	""
-};
-
-const char* moveSeq0 = {
-	"rrrrllllbllllrrrrb"
-};
-
-const char* moveSeq1 = {
-	"llrrrrllb"
-};
-
-const char* moveSeq2 = {
-	"llrrllrrb"
-};
-
-const char* moveSeq3 = {
-	"rrllrrllb"
-};
-
-const char* moveSeq4 = {
-	"brbrblblltltrtrt"
-};
-
-const AlienPrefab alienPrefabs[] =
-{
-	{ alien0Anim, Color::white, 1, moveSeq2, 10.f, 5.f },
-	{ alien0Anim, Color::white, 1, moveSeq3, 10.f, 5.f },
-	{ alien0Anim, Color::redIntense, 2, moveSeq0, 20.f, 5.f, },
-
-	{ alien1Anim, Color::green, 1, moveSeq2, 10.f },
-	{ alien1Anim, Color::redIntense, 2, },
-
-	{ alien2Anim, Color::blue, 1, },
-	{ alien2Anim, Color::redIntense, 2, },
-
-	{ alien3Anim, Color::blue, 1, },
-	{ alien3Anim, Color::redIntense, 2, },
-};
-
-
-const AlienPrefab bossPrefabs[] =
-{
-	{ { { GameImageId::boss0_0, GameImageId::boss0_1 }, 0.25f }, Color::violet, 8,  },
-	{ { { GameImageId::boss1_0, GameImageId::boss1_1 }, 0.25f }, Color::violet, 10,  },
-	{ { { GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f }, Color::violet, 12,  },
-};
-
-}
-
 const AlienPrefab& GetAlienPrefab(int index)
 {
 	assert(index >= 0 && index < (int)std::size(alienPrefabs));
 	return alienPrefabs[index];
 }
-
-const AlienPrefab& GetBossPrefab(int index)
-{
-	assert(index >= 0 && index < (int)std::size(bossPrefabs));
-	return bossPrefabs[index];
-}
-
-
-const PlayerPrefab playerPrefabs[] =
-{
-	{ GameImageId::player, Color::white, Color::yellow, 30.f, 4.f },
-	{ GameImageId::player, Color::yellow, Color::white, 30.f, 4.f },
-};
 
 const PlayerPrefab& GetPlayerPrefab(int index)
 {

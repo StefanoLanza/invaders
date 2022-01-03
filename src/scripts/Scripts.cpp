@@ -43,12 +43,13 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 	if (alien.gameState.fireTimer == 0.f)
 	{ 
 		// Randomly shoot lasers
-		alien.gameState.fireTimer = (1.f / wave.fireRate) * (1.f + alien.randomOffset);
+		alien.gameState.fireTimer = (1.f / (alien.prefab->fireRate + wave.fireRate)) * (1.f + alien.randomOffset);
 	}
 	alien.gameState.fireTimer -= dt;
 	if (alien.gameState.fireTimer < 0.f)
 	{
-		{ //if (AlienCanShoot(alien, wave)) {
+		if (AlienCanShoot(alien, wave)) 
+		{
 			const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
 			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GameImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
 			alien.gameState.fireTimer = 0.f; // reset it
