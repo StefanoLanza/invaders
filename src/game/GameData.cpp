@@ -62,7 +62,11 @@ const char* alienSeq3 = {
 };
 
 const char* alienSeq4 = {
-	"brbrblblltltrtrt"
+	"brbrrblblbltlltrtrs"
+};
+
+const char* alienSeq5 = {
+	"blbllbrbrbrtrrtltls"
 };
 
 const char* boss0Seq = {
@@ -82,9 +86,9 @@ const char* boss2Seq = {
 
 constexpr int oneHit = 1;
 constexpr int twoHits = 2;
-constexpr float fastFire = 0.5f;
-constexpr float normalFire = 0.25f;
-constexpr float boosFireRate = 2.f;
+constexpr float fastFire = 0.4f;
+constexpr float normalFire = 0.2f;
+constexpr float boosFireRate = 1.f;
 
 const AlienPrefab alienPrefabs[] =
 {
@@ -93,6 +97,8 @@ const AlienPrefab alienPrefabs[] =
 	{ alien0Anim, Color::white, oneHit, alienSeq1, 10.f, 5.f, normalFire, },
 	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, 10.f, 5.f, fastFire, },
 	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, 10.f, 5.f, fastFire, },
+	{ alien0Anim, Color::green, twoHits, alienSeq4, 12.f, 7.f, fastFire, },
+	{ alien0Anim, Color::green, twoHits, alienSeq5, 12.f, 7.f, fastFire, },
 
 	{ alien1Anim, Color::green, 1, alienSeq2, 10.f },
 	{ alien2Anim, Color::blue, 1, alienSeq2, 10.f, },
@@ -107,49 +113,44 @@ const PlayerPrefab playerPrefabs[] =
 	{ GameImageId::player, Color::yellow, Color::white, 30.f, 4.f },
 };
 
+const AlienWaveInfo stage0 =
+{
+	"00001111"
+	"00001111"
+	"00001111",
+	8, 3,
+	12.f, 4.f, 
+	2.5
+};
+
+const AlienWaveInfo stage1 =
+{
+	"22223333"
+	"00001111"
+	"00001111",
+	8, 3,
+	12.f, 4.f, 
+	2.5
+};
+
+const AlienWaveInfo stage2 =
+{
+	"22223333"
+	"00001111"
+	"00001111"
+	" 4    5 ",
+	8, 4,
+	12.f, 4.f, 
+	2.5
+};
+
 const AlienWaveInfo boss0 = 
 {
 	"7",
 	1, 1,
-	16.f, 16.f, 
+	18.f, 16.f, 
 	2.5
 };
-
-const AlienWaveInfo stage0 =
-{
-	"22223333"
-	"22223333"
-	"00001111"
-	"00001111",
-	8, 4,
-	10.f, 4.f, 
-	2.5
-};
-
-/*
-const AlienWave alienWavesLevel1[] =
-{
-	{ 2,  2.5, 16.f,  1.f, 2, 3, },
-	{ 2,  2.5, 16.f, -1.f, 2, 3, },
-	{ 4,  2.5, 16.f,  1.f, 2, 3, },
-	{ 4,  2.5, 16.f, -1.f, 2, 3, },
-	{ 6,  2.5, 16.f,  1.f, 2, 3, },
-	{ 6,  2.5, 16.f, -1.f, 2, 3, },
-};
-
-
-const AlienWave alienWavesLevel2[] =
-{
-	{ 2,  4.5, 16.f,  1.f, 4, 5, },
-	{ 2,  4.5, 16.f, -1.f, 4, 5, },
-	{ 4,  4.5, 16.f,  1.f, 4, 5, },
-	{ 4,  4.5, 16.f, -1.f, 4, 5, },
-	{ 6,  4.5, 16.f, -1.f, 4, 5, },
-	{ 6,  4.5, 16.f,  1.f, 4, 5, },
-	{ 8,  4.5, 16.f, 1.f,  4, 5, },
-	{ 8,  4.5, 16.f, -1.f, 4, 5, },
-};
-*/
 
 const char* const hudMessages[] =
 {
@@ -166,18 +167,33 @@ const Event level0Events[] =
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
 	{ GameEventId::spawnWave, 2.f, &stage0, },
-	//{ GameEventId::spawnWave, 2.f, &stage1[0], },
-	{ GameEventId::message, 2.f, hudMessages[0], },
-	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
-	//{ EventType::spawnWave, 12.f, &alienWavesLevel0[0], },
-	{ GameEventId::message, 18.f, hudMessages[1], },
-	//{ EventType::spawnWave, 18.f, &alienWavesLevel0[0], },
-	{ GameEventId::message, 24.f, hudMessages[2], },
-	//{ EventType::spawnWave, 24.f, &alienWavesLevel0[0], },
-	//{ EventType::spawnWave, 30.f, &alienWavesLevel0[0], },
-	//{ GameEventId::boss, 12.f, &bossInfo[0], },
-	{ GameEventId::message, 42.f, "Oh no, the boss!", },
+	{ GameEventId::message, 4.f, hudMessages[0], },
 };
+
+const Event level1Events[] =
+{
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage1, },
+	{ GameEventId::message, 4.f, hudMessages[1], },
+};
+
+const Event level2Events[] =
+{
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage2, },
+	{ GameEventId::message, 4.f, hudMessages[2], },
+};
+
+const Event level3Events[] =
+{
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &boss0, },
+	{ GameEventId::message, 4.f, "Oh no, the boss!", },
+};
+
 #if 0
 const Event level1Events[] =
 {
@@ -219,8 +235,9 @@ const Event level2Events[] =
 const Level levels[] =
 {
 	{ level0Events, static_cast<int>(std::size(level0Events)) },
-	//{ level1Events, static_cast<int>(std::size(level1Events)) },
-	//{ level2Events, static_cast<int>(std::size(level2Events)) },
+	{ level1Events, static_cast<int>(std::size(level1Events)) },
+	{ level2Events, static_cast<int>(std::size(level2Events)) },
+	{ level3Events, static_cast<int>(std::size(level3Events)) },
 	// TODO Add at least 2 levels
 };
 

@@ -27,7 +27,6 @@ struct ActionSeq
 {
 	const char* seq;
 	int ticks;
-	int l;
 	int a;
 };
 
@@ -37,7 +36,7 @@ struct AlienWave {
 	int numRows;
 	float speed;
 	float fireRate;
-	uint8_t mask[4 * 8]; // FIXME optimize
+	uint8_t mask[6 * 8]; // FIXME optimize
 };
 
 struct Alien

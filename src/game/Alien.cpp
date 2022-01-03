@@ -26,6 +26,9 @@ void ProcessAction(Alien& alien, const AlienWave& wave, char action)
 		case 'b':
 			alien.body.velocity = { 0.f, vspeed };
 			break;
+		case 's':
+			alien.body.velocity = { 0.f, 0.f };
+			break;
 		default:
 			break;
 	}
@@ -34,9 +37,12 @@ void ProcessAction(Alien& alien, const AlienWave& wave, char action)
 void TickAlien(Alien& alien, const AlienWave& wave) 
 {
 	ActionSeq& actionSeq = alien.actionSeq;
-	if (actionSeq.ticks == 0 && actionSeq.l > 0) {
+	if (actionSeq.ticks == 0  && actionSeq.seq[actionSeq.a] != 0) {
 		ProcessAction(alien, wave, actionSeq.seq[actionSeq.a]);
-		actionSeq.a = (actionSeq.a + 1) % actionSeq.l;
+		actionSeq.a = (actionSeq.a + 1);
+		if (actionSeq.seq[actionSeq.a] == 0) {
+			actionSeq.a = 0;
+		}
 	}
 	constexpr int dticks = 30;
 	actionSeq.ticks++;
@@ -64,7 +70,6 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 	alien.randomOffset = randomOffset;
 	alien.actionSeq.a = 0;
 	alien.actionSeq.ticks = 0;
-	alien.actionSeq.l = (int)strlen(prefab.actionSeq);
 	alien.actionSeq.seq = prefab.actionSeq;
 	return alien;
 }
