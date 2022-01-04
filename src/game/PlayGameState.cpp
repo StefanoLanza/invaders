@@ -55,7 +55,6 @@ void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world);
 void RestartGame(PlayGameStateData& stateData, Game& game);
 void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
 void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config);
-void SpawnBoss(const BossInfo& boss, PlayField& world, const GameConfig& config);
 void Start(Game& game, const GameConfig& config, Game::Mode mode);
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
 
@@ -152,7 +151,7 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	}
 	for (auto& powerUp : world.powerUps)
 	{
-		collisionSpace.Add(GetCollisionArea(powerUp));
+		collisionSpace.Add(PowerUpGetCollider(powerUp));
 	}
 	for (auto& wall : world.walls)
 	{
@@ -221,13 +220,12 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 }
 
 
-// FIXME Collision with shield actually
 void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 {
 	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
 	PlayerShip& player = *(PlayerShip*)ud0;
 	Laser& alienLaser = *(Laser*)ud1;
-	//Spawn explosion, destroy player and laser
+	// Spawn explosion, destroy player and laser
 	DestroyLaser(alienLaser);
 	if (! context.gameConfig->godMode && ! player.hasShield)
 	{
@@ -263,7 +261,7 @@ void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1)
 	PlayerShip& player = *(PlayerShip*)ud0;
 	PowerUp& powerUp = *(PowerUp*)ud1;
 	ActivatePowerUp(player, powerUp, *context.messageLog, *context.world, *context.gameConfig);
-	Destroy(powerUp);
+	PowerUpDestroy(powerUp);
 }
 
 
@@ -426,7 +424,6 @@ void Start(Game& game, const GameConfig& config, Game::Mode mode)
 	game.world.Update(0.f, game.scriptModule);
 	game.messageLog.Clear();
 }
-
 
 
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)

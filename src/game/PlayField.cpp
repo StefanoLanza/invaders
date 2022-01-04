@@ -23,7 +23,9 @@ PlayField::PlayField(const Vector2D& iBounds, const GameConfig& config, std::def
 	config { config },
 	bounds { iBounds },
 	rndFloat01 { 0.f, 1.f },
-	rndPowerUp { (int)PowerUp::count, rGen }
+	rndPowerUp { (int)PowerUp::count, rGen },
+	availableAlienLasers(0),
+	availablePlayerLasers(0)
 {}
 
 
@@ -71,7 +73,7 @@ void PlayField::SpawnAlienLaser(const Laser& laser)
 
 void PlayField::AddPlayerShip(const PlayerShip& playerShip)
 {
-	players.push_back(std::move(playerShip));
+	players.push_back(playerShip);
 }
 
 void PlayField::AddAlienShip(const Alien& alienShip)

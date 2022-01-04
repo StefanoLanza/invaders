@@ -17,25 +17,25 @@ PowerUp NewPowerUp(const Vector2D& initialPos, const Visual& visual, const Vecto
 }
 
 
-void Destroy(PowerUp& powerUp)
+void PowerUpDestroy(PowerUp& powerUp)
 {
 	powerUp.state = PowerUp::State::dead;
 }
 
 
-Collider GetCollisionArea(PowerUp& powerUp)
+Collider PowerUpGetCollider(PowerUp& powerUp)
 {
 	return { &powerUp, ColliderId::powerUp, powerUp.prevPos, powerUp.pos, powerUp.size, };
 }
 
 
-void Move(PowerUp& powerUp, float dt, const Vector2D& worldBounds)
+void PowerUpMove(PowerUp& powerUp, float dt, const Vector2D& worldBounds)
 {
 	powerUp.prevPos = powerUp.pos;
 	// Move downwards
 	powerUp.pos.y += powerUp.velocity * dt;
 	if (powerUp.pos.y > worldBounds.y - 0.5)
 	{
-		Destroy(powerUp);
+		PowerUpDestroy(powerUp);
 	}
 }

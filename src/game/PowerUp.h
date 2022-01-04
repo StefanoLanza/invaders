@@ -37,6 +37,6 @@ struct PowerUp
 };
 
 PowerUp NewPowerUp(const Vector2D& initialPos, const Visual& visual, const Vector2D& size, float velocity, PowerUp::Type type);
-Collider GetCollisionArea(PowerUp& powerUp);
-void Move(PowerUp& powerUp, float dt, const Vector2D& worldBounds);
-void Destroy(PowerUp& powerUp);
+Collider PowerUpGetCollider(PowerUp& powerUp);
+void PowerUpMove(PowerUp& powerUp, float dt, const Vector2D& worldBounds);
+void PowerUpDestroy(PowerUp& powerUp);

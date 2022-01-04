@@ -239,12 +239,8 @@ void RegisterGameStates(Game& game)
 }
 
 void DisplayScores(const Game& game, Console& console) {
-	char tmp[256];
 	for (int p = 0; p < game.numPlayers; ++p)
 	{
-		snprintf(tmp, sizeof tmp - 1, "P%d Score: %d", p + 1, game.score[p]);
-		tmp[sizeof tmp - 1] = 0;
-		//console.DisplayText(tmp, 0, p, Color::white);
 		console.DrawImage(GetImage(GameImageId::score), 0, 0, Color::white, ImageAlignment::left, ImageAlignment::top);
 		console.DrawNumber(game.score[p], 32, 0, &GetImage(GameImageId::_0), Color::white);
 	}
