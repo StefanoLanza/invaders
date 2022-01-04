@@ -88,64 +88,69 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 }
 
 
-void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig)
+void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig)
 {
 	// Update input state
-	ship.input->Update(dt);
+	player.input->Update(dt);
 
-	const float halfWidth = ship.size.x / 2.f;
+	const float halfWidth = player.size.x / 2.f;
 
-	ship.prevPos = ship.pos;
+	player.prevPos = player.pos;
 	// The original code did not handle the first and last column robustly
-	if (ship.input->Left())
+	if (player.input->Left())
 	{
-		ship.pos.x -= ship.prefab->velocity * ship.speedBoost * dt;
-		ship.pos.x = std::max(halfWidth, ship.pos.x);
+		player.pos.x -= player.prefab->velocity * player.speedBoost * dt;
+		player.pos.x = std::max(halfWidth, player.pos.x);
 	}
-	else if (ship.input->Right())
+	else if (player.input->Right())
 	{
-		ship.pos.x += ship.prefab->velocity * ship.speedBoost * dt;
-		ship.pos.x = std::min(ship.pos.x, worldBounds.x - halfWidth);
+		player.pos.x += player.prefab->velocity * player.speedBoost * dt;
+		player.pos.x = std::min(player.pos.x, worldBounds.x - halfWidth);
 	}
-	if (ship.input->Fire()) {
-		ShootLasers(ship, dt, world, gameConfig.playerLaserVelocity, gameConfig.playerFireRate);
+	if (player.input->Fire()) {
+		ShootLasers(player, dt, world, gameConfig.playerLaserVelocity, gameConfig.playerFireRate);
 	}
 
 	// Boosts lasts a certain amount of time
-	ship.powerUpTimer -= dt;
-	if (ship.powerUpTimer < 0.f)
+	player.powerUpTimer -= dt;
+	if (player.powerUpTimer < 0.f)
 	{
 		// Restore normal values
-		ship.powerUpTimer = 0.f;
-		ship.speedBoost = 1.f;
-		ship.fireBoost = 1.f;
-		ship.doubleFire = false;
-		ship.tripleFire = false;
+		player.powerUpTimer = 0.f;
+		player.speedBoost = 1.f;
+		player.fireBoost = 1.f;
+		player.doubleFire = false;
+		player.tripleFire = false;
 	}
 
-	ship.accumTime += dt; // useful for time based effects
+	player.accumTime += dt; // useful for time based effects
 
-	ship.invulnerabilityTime = std::max(0.f, ship.invulnerabilityTime - dt);
-	if (ship.invulnerabilityTime > 0)
+	player.invulnerabilityTime = std::max(0.f, player.invulnerabilityTime - dt);
+	if (player.invulnerabilityTime > 3.f)
 	{
-		// Flicker player color to indicate invulnerability
-		ship.visual.color = std::sin(20.f * ship.accumTime) > 0.f ? ship.prefab->invulnColor : ship.prefab->color;
-		ship.hasShield = true;
+		player.visual.color = player.prefab->invulnColor;
+		player.hasShield = true;
+	}
+	else if (player.invulnerabilityTime > 0)
+	{
+		// Flicker player color to indicate invulnerability is about to expire
+		player.visual.color = std::sin(20.f * player.accumTime) > 0.f ? player.prefab->invulnColor : player.prefab->color;
+		player.hasShield = true;
 	}
 	else
 	{
-		ship.visual.color = ship.prefab->color;
-		ship.hasShield = false;
+		player.visual.color = player.prefab->color;
+		player.hasShield = false;
 	}
-	ship.visual.imageId = ship.prefab->imageId;
+	player.visual.imageId = player.prefab->imageId;
 }
 
 
-void PlayerShip::Destroy()
+void PlayerDestroy(PlayerShip& player)
 {
-	if (! hasShield)
+	if (! player.hasShield)
 	{
-		state = State::dead;
+		player.state = PlayerShip::State::dead;
 	}
 }
 

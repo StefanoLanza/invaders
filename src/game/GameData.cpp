@@ -89,7 +89,6 @@ constexpr float bossFireRate = 2.f;
 constexpr float laserSpeed = 30.f;
 constexpr float midLaserSpeed = 35.f;
 constexpr float fastLaserSpeed = 45.f;
-constexpr float veryFastLaserSpeed = 60.f;
 
 const AlienPrefab alienPrefabs[] =
 {
@@ -118,7 +117,7 @@ const AlienPrefab alienPrefabs[] =
 	{ alien2Anim, Color::redIntense, twoHits, alienSeq1, midSpeed, downSpeed, fastFire, midLaserSpeed,  },
 	{ alien2Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, midLaserSpeed,  },
 	{ alien2Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, midLaserSpeed,  },
-	{ boss2Anim,  Color::violet, 14, boss2Seq, 40.f, 20.f, bossFireRate, veryFastLaserSpeed, },
+	{ boss2Anim,  Color::violet, 14, boss2Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
 };
 
 const PlayerPrefab playerPrefabs[] =
@@ -312,7 +311,7 @@ int GetNumStages()
 
 const Stage& GetStage(int index)
 {
-	return stages[index + 4]; //FIXME
+	return stages[index];
 }
 
 

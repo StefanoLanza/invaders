@@ -45,6 +45,7 @@ public:
 	void DrawImage(const Image& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
 	void DrawColoredImage(const Image& image, int x, int y);
 	void DrawSprites(const RenderItem* sprites, int count);
+	void DrawNumber(int number, int x, int y, const Image digitImages[10], Color color);
 
 public:
 
@@ -52,6 +53,3 @@ public:
 	IVector2D bounds;
 	std::vector<CHAR_INFO> canvas;
 };
-
-
-void DrawImage(Console& renderer, const ImageA& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);

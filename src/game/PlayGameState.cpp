@@ -231,7 +231,7 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 	DestroyLaser(alienLaser);
 	if (! context.gameConfig->godMode && ! player.hasShield)
 	{
-		player.Destroy();
+		PlayerDestroy(player);
 	}
 	Vector2D explosionPos = player.pos;
 	if (player.hasShield)
@@ -251,7 +251,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	AlienDestroy(alien, context.world->alienWaves[alien.waveIndex]);
 	if (! context.gameConfig->godMode)
 	{
-		player.Destroy();
+		PlayerDestroy(player);
 	}
 	context.world->AddExplosion(alien.body.pos, context.gameConfig->explosionTimer);
 }

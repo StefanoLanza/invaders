@@ -32,11 +32,18 @@ R"(
 	#define alien_color nullptr
 #endif
 
-const wchar_t stage0_Str[2 + 21 * 3] = 
+const wchar_t stageStr[2 + 21 * 3] = 
 LR"(
 ▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
 █▄▄  █  █▄█ █ ▄▄ █▄ 
 ▄▄█  █  █ █ ▀▄▄▀ █▄▄
+)";
+
+const wchar_t scoreStr[2 + 20 * 3] = 
+LR"(
+▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
+█▄▄ █   █ █ █▄█ █▄ 
+▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
 )";
 
 const wchar_t alien0_0Str[2 + 8 * 4] = 
@@ -287,13 +294,11 @@ LR"(
 )";
 
 
-const wchar_t _0Img[] =
+const wchar_t _0Img[2 + 4 * 3] =
 LR"(
-   ____ 
-  / __ \
- / / / /
-/ /_/ / 
-\____/  
+▄▄▄
+█ █
+█▄█
 )";
 
 const wchar_t _1Img[2 + 4 * 3] =
@@ -439,7 +444,8 @@ const Image gameImages[numGameImages] =
 	{ giftImg, nullptr, 24, 8 },
 	{ happyHolImg, nullptr, 30, 8 },
 	{ leafImg, nullptr, 21, 8 },
-	{ stage0_Str, nullptr, 20, 3},
+	{ stageStr, nullptr, 20, 3},
+	{ scoreStr, nullptr, 19, 3 },
 	{ _0Img, nullptr, 3, 3 },
 	{ _1Img, nullptr, 3, 3 },
 	{ _2Img, nullptr, 3, 3 },

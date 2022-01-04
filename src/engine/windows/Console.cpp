@@ -36,7 +36,7 @@ constexpr WORD charColors[colorCount] =
 
 }
 
-constexpr int hudRows = 2; // rows reserved for the HUD
+constexpr int hudRows = 4; // rows reserved for the HUD
 
 
 Console::Console() :
@@ -58,8 +58,8 @@ bool Console::Initialize(int width, int height, int fontSize)
 {
 	assert(width > 0);
 	assert(height > 0);
-	bounds = { width, height };
 	height += hudRows;
+	bounds = { width, height };
 	canvas.resize(width * height);
 	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (!consoleHandle)
@@ -88,8 +88,8 @@ void Console::Clear(Color color)
 
 void Console::DrawCanvas()
 {
-	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1 + hudRows) };
-	WriteConsoleOutputW(consoleHandle, canvas.data(), { (SHORT)bounds.x, (SHORT)(bounds.y + hudRows) }, { 0, 0 }, &writeRegion);
+	SMALL_RECT writeRegion = { 0, 0, (SHORT)bounds.x - 1, (SHORT)(bounds.y - 1) };
+	WriteConsoleOutputW(consoleHandle, canvas.data(), { (SHORT)bounds.x, (SHORT)(bounds.y) }, { 0, 0 }, &writeRegion);
 }
 
 
@@ -138,11 +138,11 @@ void Console::DrawSprites(const RenderItem* sprites, int count)
 			y -= image.height / 2;
 			if (image.colors)
 			{
-				DrawColoredImage(image, x, y);
+				DrawColoredImage(image, x, y + hudRows);
 			}
 			else
 			{
-				DrawImage(image, x, y, ri.visual.color, ImageAlignment::left,  ImageAlignment::top);
+				DrawImage(image, x, y + hudRows, ri.visual.color, ImageAlignment::left,  ImageAlignment::top);
 			}
 		}
 	}
@@ -177,7 +177,7 @@ void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAl
 	}
 	else if (vAlignment == ImageAlignment::bottom)
 	{
-		y0 = bounds.y- image.height - y0;
+		y0 = bounds.y - image.height - y0;
 	}
 	// Clip
 	const int l = std::max(0, x0);
@@ -190,7 +190,7 @@ void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAl
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + (y + hudRows) * bounds.x];
+			auto& c = dst[x + y * bounds.x];
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
@@ -215,7 +215,7 @@ void Console::DrawColoredImage(const Image& image, int x0, int y0)
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + (y + hudRows) * bounds.x];
+			auto& c = dst[x + y * bounds.x];
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
@@ -227,45 +227,21 @@ void Console::DrawColoredImage(const Image& image, int x0, int y0)
 }
 
 
-void DrawImage(Console& renderer, const ImageA& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
+void Console::DrawNumber(int number, int x, int y, const Image digitImages[10], Color color)
 {
-	CHAR_INFO* const dst = renderer.canvas.data();
-	IVector2D bounds = renderer.bounds;
-	if (hAlignment == ImageAlignment::centered)
+	int digits[16] = {};
+	int digitCount = 0;
+	constexpr int base = 10;
+	do
 	{
-		x0 = (bounds.x - image.width) / 2 + x0;
-	}
-	else if (hAlignment == ImageAlignment::right)
-	{
-		x0 = bounds.x - image.width - x0;
-	}
-	if (vAlignment == ImageAlignment::centered)
-	{
-		y0 = (bounds.y - image.height) / 2 + y0;
-	}
-	else if (vAlignment == ImageAlignment::bottom)
-	{
-		y0 = bounds.y- image.height - y0;
-	}
-	// Clip
-	const int l = std::max(0, x0);
-	const int r = std::min(bounds.x, x0 + image.width);
-	const int b = std::max(0, y0);
-	const int t = std::min(bounds.y, y0 + image.height);
-
-	const WORD attrib = charColors[(int)color];
-
-	for (int y = b; y < t; ++y)
-	{
-		for (int x = l; x < r; ++x)
-		{
-			auto& c = dst[x + (y + hudRows) * bounds.x];
-			int s = (x - x0) + (y - y0) * (image.width);
-			if (image.img[s] != ' ')
-			{
-				c.Char.UnicodeChar = static_cast<WCHAR>(image.img[s]);
-				c.Attributes = attrib;
-			}
-		}
-	}
+		digits[digitCount] = number % base;
+		++digitCount;
+		number /= base;
+	} while (number > 0);
+	do 
+	{ 
+		int digit = digits[--digitCount];
+		DrawImage(digitImages[digit], x, y, color, ImageAlignment::left, ImageAlignment::top);
+		x += (digitImages[digit].width + 1);
+	} while (digitCount > 0);
 }

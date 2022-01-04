@@ -41,6 +41,7 @@ enum GameImageId : ImageId
 	happyHolidays,
 	xmasLeaf,
 	stage,
+	score,
 	// numbers
 	_0,
 	_1,
