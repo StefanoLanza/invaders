@@ -27,7 +27,7 @@ namespace
 struct PlayGameStateData
 {
 	CollisionSpace collisionSpace;
-	int            levelIndex = -1;
+	int            stageIndex = -1;
 	bool           showLevel;
 	int            numHits;
 };
@@ -92,10 +92,10 @@ int PlayGame(Game& game, void* data, float dt)
 
 	if (timeline.IsOver() && world.NoAliens())
 	{
-		if (playGameStateData.levelIndex < GetNumLevels() - 1)
+		if (playGameStateData.stageIndex < GetNumStages() - 1)
 		{
 			// Next level
-			SetLevel(playGameStateData.levelIndex + 1, playGameStateData, world);
+			SetLevel(playGameStateData.stageIndex + 1, playGameStateData, world);
 			return (int)GameStateId::running;
 		}
 		else
@@ -124,9 +124,9 @@ void DisplayPlayGame(Console& renderer, const void* data)
 {
 	if (playGameStateData.showLevel)
 	{
-		ImageId imageId = (playGameStateData.levelIndex + (int)GameImageId::_1);
+		ImageId imageId = (playGameStateData.stageIndex + (int)GameImageId::_1);
 		renderer.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
-		renderer.DrawImage(GetImage(GameImageId::level), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
+		renderer.DrawImage(GetImage(GameImageId::stage), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
 }
 
@@ -317,10 +317,10 @@ void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 {
 	world.DestroyAllLasers();
 	world.DestroyAllExplosions();
-	data.levelIndex = levelIndex;
+	data.stageIndex = levelIndex;
 	data.showLevel = true;
 	data.numHits = 0;
-	timeline.SetEvents(GetLevel(levelIndex).events, GetLevel(levelIndex).numEvents);
+	timeline.SetEvents(GetStage(levelIndex).events, GetStage(levelIndex).numEvents);
 }
 
 

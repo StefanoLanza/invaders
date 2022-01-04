@@ -28,6 +28,8 @@ struct ActionSeq
 	const char* seq;
 	int ticks;
 	int a;
+	int l;
+	int dir;
 };
 
 struct AlienWave {
@@ -50,13 +52,13 @@ struct Alien
 	// Dependencies
 	const AlienPrefab* prefab;
 
-	// Components
 	Body      body;
 	Visual    visual;
 	AnimState animState;
 	AlienGameState gameState;
 	State   state;
-
+	Vector2D prevVel;
+	Vector2D nextVel;
 	ActionSeq actionSeq;
 	int waveIndex;
 	int indexInWave;

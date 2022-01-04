@@ -40,13 +40,18 @@ enum GameImageId : ImageId
 	gift,
 	happyHolidays,
 	xmasLeaf,
-	level,
-	girl,
+	stage,
 	// numbers
 	_0,
 	_1,
 	_2,
-	_3
+	_3,
+	_4,
+	_5,
+	_6,
+	_7,
+	_8,
+	_9,
 };
 
 void InitGameImages();

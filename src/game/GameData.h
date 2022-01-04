@@ -33,7 +33,7 @@ enum GameEventId : EventId
 
 struct Event;
 
-struct Level
+struct Stage
 {
 	const Event* events;
 	int numEvents;
@@ -48,6 +48,7 @@ struct AlienPrefab
 	float hspeed;
 	float vspeed;
 	float fireRate;
+	float laserSpeed;
 };
 
 
@@ -61,7 +62,7 @@ struct PlayerPrefab
 };
 
 
-int GetNumLevels();
-const Level& GetLevel(int index);
+int GetNumStages();
+const Stage& GetStage(int index);
 const AlienPrefab& GetAlienPrefab(int index);
 const PlayerPrefab& GetPlayerPrefab(int index);

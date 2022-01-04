@@ -32,6 +32,13 @@ R"(
 	#define alien_color nullptr
 #endif
 
+const wchar_t stage0_Str[2 + 21 * 3] = 
+LR"(
+▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
+█▄▄  █  █▄█ █ ▄▄ █▄ 
+▄▄█  █  █ █ ▀▄▄▀ █▄▄
+)";
+
 const wchar_t alien0_0Str[2 + 8 * 4] = 
 LR"(
  ▀▄▄▄▀ 
@@ -51,7 +58,7 @@ LR"(
 
 const wchar_t alien1_0Str[2 + 8 * 4] = 
 LR"(
- ▄▄█▄▄ 
+ █▄▄▄█ 
 █▀▀█▀▀█
 ▀█▀▀▀█▀
   ▀ ▀  
@@ -59,7 +66,7 @@ LR"(
 
 const wchar_t alien1_1Str[2 + 8 * 4] = 
 LR"(
- ▄▄█▄▄ 
+ █▄▄▄█ 
 █▀▀█▀▀█
 █▀▀▀▀▀█
  ▀   ▀ 
@@ -265,15 +272,6 @@ LR"(
 ▄ ▄ ▄▄▄▄▄▄▄ ▄ ▄
 )";
 
-const wchar_t girlStr[] =
-LR"(
-  .__. 
- {('')}
- -/  \/
- /____\
- _/ |_ 
-)";
-
 const wchar_t planetStr[] = 
 LR"(
      ~+                          
@@ -298,40 +296,67 @@ LR"(
 \____/  
 )";
 
-const wchar_t _1Img[] =
+const wchar_t _1Img[2 + 4 * 3] =
 LR"(
-    __
-   / /
-  / / 
- / /  
-/_/   
+  ▄
+ ▀█
+  █
 )";
 
-const wchar_t _2Img[] =
+const wchar_t _2Img[2 + 4 * 3] =
 LR"(
-   ___ 
-  |__ \
-  __/ /
- / __/ 
-/____/ 
+▄▄▄
+▄▄█
+█▄▄
 )";
 
-const wchar_t _3Img[] =
+const wchar_t _3Img[2 + 4 * 3] =
 LR"(
-   _____
-  |__  /
-   /_ < 
- ___/ / 
-/____/  
+▄▄▄
+▄▄█
+▄▄█
 )";
 
-const wchar_t levelImg[] =
+const wchar_t _4Img[2 + 4 * 3] =
 LR"(
-    __                   __
-   / /   ___ _   _____  / /
-  / /   / _ \ | / / _ \/ / 
- / /___/  __/ |/ /  __/ /  
-/_____/\___/|___/\___/_/   
+▄ ▄
+█▄█
+  █
+)";
+
+const wchar_t _5Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄▄
+▄▄█
+)";
+
+const wchar_t _6Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄▄
+█▄█
+)";
+
+const wchar_t _7Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+  █
+  █
+)";
+
+const wchar_t _8Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄█
+█▄█
+)";
+
+const wchar_t _9Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄█
+  █
 )";
 
 const wchar_t snowFlakeImg[] =
@@ -376,7 +401,7 @@ LR"(
           `)_/`      
 )";
 
-constexpr int numGameImages = static_cast<int>(GameImageId::_3) + 1;
+constexpr int numGameImages = static_cast<int>(GameImageId::_9) + 1;
 const Image gameImages[numGameImages] =
 {
 	{ planetStr, nullptr, 33, 10 },
@@ -414,12 +439,17 @@ const Image gameImages[numGameImages] =
 	{ giftImg, nullptr, 24, 8 },
 	{ happyHolImg, nullptr, 30, 8 },
 	{ leafImg, nullptr, 21, 8 },
-	{ levelImg, nullptr, 27, 5},
-	{ girlStr, nullptr, 7, 5 },
-	{ _0Img, nullptr, 8, 5 },
-	{ _1Img, nullptr, 6, 5 },
-	{ _2Img, nullptr, 7, 5 },
-	{ _3Img, nullptr, 8, 5 },
+	{ stage0_Str, nullptr, 20, 3},
+	{ _0Img, nullptr, 3, 3 },
+	{ _1Img, nullptr, 3, 3 },
+	{ _2Img, nullptr, 3, 3 },
+	{ _3Img, nullptr, 3, 3 },
+	{ _4Img, nullptr, 3, 3 },
+	{ _5Img, nullptr, 3, 3 },
+	{ _6Img, nullptr, 3, 3 },
+	{ _7Img, nullptr, 3, 3 },
+	{ _8Img, nullptr, 3, 3 },
+	{ _9Img, nullptr, 3, 3 },
 };
 
 long GetFileSize(const char* fileName)

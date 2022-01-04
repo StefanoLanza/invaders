@@ -24,19 +24,16 @@ bool AlienCanShoot(const Alien& alien, const AlienWave& wave) {
 }
 
 
-void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
+void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
 	AlienWave& wave = world.alienWaves[alien.waveIndex];
 
 	const Vector2D size = alien.body.size;
 	// Border check vertical:
-	if (alien.body.pos.y >= world.bounds.y - size.y)
+	if (alien.body.pos.y >= world.bounds.y - size.y * 0.5f)
 	{
 		// If an alien ship reaches the bottom of the screen the players die
 		world.DeletePlayers();
-	}
-	if (alien.body.pos.y > world.bounds.y - size.y * 0.5f)
-	{
 		AlienDestroy(alien, wave);// FIXME only mark as dead
 	}
 
@@ -51,7 +48,7 @@ void NormalAlienScript(Alien& alien, float dt, PlayField& world, const GameConfi
 		if (AlienCanShoot(alien, wave)) 
 		{
 			const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
-			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, gameConfig.alienLaserVelocity }, { GameImageId::alienLaser, Color::greenIntense }, -1, ColliderId::alienLaser) );
+			world.SpawnAlienLaser( NewLaser(laserPos, { 0.f, alien.prefab->laserSpeed }, {GameImageId::alienLaser, Color::greenIntense}, -1, ColliderId::alienLaser));
 			alien.gameState.fireTimer = 0.f; // reset it
 		}
 	}
@@ -64,7 +61,7 @@ extern "C"
 
 DLL_EXPORT void ExecuteAlienScript(Alien& alien, const ScriptArgs& args)
 {
-	NormalAlienScript(alien, args.dt, *args.world, *args.gameConfig);
+	AlienScript(alien, args.dt, *args.world, *args.gameConfig);
 }
 
 }

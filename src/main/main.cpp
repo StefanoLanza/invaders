@@ -205,7 +205,6 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 	PARSE_FLOAT(alienWaveSpeedInc, 0.f, 100.f);
 	PARSE_FLOAT(alienWaveFireRateInc, 0.f, 100.f);
 	PARSE_FLOAT(alienLaserVelocity, 0.f, 1000.f);
-	PARSE_FLOAT(alienDownVelocity, 0.f, 1000.f);
 	PARSE_FLOAT(bossFireRate, 0.f, 100.f);
 	PARSE_FLOAT(bossDownVelocity, 0.f, 1000.f);
 	PARSE_FLOAT(explosionTimer, 0.f, 100.f);

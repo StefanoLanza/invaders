@@ -10,6 +10,7 @@
 namespace
 {
 
+// Animations
 const Animation alien0Anim = 
 {
 	{ GameImageId::alien0_0, GameImageId::alien0_1 }, .5f
@@ -39,38 +40,32 @@ const Animation boss2Anim =
 	{ GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f
 };
 
+// Action sequences
 const char* alienSeqNull = {
 	""
 };
 
 const char* alienSeq0 = {
-	"llrrllrrb"
-	"llllrrrrb"
+	"lllrrrblllrrrb"
+	"lllllrbrrrrllrrb"
 };
 
 const char* alienSeq1 = {
-	"rrllrrllb"
-	"rrrrllllb"
+	"rrrlllbrrrlllb"
+	"rrrrrlbllllrrllb"
 };
 
+// Sentinels
 const char* alienSeq2 = {
-	"rrrrllllbllllrrrrb"
+	"brbrblblbltrlltrrtrls"
 };
 
 const char* alienSeq3 = {
-	"llrrllrrb"
-};
-
-const char* alienSeq4 = {
-	"brbrrblblbltlltrtrs"
-};
-
-const char* alienSeq5 = {
-	"blbllbrbrbrtrrtltls"
+	"blblbrbrbrtlrrtlltlrs"
 };
 
 const char* boss0Seq = {
-	"brbrblblltltrtrt"
+	"brrbrlbllrlltlrrbtlltlrtrrlrrbrll"
 };
 
 const char* boss1Seq = {
@@ -81,30 +76,49 @@ const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
-// TODO
-//Action: move down wave
-
+constexpr float normalSpeed = 12.f;
+constexpr float midSpeed = 24.f;
+constexpr float fastSpeed = 48.f;
+constexpr float downSpeed = 5.f;
 constexpr int oneHit = 1;
 constexpr int twoHits = 2;
+constexpr int threeHits = 3;
 constexpr float fastFire = 0.4f;
 constexpr float normalFire = 0.2f;
-constexpr float boosFireRate = 1.f;
+constexpr float bossFireRate = 2.f;
+constexpr float laserSpeed = 30.f;
+constexpr float midLaserSpeed = 35.f;
+constexpr float fastLaserSpeed = 45.f;
+constexpr float veryFastLaserSpeed = 60.f;
 
 const AlienPrefab alienPrefabs[] =
 {
-	// Stage 0
-	{ alien0Anim, Color::white, oneHit, alienSeq0, 10.f, 5.f, normalFire, },
-	{ alien0Anim, Color::white, oneHit, alienSeq1, 10.f, 5.f, normalFire, },
-	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, 10.f, 5.f, fastFire, },
-	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, 10.f, 5.f, fastFire, },
-	{ alien0Anim, Color::green, twoHits, alienSeq4, 12.f, 7.f, fastFire, },
-	{ alien0Anim, Color::green, twoHits, alienSeq5, 12.f, 7.f, fastFire, },
+	// Stage 1
+	{ alien0Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, laserSpeed, },
+	{ alien0Anim, Color::white, oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  laserSpeed, },
+	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, laserSpeed,  },
+	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, laserSpeed,  },
+	{ alien0Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, laserSpeed,  },
+	{ alien0Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, laserSpeed,  },
+	{ boss0Anim,  Color::violet, 10, boss0Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
 
-	{ alien1Anim, Color::green, 1, alienSeq2, 10.f },
-	{ alien2Anim, Color::blue, 1, alienSeq2, 10.f, },
-	{ boss0Anim,  Color::violet, 8, boss0Seq, 20.f, 10.f, boosFireRate, },
-	{ boss1Anim,  Color::violet, 10, boss1Seq, 20.f, 10.f, boosFireRate, },
-	{ boss2Anim,  Color::violet, 12, boss2Seq, 20.f, 10.f, boosFireRate, },
+	// Stage 2
+	{ alien1Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, midLaserSpeed, },
+	{ alien1Anim, Color::white, oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  midLaserSpeed, },
+	{ alien1Anim, Color::redIntense, twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, midLaserSpeed,  },
+	{ alien1Anim, Color::redIntense, twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, midLaserSpeed,  },
+	{ alien1Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, midLaserSpeed,  },
+	{ alien1Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, midLaserSpeed,  },
+	{ boss1Anim,  Color::violet, 12, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
+
+	// Stage 3
+	{ alien2Anim, Color::white, oneHit, alienSeq0, midSpeed, downSpeed, normalFire, midLaserSpeed, },
+	{ alien2Anim, Color::white, oneHit, alienSeq1, midSpeed, downSpeed, normalFire,  midLaserSpeed, },
+	{ alien2Anim, Color::redIntense, twoHits, alienSeq0, midSpeed, downSpeed, fastFire, midLaserSpeed,  },
+	{ alien2Anim, Color::redIntense, twoHits, alienSeq1, midSpeed, downSpeed, fastFire, midLaserSpeed,  },
+	{ alien2Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, midLaserSpeed,  },
+	{ alien2Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, midLaserSpeed,  },
+	{ boss2Anim,  Color::violet, 14, boss2Seq, 40.f, 20.f, bossFireRate, veryFastLaserSpeed, },
 };
 
 const PlayerPrefab playerPrefabs[] =
@@ -113,19 +127,9 @@ const PlayerPrefab playerPrefabs[] =
 	{ GameImageId::player, Color::yellow, Color::white, 30.f, 4.f },
 };
 
-const AlienWaveInfo stage0 =
-{
-	"00001111"
-	"00001111"
-	"00001111",
-	8, 3,
-	12.f, 4.f, 
-	2.5
-};
-
 const AlienWaveInfo stage1 =
 {
-	"22223333"
+	"00001111"
 	"00001111"
 	"00001111",
 	8, 3,
@@ -137,6 +141,16 @@ const AlienWaveInfo stage2 =
 {
 	"22223333"
 	"00001111"
+	"00001111",
+	8, 3,
+	12.f, 4.f, 
+	2.5
+};
+
+const AlienWaveInfo stage3 =
+{
+	"22223333"
+	"00001111"
 	"00001111"
 	" 4    5 ",
 	8, 4,
@@ -144,11 +158,62 @@ const AlienWaveInfo stage2 =
 	2.5
 };
 
-const AlienWaveInfo boss0 = 
+const AlienWaveInfo stage4 = 
 {
-	"7",
+	"6",
 	1, 1,
-	18.f, 16.f, 
+	0.f, 
+	0.f, 
+	2.5
+};
+
+const AlienWaveInfo stage5 =
+{
+	"77778888"
+	"77778888"
+	"77778888",
+	8, 3,
+	12.f, 4.f, 
+	2.5
+};
+
+const AlienWaveInfo stage6 =
+{
+	"9999::::"
+	"77778888"
+	"77778888",
+	8, 3,
+	12.f, 4.f, 
+	2.5
+};
+
+const AlienWaveInfo stage7 =
+{
+	"9999::::"
+	"77778888"
+	"77778888"
+	" ;    < ",
+	8, 4,
+	12.f, 4.f, 
+	2.5
+};
+
+// Boss 
+const AlienWaveInfo stage8 = 
+{
+	"=",
+	1, 1,
+	0.f, 
+	0.f, 
+	2.5
+};
+
+const AlienWaveInfo stage12 = 
+{
+	"20",//FIXME
+	1, 1,
+	0.f, 
+	0.f, 
 	2.5
 };
 
@@ -162,97 +227,93 @@ const char* const hudMessages[] =
 };
 constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 
-const Event level0Events[] =
-{
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage0, },
-	{ GameEventId::message, 4.f, hudMessages[0], },
-};
-
-const Event level1Events[] =
+const Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
 	{ GameEventId::spawnWave, 2.f, &stage1, },
-	{ GameEventId::message, 4.f, hudMessages[1], },
+	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 
-const Event level2Events[] =
+const Event stage2Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
 	{ GameEventId::spawnWave, 2.f, &stage2, },
-	{ GameEventId::message, 4.f, hudMessages[2], },
+	{ GameEventId::message, 4.f, hudMessages[1], },
 };
 
-const Event level3Events[] =
+const Event stage3Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &boss0, },
-	{ GameEventId::message, 4.f, "Oh no, the boss!", },
+	{ GameEventId::spawnWave, 2.f, &stage3, },
+	{ GameEventId::message, 4.f, hudMessages[2], },
 };
 
-#if 0
-const Event level1Events[] =
+const Event stage4Events[] =
 {
-	{ EventType::wait, 2.f, nullptr },
-	{ EventType::spawnWave, 0.f, &alienWavesLevel1[0], },
-	{ EventType::message, 0.f, hudMessages[3], },
-	{ EventType::spawnWave, 6.f, &alienWavesLevel1[1], },
-	{ EventType::spawnWave, 12.f, &alienWavesLevel1[2], },
-	{ EventType::message, 12.f, hudMessages[4], },
-	{ EventType::spawnWave, 18.f, &alienWavesLevel1[3], },
-	{ EventType::spawnWave, 24.f, &alienWavesLevel1[4], },
-	{ EventType::message, 24.f, hudMessages[0], },
-	{ EventType::spawnWave, 30.f, &alienWavesLevel1[5], },
-	{ EventType::boss, 42.f, &bossInfo[1], },
-	{ EventType::message, 42.f, "What a scary boss!", },
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage4, },
+	{ GameEventId::message, 4.f, "Boss", },
 };
 
-const Event level2Events[] =
+const Event stage5Events[] =
 {
-	{ EventType::wait, 2.f, nullptr },
-	{ EventType::spawnWave, 0.f, &alienWavesLevel2[0], },
-	{ EventType::message, 0.f, hudMessages[1], },
-	{ EventType::spawnWave, 6.f, &alienWavesLevel2[1], },
-//	{ EventType::spawnWalls, 12.f, &walls[0], },
-	{ EventType::spawnWave, 12.f, &alienWavesLevel2[2], },
-	//{ EventType::spawnWalls, 24.f, &walls[1], },
-	{ EventType::message, 18.f, hudMessages[2], },
-	{ EventType::spawnWave, 18.f, &alienWavesLevel2[3], },
-	{ EventType::spawnWave, 24.f, &alienWavesLevel2[4], },
-	{ EventType::message, 30.f, hudMessages[3], },
-	{ EventType::spawnWave, 30.f, &alienWavesLevel2[5], },
-	{ EventType::spawnWave, 36.f, &alienWavesLevel2[6], },
-	{ EventType::spawnWave, 42.f, &alienWavesLevel2[7], },
-	{ EventType::boss, 54.f, &bossInfo[2], },
-	{ EventType::message, 54.f, "Kill the final boss!", },
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage5, },
+	{ GameEventId::message, 4.f, hudMessages[3], },
 };
-#endif
 
-const Level levels[] =
+const Event stage6Events[] =
 {
-	{ level0Events, static_cast<int>(std::size(level0Events)) },
-	{ level1Events, static_cast<int>(std::size(level1Events)) },
-	{ level2Events, static_cast<int>(std::size(level2Events)) },
-	{ level3Events, static_cast<int>(std::size(level3Events)) },
-	// TODO Add at least 2 levels
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage6, },
+	{ GameEventId::message, 4.f, hudMessages[4], },
+};
+
+const Event stage7Events[] =
+{
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage7, },
+	{ GameEventId::message, 4.f, hudMessages[0], },
+};
+
+const Event stage8Events[] =
+{
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideStage, 2.f, nullptr },
+	{ GameEventId::spawnWave, 2.f, &stage8, },
+	{ GameEventId::message, 4.f, "Boss", },
+};
+
+const Stage stages[] =
+{
+	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
+	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
+	{ stage3Events, static_cast<int>(std::size(stage3Events)) },
+	{ stage4Events, static_cast<int>(std::size(stage4Events)) },
+	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
+	{ stage6Events, static_cast<int>(std::size(stage6Events)) },
+	{ stage7Events, static_cast<int>(std::size(stage7Events)) },
+	{ stage8Events, static_cast<int>(std::size(stage8Events)) },
 };
 
 }
 
-int GetNumLevels()
+int GetNumStages()
 {
-	return static_cast<int>(std::size(levels));
+	return static_cast<int>(std::size(stages));
 }
 
-const Level& GetLevel(int index)
+const Stage& GetStage(int index)
 {
-	return levels[index];
+	return stages[index + 4]; //FIXME
 }
-
 
 
 const AlienPrefab& GetAlienPrefab(int index)

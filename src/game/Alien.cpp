@@ -7,27 +7,48 @@
 #include <algorithm>
 #include <cassert>
 
+namespace
+{
 
-void ProcessAction(Alien& alien, const AlienWave& wave, char action) 
+void InitActionSequence(ActionSeq& seq, const char* str)
+{
+	seq.a = 0;
+	seq.ticks = 0;
+	seq.seq = str;
+	seq.l = (int)strlen(str);
+	seq.dir = 1;
+}
+
+
+void AlienSetVelocity(Alien& alien, const Vector2D& newVel) 
+{
+	alien.prevVel = alien.nextVel;
+	alien.nextVel = newVel;
+}
+
+void ProcessAction(Alien& alien, const AlienWave& wave, char action, ActionSeq& seq) 
 {
 	const float speed = alien.gameState.speed; // * wave.speed;
 	const float vspeed = alien.prefab->vspeed;
 	switch (action) 
 	{
 		case 'l':
-			alien.body.velocity = { -speed, 0.f };
+			AlienSetVelocity(alien, { -speed, 0.f });
 			break;
 		case 'r':
-			alien.body.velocity = { speed, 0.f };
+			AlienSetVelocity(alien, { speed, 0.f });
 			break;
 		case 't':
-			alien.body.velocity = { 0.f, -vspeed };
+			AlienSetVelocity(alien, { 0.f, -vspeed });
 			break;
 		case 'b':
-			alien.body.velocity = { 0.f, vspeed };
+			AlienSetVelocity(alien, { 0.f, vspeed });
 			break;
 		case 's':
-			alien.body.velocity = { 0.f, 0.f };
+			AlienSetVelocity(alien, { 0.f, 0.f });
+			break;
+		case 'R':
+			seq.dir = -seq.dir;
 			break;
 		default:
 			break;
@@ -36,20 +57,31 @@ void ProcessAction(Alien& alien, const AlienWave& wave, char action)
 
 void TickAlien(Alien& alien, const AlienWave& wave) 
 {
-	ActionSeq& actionSeq = alien.actionSeq;
-	if (actionSeq.ticks == 0  && actionSeq.seq[actionSeq.a] != 0) {
-		ProcessAction(alien, wave, actionSeq.seq[actionSeq.a]);
-		actionSeq.a = (actionSeq.a + 1);
-		if (actionSeq.seq[actionSeq.a] == 0) {
-			actionSeq.a = 0;
+	ActionSeq& seq = alien.actionSeq;
+	if (seq.ticks == 0  && seq.l > 0) {
+		ProcessAction(alien, wave, seq.seq[seq.a], seq);
+		seq.a = (seq.a + seq.dir);
+		if (seq.a >= seq.l) {
+			seq.a = 0;
+		}
+		else if (seq.a < 0) 
+		{
+			seq.a = seq.l - 1;
 		}
 	}
 	constexpr int dticks = 30;
-	actionSeq.ticks++;
-	if (actionSeq.ticks >= dticks) {
-		actionSeq.ticks = 0;
+	const float t = (float)seq.ticks / (float)dticks;
+
+	// Next tick
+	seq.ticks++;
+	if (seq.ticks >= dticks) {
+		seq.ticks = 0;
 	}
-//	float t = (float)actionSeq.ticks / (float)dticks;
+
+	alien.body.velocity = Lerp(alien.prevVel, alien.nextVel, t);
+}
+
+
 }
 
 
@@ -57,6 +89,7 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 {
 	Alien alien;
 	alien.body = { initialPos, initialPos, { 0.f, 0.f }, {0.f, 0.f} };
+	alien.prevVel = alien.nextVel = { 0,0};
 	alien.prefab = &prefab;
 	// Set default
 	alien.gameState.health = prefab.health;
@@ -68,9 +101,7 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 	alien.waveIndex = -1;
 	alien.indexInWave = -1;
 	alien.randomOffset = randomOffset;
-	alien.actionSeq.a = 0;
-	alien.actionSeq.ticks = 0;
-	alien.actionSeq.seq = prefab.actionSeq;
+	InitActionSequence(alien.actionSeq, prefab.actionSeq);
 	return alien;
 }
 

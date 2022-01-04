@@ -16,7 +16,6 @@ struct GameConfig
 	// Alien
 	float alienWaveSpeedInc;
 	float alienWaveFireRateInc;
-	float alienDownVelocity;
 	float alienLaserVelocity;
 	int powerUpHits;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
 	// Bosses
