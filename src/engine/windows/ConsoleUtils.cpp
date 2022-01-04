@@ -17,12 +17,10 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
 
 bool CenterWindowOnDesktop(HWND hwndWindow)
 {
-	HWND hwndParent;
-	RECT rectWindow, rectParent;
- 
 	// make the window relative to its parent
-	if ((hwndParent =GetDesktopWindow()) != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
+	if (HWND hwndParent = GetDesktopWindow(); hwndParent != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
 	{
+		RECT rectWindow, rectParent;
 		GetWindowRect(hwndWindow, &rectWindow);
 		GetWindowRect(hwndParent, &rectParent);
  
@@ -52,7 +50,6 @@ bool CenterWindowOnDesktop(HWND hwndWindow)
 // Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
 bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 {
-
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
 	cfi.nFont = 0;
@@ -70,7 +67,7 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 	bufferInfo.cbSize = sizeof(bufferInfo);
 	if (!GetConsoleScreenBufferInfoEx(handle, &bufferInfo))
 	{
-		std::cout << "GetConsoleScreenBufferInfo error: " << GetLastError() << std::endl;
+		std::cerr << "GetConsoleScreenBufferInfo error: " << GetLastError() << std::endl;
 		return false;
 	}
 
@@ -81,13 +78,13 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 	bufferInfo.dwMaximumWindowSize  = bufferSize;
 	if (!SetConsoleScreenBufferInfoEx(handle, &bufferInfo))
 	{
-		std::cout << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
+		std::cerr << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
 		return false;
 	}
 	SMALL_RECT newWindowRect = { 0, 0, cols - 1, rows - 1};
 	if (!SetConsoleWindowInfo(handle, TRUE, &newWindowRect))
 	{
-		std::cout << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
+		std::cerr << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
 		return false;
 	}
 

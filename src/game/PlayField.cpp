@@ -195,7 +195,7 @@ void PlayField::Update(float dt, const AIModule& aiModule)
 	}
 	for (auto& powerUp : powerUps)
 	{
-		Move(powerUp, dt, bounds);
+		PowerUpMove(powerUp, dt, bounds);
 	}
 	for (auto& laser : lasers)
 	{

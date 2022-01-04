@@ -66,10 +66,16 @@ bool Console::Initialize(int width, int height, int fontSize)
 	{
 		return false;
 	}
+
+	// Disable user selection
+	// ref: https://stackoverflow.com/questions/46567248/how-to-disable-user-selection-in-windows-console
+	const HANDLE inputHandle = GetStdHandle(STD_INPUT_HANDLE);
+	SetConsoleMode(inputHandle, ENABLE_EXTENDED_FLAGS);
+
 	bool r = ResizeConsole(consoleHandle, width, height, fontSize);
 	r = r && CenterConsoleOnDesktop();
 
-	CONSOLE_CURSOR_INFO info;
+	CONSOLE_CURSOR_INFO info {};
 	info.dwSize = 100;
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);

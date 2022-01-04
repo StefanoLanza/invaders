@@ -5,35 +5,38 @@
 
 Random::Random(int numValues, std::default_random_engine& rGen) :
 	rGen { rGen },
-	rndInt { 0, numValues - 1 },
-	history {},
-	last {-1}
+	rndInt { 0, numValues - 1 }
 {
 	assert(numValues > 0 && numValues < maxValues);
+	Reset();
 }
 
 
 void Random::Reset()
 {
-	std::memset(history, 0, sizeof history);
-	last = -1;
+	for (int i = 0; i <= rndInt.max(); ++i) {
+		available[i] = i;
+	}
+	numCandidates = rndInt.max() + 1;
 }
 
 
 int Random::Next()
 {
-	int v = 0;
-	// FIXME Better way to bias types?
-	for (int i = 0; i < rndInt.max(); ++i)
+	// TODO insert last in candidates
+	const int r = rndInt(rGen) % numCandidates;
+	const int n = available[r];
+	if (numCandidates == 1) 
 	{
-		v = rndInt(rGen);
-		if (v != last)
-		{
-			// Never generated
-			break;
-		}
+		Reset();
+		// Remove n from candidates
+		available[n] = available[numCandidates - 1];
 	}
-	last = v;
-	history[v]++;
-	return v;
+	else 
+	{
+		// Remove n from candidates
+		available[r] = available[numCandidates - 1];
+	}
+	--numCandidates;
+	return n;
 }
