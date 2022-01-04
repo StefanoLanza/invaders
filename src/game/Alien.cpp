@@ -26,7 +26,7 @@ void AlienSetVelocity(Alien& alien, const Vector2D& newVel)
 	alien.nextVel = newVel;
 }
 
-void ProcessAction(Alien& alien, const AlienWave& wave, char action, ActionSeq& seq) 
+void ProcessAction(Alien& alien, const AlienWave& wave, char action) 
 {
 	const float speed = alien.gameState.speed; // * wave.speed;
 	const float vspeed = alien.prefab->vspeed;
@@ -47,9 +47,6 @@ void ProcessAction(Alien& alien, const AlienWave& wave, char action, ActionSeq& 
 		case 's':
 			AlienSetVelocity(alien, { 0.f, 0.f });
 			break;
-		case 'R':
-			seq.dir = -seq.dir;
-			break;
 		default:
 			break;
 	}
@@ -59,7 +56,7 @@ void TickAlien(Alien& alien, const AlienWave& wave)
 {
 	ActionSeq& seq = alien.actionSeq;
 	if (seq.ticks == 0  && seq.l > 0) {
-		ProcessAction(alien, wave, seq.seq[seq.a], seq);
+		ProcessAction(alien, wave, seq.seq[seq.a]);
 		seq.a = (seq.a + seq.dir);
 		if (seq.a >= seq.l) {
 			seq.a = 0;
@@ -144,7 +141,7 @@ void AlienDestroy(Alien& alien, AlienWave& wave)
 		alien.state = Alien::State::dead;
 		assert(wave.numAliens > 0);
 		--wave.numAliens;
-		assert(wave.mask[alien.indexInWave] == 1);
-		wave.mask[alien.indexInWave] = 0;
+		assert(wave.collisionMask[alien.indexInWave] == 1);
+		wave.collisionMask[alien.indexInWave] = 0;
 	}
 }

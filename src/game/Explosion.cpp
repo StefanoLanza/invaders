@@ -4,11 +4,17 @@
 #include <cassert>
 
 
+const Animation explosionAnim = 
+{
+	{ GameImageId::explosion0, GameImageId::explosion1 }, .12f
+};
+
+
 Explosion NewExplosion(const Vector2D& initialPos, float timer, float delay)
 {
 	Explosion e;
 	e.pos = initialPos;
-	e.visual = { GameImageId::explosion, Color::yellowIntense };
+	e.visual = { GameImageId::explosion0, Color::yellowIntense };
 	e.timer = timer;
 	e.delay = delay;
 	return e;
@@ -18,6 +24,7 @@ Explosion NewExplosion(const Vector2D& initialPos, float timer, float delay)
 bool UpdateExplosion(Explosion& explosion, float dt)
 {
 	assert(explosion.timer > 0.f);
+	UpdateAnimation(explosion.animState, explosionAnim, dt);
 	if (explosion.delay > dt)
 	{
 		explosion.delay -= dt;
@@ -26,7 +33,7 @@ bool UpdateExplosion(Explosion& explosion, float dt)
 	else
 	{ 
 		explosion.delay = 0.f;
-		explosion.visual.imageId = GameImageId::explosion;
+		explosion.visual.imageId = explosionAnim.images[explosion.animState.frame];
 		explosion.timer -= dt;
 	}
 	// Delete if timer <= 0.f

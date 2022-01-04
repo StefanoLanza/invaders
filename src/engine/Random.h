@@ -14,7 +14,8 @@ private:
 	static constexpr int maxValues = 32;
 
 	std::default_random_engine &rGen;
-	std::uniform_int_distribution<int> rndInt;
-	int available[maxValues];
-	int numCandidates;
+	int numValues;
+	int weights[maxValues];
+	int sumWeights;
+	int last;
 };

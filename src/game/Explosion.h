@@ -9,6 +9,7 @@ struct Explosion
 	float      delay;
 	Vector2D   pos;
 	Visual     visual;
+	AnimState  animState;
 };
 
 

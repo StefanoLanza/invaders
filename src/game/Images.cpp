@@ -173,20 +173,6 @@ LR"(
 ║
 )";
 
-const wchar_t playerLaserLeftStr[] =
-LR"(
-\  
- \ 
-  \
-)";
-
-const wchar_t playerLaserRightStr[] =
-LR"(
-  /
- / 
-/  
-)";
-
 const wchar_t alienLaserStr[] =
 LR"(
 ║
@@ -206,7 +192,14 @@ R"(
 99999999999
 )";
 
-const wchar_t explosionStr[] = 
+const wchar_t explosion0_Str[] = 
+LR"(
+  ▄▄   
+ ▀██▀  
+       
+)";
+
+const wchar_t explosion1_Str[] = 
 LR"(
  ▀▄ ▄▀ 
 ▀▀█▀█▀▀
@@ -425,11 +418,10 @@ const Image gameImages[numGameImages] =
 	{ boss2_0Str, nullptr, 11,	5 },
 	{ boss2_1Str, nullptr, 11,	5 },
 	{ playerLaserStr,	nullptr, 1, 3 },
-	{ playerLaserLeftStr,nullptr, 	3, 3 },
-	{ playerLaserRightStr, nullptr, 3,	3 },
 	{ alienLaserStr,	nullptr, 1, 2 },
 	{ playerShipStr, playerShipColors, 11, 3 },
-	{ explosionStr,	nullptr, 7, 3 },
+	{ explosion0_Str,	nullptr, 7, 3 },
+	{ explosion1_Str,	nullptr, 7, 3 },
 	{ DbonusStr, nullptr, 5,	3 },
 	{ TbonusStr, nullptr, 5,	3 },
 	{ SbonusStr, nullptr, 5, 3 },

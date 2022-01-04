@@ -5,7 +5,8 @@
 
 Random::Random(int numValues, std::default_random_engine& rGen) :
 	rGen { rGen },
-	rndInt { 0, numValues - 1 }
+	numValues { numValues },
+	last { -1 }
 {
 	assert(numValues > 0 && numValues < maxValues);
 	Reset();
@@ -14,29 +15,43 @@ Random::Random(int numValues, std::default_random_engine& rGen) :
 
 void Random::Reset()
 {
-	for (int i = 0; i <= rndInt.max(); ++i) {
-		available[i] = i;
+	sumWeights = 0;
+	for (int i = 0; i < numValues; ++i) 
+	{
+		weights[i] = numValues;
+		sumWeights += weights[i];
 	}
-	numCandidates = rndInt.max() + 1;
+	assert(sumWeights > 0);
+	last = -1;
 }
 
 
 int Random::Next()
 {
-	// TODO insert last in candidates
-	const int r = rndInt(rGen) % numCandidates;
-	const int n = available[r];
-	if (numCandidates == 1) 
+	if (sumWeights == 0)
 	{
 		Reset();
-		// Remove n from candidates
-		available[n] = available[numCandidates - 1];
 	}
-	else 
+
+	std::uniform_int_distribution<int> rndInt(0, sumWeights - 1);
+	int n = -1;
+	do
 	{
-		// Remove n from candidates
-		available[r] = available[numCandidates - 1];
-	}
-	--numCandidates;
+		int r = rndInt(rGen);
+		for (int i = 0; i < numValues; ++i)
+		{
+			if (r < weights[i])
+			{
+				n = i;
+				break;
+			}
+			r -= weights[i];
+		}
+		assert(n != -1);
+	} while(n == last);  // do not pick previous element
+	weights[n]--;
+	sumWeights--;
+	last = n;
+
 	return n;
 }

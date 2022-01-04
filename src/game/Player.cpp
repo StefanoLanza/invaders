@@ -12,11 +12,9 @@
 
 void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate)
 {
-	constexpr Visual laserVisual[3] =
+	constexpr Visual laserVisual =
 	{
-		{ GameImageId::playerLaser, Color::lightBlueIntense },
-		{ GameImageId::playerLaserLeft, Color::lightBlueIntense },
-		{ GameImageId::playerLaserRight, Color::lightBlueIntense },
+		GameImageId::playerLaser, Color::lightBlueIntense
 	};
 
 	// Randomly shoot laser shots
@@ -33,8 +31,8 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 		{
 			if (world.GetAvailablePlayerLasers() >= 2)
 			{
-				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
-				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
 			}
 			else
 			{
@@ -45,9 +43,9 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 		{
 			if (world.GetAvailablePlayerLasers() >= 3)
 			{
-				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
-				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
-				world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+				world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
 			}
 			else
 			{
@@ -56,7 +54,7 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 		}
 		else // single fire
 		{
-			world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual[0], ship.id, ColliderId::playerLaser) );  // straight
+			world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );  // straight
 		}
 		++ship.laserShots;
 	}

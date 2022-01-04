@@ -391,11 +391,11 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 				alien.indexInWave = indexInWave;
 				world.AddAlienShip(alien);
 				++wave.numAliens;
-				wave.mask[indexInWave] = 1;
+				wave.collisionMask[indexInWave] = 1;
 			}
 			else 
 			{
-				wave.mask[indexInWave] = 0;
+				wave.collisionMask[indexInWave] = 0;
 			}
 			++c;
 		}
