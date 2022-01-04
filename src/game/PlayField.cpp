@@ -142,7 +142,7 @@ void PlayField::DeletePlayers()
 
 void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 {
-	ritems.reserve(players.size() + aliens.size() + lasers.size() + explosions.size() );
+	ritems.reserve(walls.size() + players.size() + aliens.size() + lasers.size() + explosions.size() + powerUps.size() );
 	ritems.clear();
 
 	for (const auto& wall : walls)

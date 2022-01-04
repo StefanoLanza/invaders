@@ -41,6 +41,11 @@ const Animation boss2Anim =
 };
 
 // Action sequences
+const char* circleSeq = {
+	"llddbbeerrffttdd"
+};
+
+
 const char* alienSeqNull = {
 	""
 };
@@ -65,7 +70,7 @@ const char* alienSeq3 = {
 };
 
 const char* boss0Seq = {
-	"brrbrlbllrlltlrrbtlltlrtrrlrrbrll"
+	"brrbrlbllrlltlrrbtlltlrtrrlrrrll"
 };
 
 const char* boss1Seq = {
@@ -85,23 +90,25 @@ constexpr int twoHits = 2;
 constexpr int threeHits = 3;
 constexpr float fastFire = 0.4f;
 constexpr float normalFire = 0.2f;
-constexpr float bossFireRate = 2.f;
+constexpr float bossFireRate = 1.f;
 constexpr float laserSpeed = 30.f;
 constexpr float midLaserSpeed = 35.f;
-constexpr float fastLaserSpeed = 45.f;
+constexpr float fastLaserSpeed = 40.f;
+constexpr bool aim = true;
+constexpr bool doNotAim = false;
 
 const AlienPrefab alienPrefabs[] =
 {
-	// Stage 1
-	{ alien0Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, laserSpeed, },
-	{ alien0Anim, Color::white, oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  laserSpeed, },
-	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, laserSpeed,  },
-	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, laserSpeed,  },
-	{ alien0Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, laserSpeed,  },
-	{ alien0Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, laserSpeed,  },
-	{ boss0Anim,  Color::violet, 10, boss0Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
+	// Stage 1,2,3,4 prefabs
+	{ alien0Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, laserSpeed, doNotAim, },
+	{ alien0Anim, Color::white, oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  laserSpeed,  doNotAim, },
+	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,   },
+	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,  },
+	{ alien0Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, laserSpeed,  aim,  },
+	{ alien0Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, laserSpeed, aim, },
+	{ boss0Anim,  Color::violet, 10, boss0Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, aim, },
 
-	// Stage 2
+	// Stage 5,6,7,8 prefabs
 	{ alien1Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, midLaserSpeed, },
 	{ alien1Anim, Color::white, oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  midLaserSpeed, },
 	{ alien1Anim, Color::redIntense, twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, midLaserSpeed,  },
@@ -110,7 +117,7 @@ const AlienPrefab alienPrefabs[] =
 	{ alien1Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, midLaserSpeed,  },
 	{ boss1Anim,  Color::violet, 12, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
 
-	// Stage 3
+	// Stage 9,10,11,12 prefabs
 	{ alien2Anim, Color::white, oneHit, alienSeq0, midSpeed, downSpeed, normalFire, midLaserSpeed, },
 	{ alien2Anim, Color::white, oneHit, alienSeq1, midSpeed, downSpeed, normalFire,  midLaserSpeed, },
 	{ alien2Anim, Color::redIntense, twoHits, alienSeq0, midSpeed, downSpeed, fastFire, midLaserSpeed,  },
@@ -159,10 +166,12 @@ const AlienWaveInfo stage3 =
 
 const AlienWaveInfo stage4 = 
 {
-	"6",
-	1, 1,
-	0.f, 
-	0.f, 
+	"0  6  1"
+	"0     1"
+	"0     1",
+	7, 3,
+	16.f, 
+	4.f, 
 	2.5
 };
 
@@ -292,6 +301,7 @@ const Event stage8Events[] =
 
 const Stage stages[] =
 {
+	{ stage4Events, static_cast<int>(std::size(stage4Events)) },//fixme
 	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
 	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
 	{ stage3Events, static_cast<int>(std::size(stage3Events)) },

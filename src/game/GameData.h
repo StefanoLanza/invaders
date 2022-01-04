@@ -49,6 +49,7 @@ struct AlienPrefab
 	float vspeed;
 	float fireRate;
 	float laserSpeed;
+	bool  aimAtPlayer;
 };
 
 
