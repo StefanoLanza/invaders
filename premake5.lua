@@ -21,7 +21,7 @@ workspace ("Invaders")
 	location (workspacePath)
 	characterset "MBCS"
 	flags   { "MultiProcessorCompile", } --"ConformanceMode", }
-	cppdialect "c++17"
+	cppdialect "C++latest" -- for designated initialized under MSVC
 	exceptionhandling "Off"
 	rtti "Off"
 	startproject "Invaders"

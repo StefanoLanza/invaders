@@ -5,10 +5,8 @@
 #include <cstddef>
 #include <array> // std::size
 
-
 namespace
 {
-
 // Animations
 const Animation alien0Anim = 
 {
@@ -106,13 +104,14 @@ constexpr bool doNotAim = false;
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, laserSpeed, doNotAim, },
-	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  laserSpeed,  doNotAim, },
-	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,   },
-	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,  },
-	{ .anim = alien0Anim, .color = Color::yellow, .hits = threeHits, alienSeq2, midSpeed, 7.f, fastFire, laserSpeed,  aim,  },
-	{ .anim = alien0Anim, .color = Color::yellow, .hits = threeHits, alienSeq3, midSpeed, 7.f, fastFire, laserSpeed, aim, },
-	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, boss0Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, aim, },
+	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed,
+	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, },
+	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
+	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,  },
+	{ .anim = alien0Anim, .color = Color::yellow, .hits = threeHits, .actionSeq = alienSeq2, .hspeed = midSpeed, .vspeed = 7.f, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien0Anim, .color = Color::yellow, .hits = threeHits, .actionSeq = alienSeq3, .hspeed = midSpeed, .vspeed = 7.f,.fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .actionSeq = boss0Seq, .hspeed = 40.f, .vspeed = 20.f, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
 	// Stage 5,6,7,8 prefabs
 	{ alien1Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, midLaserSpeed, },

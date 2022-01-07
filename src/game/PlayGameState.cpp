@@ -145,9 +145,9 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	{
 		collisionSpace.Add(AlienGetCollider(alien));
 	}
-	for (auto& playerLaser : world.lasers)
+	for (auto& laser : world.lasers)
 	{
-		collisionSpace.Add(GetCollider(playerLaser));
+		collisionSpace.Add(GetCollider(laser));
 	}
 	for (auto& powerUp : world.powerUps)
 	{
