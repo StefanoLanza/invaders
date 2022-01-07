@@ -16,7 +16,7 @@ struct Collider;
 
 struct AlienGameState
 {
-	int          health;
+	int          hits;
 	float        energy;
 	float        fireTimer;
 	float        speed;

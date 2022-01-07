@@ -90,7 +90,7 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 	alien.prevVel = alien.nextVel = { 0,0};
 	alien.prefab = &prefab;
 	// Set default
-	alien.gameState.health = prefab.health;
+	alien.gameState.hits = prefab.hits;
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
 	alien.gameState.speed = prefab.hspeed;
@@ -130,8 +130,8 @@ Collider AlienGetCollider(Alien& alien)
 
 bool AlienHit(Alien& alien)
 { 
-	alien.gameState.health -= 1; 
-	return alien.gameState.health <= 0;
+	alien.gameState.hits -= 1; 
+	return alien.gameState.hits <= 0;
 }
 
 

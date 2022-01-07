@@ -6,38 +6,44 @@
 #include <array> // std::size
 
 
-
 namespace
 {
 
 // Animations
 const Animation alien0Anim = 
 {
-	{ GameImageId::alien0_0, GameImageId::alien0_1 }, .5f
+	.images = { GameImageId::alien0_0, GameImageId::alien0_1 }, 
+	.duration = .5f,
 };
 const Animation alien1Anim = 
 {
-	{ GameImageId::alien1_0, GameImageId::alien1_1 }, .5f
+	.images = { GameImageId::alien1_0, GameImageId::alien1_1 }, 
+	.duration = .5f,
 };
 const Animation alien2Anim = 
 {
-	{ GameImageId::alien2_0, GameImageId::alien2_1 }, .5f
+	.images = { GameImageId::alien2_0, GameImageId::alien2_1 }, 
+	.duration = .5f,
 };
 const Animation alien3Anim = 
 {
-	{ GameImageId::alien3_0, GameImageId::alien3_1 }, .5f
+	.images = { GameImageId::alien3_0, GameImageId::alien3_1 }, 
+	.duration = .5f,
 };
 const Animation boss0Anim = 
 {
-	{ GameImageId::boss0_0, GameImageId::boss0_1 }, 0.25f
+	.images = { GameImageId::boss0_0, GameImageId::boss0_1 }, 
+	.duration = 0.25f,
 };
 const Animation boss1Anim = 
 {
-	{ GameImageId::boss1_0, GameImageId::boss1_1 }, 0.25f
+	.images = { GameImageId::boss1_0, GameImageId::boss1_1 },
+	 .duration = 0.25f,
 };
 const Animation boss2Anim = 
 {
-	{ GameImageId::boss2_0, GameImageId::boss2_1 }, 0.25f
+	.images = { GameImageId::boss2_0, GameImageId::boss2_1 },
+	.duration = 0.25f,
 };
 
 // Action sequences
@@ -100,13 +106,13 @@ constexpr bool doNotAim = false;
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ alien0Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, laserSpeed, doNotAim, },
-	{ alien0Anim, Color::white, oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  laserSpeed,  doNotAim, },
-	{ alien0Anim, Color::redIntense, twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,   },
-	{ alien0Anim, Color::redIntense, twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,  },
-	{ alien0Anim, Color::yellow, threeHits, alienSeq2, midSpeed, 7.f, fastFire, laserSpeed,  aim,  },
-	{ alien0Anim, Color::yellow, threeHits, alienSeq3, midSpeed, 7.f, fastFire, laserSpeed, aim, },
-	{ boss0Anim,  Color::violet, 10, boss0Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, aim, },
+	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, laserSpeed, doNotAim, },
+	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, alienSeq1, normalSpeed, downSpeed, normalFire,  laserSpeed,  doNotAim, },
+	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, alienSeq0, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,   },
+	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, alienSeq1, normalSpeed, downSpeed, fastFire, laserSpeed,  doNotAim,  },
+	{ .anim = alien0Anim, .color = Color::yellow, .hits = threeHits, alienSeq2, midSpeed, 7.f, fastFire, laserSpeed,  aim,  },
+	{ .anim = alien0Anim, .color = Color::yellow, .hits = threeHits, alienSeq3, midSpeed, 7.f, fastFire, laserSpeed, aim, },
+	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, boss0Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, aim, },
 
 	// Stage 5,6,7,8 prefabs
 	{ alien1Anim, Color::white, oneHit, alienSeq0, normalSpeed, downSpeed, normalFire, midLaserSpeed, },
@@ -129,18 +135,21 @@ const AlienPrefab alienPrefabs[] =
 
 const PlayerPrefab playerPrefabs[] =
 {
-	{ GameImageId::player, Color::white, Color::yellow, 30.f, 4.f },
-	{ GameImageId::player, Color::yellow, Color::white, 30.f, 4.f },
+	{ .imageId = GameImageId::player, .color = Color::white, .invulnColor = Color::yellow, .velocity= 30.f, .laserOffset = 4.f },
+	{ .imageId = GameImageId::player, .color = Color::yellow, .invulnColor = Color::white, .velocity = 30.f, .laserOffset = 4.f, },
 };
 
 const AlienWaveInfo stage1 =
 {
+	.mask = 
 	"00001111"
 	"00001111"
 	"00001111",
-	8, 3,
-	12.f, 4.f, 
-	2.5
+	.numCols = 8, 
+	.numRows = 3,
+	.dx = 12.f, 
+	.dy = 4.f, 
+	.start_y = 2.5,
 };
 
 const AlienWaveInfo stage2 =

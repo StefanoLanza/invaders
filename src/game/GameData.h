@@ -43,7 +43,7 @@ struct AlienPrefab
 {
 	Animation anim;
 	Color     color;
-	int       health;
+	int       hits;
 	const char* actionSeq;
 	float hspeed;
 	float vspeed;
