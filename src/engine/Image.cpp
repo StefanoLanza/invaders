@@ -2,18 +2,21 @@
 #include <cassert>
 #include <vector>
 
-namespace {
+namespace 
+{
 	std::vector<Image> imageMap;
 }
 
-void SetImage(ImageId imageId, const Image& image) {
+void SetImage(ImageId imageId, const Image& image) 
+{
 	assert(imageId != nullImageId);
 	const int idx = static_cast<int>(imageId) - 1;
 	imageMap.resize(idx + 1);
 	imageMap[idx] = image;
 }
 
-void SetImages(ImageId firstImageId, int imageCount, const Image* images) {
+void SetImages(ImageId firstImageId, int imageCount, const Image* images) 
+{
 	assert(firstImageId != nullImageId);
 	assert(imageCount > 0);
 	const int idx = static_cast<int>(firstImageId) - 1;
@@ -23,12 +26,14 @@ void SetImages(ImageId firstImageId, int imageCount, const Image* images) {
 	}
 }
 
-const Image& GetImage(ImageId imageId) {
+const Image& GetImage(ImageId imageId)
+{
 	const int idx = static_cast<int>(imageId) - 1;
 	return imageMap[idx];
 }
 
-Vector2D GetImageSize(ImageId imageId) {
+Vector2D GetImageSize(ImageId imageId) 
+{
 	const Image& image = GetImage(imageId);
 	return { (float)image.width, (float)image.height };
 }

@@ -6,6 +6,7 @@
 #include <engine/Collision.h>
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 
 namespace
 {

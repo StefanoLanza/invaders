@@ -72,7 +72,7 @@ int main()
 		return 1;
 	}
 
-	std::cout << "Initialize console" << std::endl;
+	std::cout << "Initializing console" << std::endl;
 	Console console;
 	if (! console.Initialize(gameConfig.consoleWidth, gameConfig.consoleHeight, gameConfig.fontSize))
 	{

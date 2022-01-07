@@ -232,12 +232,6 @@ LR"(
 █ S █
  ▀▀▀ 
 )";
-const wchar_t shieldBonusImg[] = 
-LR"(
- ▄▄▄ 
-█SHI█
- ▀▀▀ 
-)";
 const wchar_t FbonusStr[] = 
 LR"(
  ▄▄▄ 
@@ -427,7 +421,6 @@ const Image gameImages[numGameImages] =
 	{ SbonusStr, nullptr, 5, 3 },
 	{ FbonusStr, nullptr, 5, 3 },
 	{ IbonusStr, nullptr, 5, 3 },
-	{ shieldBonusImg, nullptr, 5, 3 },
 	{ shieldStr, nullptr, 15, 1 },
 	{ solidWallStr,	nullptr, 4, 2 },
 	{ brittleWallStr, nullptr, 4, 2 },
@@ -460,9 +453,9 @@ long GetFileSize(const char* fileName)
 }
 
 
-void InitGameImages() {
+void InitGameImages() 
+{
 	SetImages(GameImageId::planet, numGameImages, gameImages);
-
 }
 
 bool LoadTxtImage(ImageA& image, int width, int height, const char* fileName)
