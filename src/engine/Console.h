@@ -46,8 +46,12 @@ public:
 	void DrawColoredImage(const Image& image, int x, int y);
 	void DrawSprites(const RenderItem* sprites, int count);
 	void DrawNumber(int number, int x, int y, const Image digitImages[10], Color color);
+	void DrawBorder(int x, int y, int width, int height, Color color);
+	void DrawRectangle(int x, int y, int width, int height, Color color);
 
 public:
+
+	static constexpr int hudRows = 4; // rows reserved for the HUD
 
 	void* consoleHandle;
 	IVector2D bounds;

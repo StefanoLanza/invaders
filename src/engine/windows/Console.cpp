@@ -1,5 +1,4 @@
 #include "../Console.h"
-#include "../MessageLog.h"
 #include "../Image.h"
 #include "ConsoleUtils.h"
 #include <cassert>
@@ -36,8 +35,6 @@ constexpr WORD charColors[colorCount] =
 
 }
 
-constexpr int hudRows = 4; // rows reserved for the HUD
-
 
 Console::Console() :
 	consoleHandle {nullptr},
@@ -47,11 +44,6 @@ Console::Console() :
 
 
 Console::~Console() = default;
-
-const IVector2D& Console::GetBounds() const
-{
-	return bounds;
-}
 
 
 bool Console::Initialize(int width, int height, int fontSize)
@@ -131,41 +123,6 @@ void Console::DisplayText(const char* str, int col, int row, Color color, ImageA
 }
 
 
-void Console::DrawSprites(const RenderItem* sprites, int count)
-{
-	for (int i = 0; i < count; ++i)
-	{
-		const auto& ri = sprites[i];
-		int x = (int)std::floor(ri.pos.x);
-		int y = (int)std::floor(ri.pos.y);
-		if (ri.visual.imageId != nullImageId) {
-			const Image& image = GetImage(ri.visual.imageId);
-			x -= image.width / 2;
-			y -= image.height / 2;
-			if (image.colors)
-			{
-				DrawColoredImage(image, x, y + hudRows);
-			}
-			else
-			{
-				DrawImage(image, x, y + hudRows, ri.visual.color, ImageAlignment::left,  ImageAlignment::top);
-			}
-		}
-	}
-}
-
-
-void Console::DisplayMessages(const MessageLog& messageLog)
-{
-	for (int i = 0; i < std::min(hudRows, messageLog.GetNumMessages()); ++i)
-	{
-		const auto msg = messageLog.GetMessage(i);
-		const int x =  (bounds.x - (int)strlen(msg.first)) / 2; // centered
-		DisplayText(msg.first, x, 0 + i, msg.second);
-	}
-}
-
-
 void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
 	CHAR_INFO* const dst = canvas.data();
@@ -233,21 +190,76 @@ void Console::DrawColoredImage(const Image& image, int x0, int y0)
 }
 
 
-void Console::DrawNumber(int number, int x, int y, const Image digitImages[10], Color color)
+extern const wchar_t consoleSymbols[];
+
+
+void Console::DrawBorder(int x0, int y0, int width, int height, Color color)
 {
-	int digits[16] = {};
-	int digitCount = 0;
-	constexpr int base = 10;
-	do
+	// Clip
+	const int l = std::max(0, x0);
+	const int r = std::min(bounds.x, x0 + width);
+	const int t = std::max(0, y0);
+	const int b = std::min(bounds.y, y0 + height);
+
+
+	CHAR_INFO* canvasPtr = canvas.data() + t * bounds.x;
+	CHAR_INFO ch; 
+	ch.Attributes = charColors[(int)color];
+	
+	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[0]);
+	if (y0 == t)
 	{
-		digits[digitCount] = number % base;
-		++digitCount;
-		number /= base;
-	} while (number > 0);
-	do 
-	{ 
-		int digit = digits[--digitCount];
-		DrawImage(digitImages[digit], x, y, color, ImageAlignment::left, ImageAlignment::top);
-		x += (digitImages[digit].width + 1);
-	} while (digitCount > 0);
+		for (int col = l; col < r; ++col)
+		{
+			canvasPtr[col] = ch;
+		}
+	}
+	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[2]);
+	if (b == y0 + height)
+	{
+		const int offs = (b - t - 1) * bounds.x;
+		for (int col = l; col < r; ++col)
+		{
+			canvasPtr[col + offs] = ch;
+		}
+	}
+
+	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[1]);
+	if (l == x0)
+	{
+		for (int row = 1; row < (b - t - 1); ++row)
+		{
+			canvasPtr[row * bounds.x + l] = ch;
+		}
+	}
+	if (r == x0 + width)
+	{
+		for (int row = 1; row < (b - t - 1); ++row)
+		{
+			canvasPtr[row * bounds.x + r - 1] = ch;
+		}
+	}
+}
+
+
+void Console::DrawRectangle(int x0, int y0, int width, int height, Color color)
+{
+	CHAR_INFO* const dst = canvas.data();
+
+	// Clip
+	const int l = std::max(0, x0);
+	const int r = std::min(bounds.x, x0 + width);
+	const int t = std::max(0, y0);
+	const int b = std::min(bounds.y, y0 + height);
+
+	CHAR_INFO ch; 
+	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[1]);
+	ch.Attributes = charColors[(int)color];
+	for (int y = t; y < b; ++y)
+	{
+		for (int x = l; x < r; ++x)
+		{
+			dst[x + y * bounds.x] = ch;
+		}
+	}
 }

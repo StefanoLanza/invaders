@@ -22,23 +22,27 @@ int PauseScreen(Game& game, void* data, float dt)
 }
 
 
-void DisplayPauseScreen(Console& renderer, const void* data)
+void DisplayPauseScreen(Console& console, const void* data)
 {
 	static const char* str[] =
 	{
-		"",
 		"Press ENTER to continue game",
 		"Press ESC to go back to main menu",
-		""
 	};
 	constexpr int numRows = static_cast<int>(std::size(str));
-	const IVector2D& bounds = renderer.GetBounds();
-	const int row = (bounds.y - numRows) / 2; // centered
-	const int col = (bounds.x - (int)strlen(str[1])) / 2;
+	const IVector2D& bounds = console.GetBounds();
+	const int width = 50;
+	const int height = 10;
+	const int top = (bounds.y - height) / 2; // centered
+	const int left = (bounds.x - width) / 2;
+	const int textCol = left + 4;
+	const int textRow = top + 3;
+	console.DrawBorder(left - 1, top - 1, width + 2, height + 2, Color::white);
+	console.DrawRectangle(left, top, width, height, Color::black);
+
 	for (int r = 0; r < numRows; ++r)
 	{
-		renderer.ClearLine(row + r);
-		renderer.DisplayText(str[r], col, row + r, Color::white);
+		console.DisplayText(str[r], textCol, textRow + r * 2, Color::white);
 	}
 }
 
