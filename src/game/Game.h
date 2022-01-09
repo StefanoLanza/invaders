@@ -16,10 +16,7 @@ struct Game
 	enum class Mode
 	{
 		p1,
-		cpu1,
 		p1p2,
-		p1cpu2,
-		cpu1cpu2
 	};
 
 	static constexpr int maxPlayers = 2;

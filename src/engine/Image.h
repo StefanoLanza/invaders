@@ -6,7 +6,7 @@
 struct Image
 {
 	const wchar_t* img;
-	const byte* colors;
+	const uint8_t* colors;
 	int width;
 	int height;
 };

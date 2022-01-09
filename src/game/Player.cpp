@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cassert>
 
-void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate)
+void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate)
 {
 	constexpr Visual laserVisual =
 	{
@@ -63,31 +63,39 @@ void ShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVeloci
 
 PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input_)
 {
-	PlayerShip playerShip;
-	playerShip.pos = initialPos;
-	playerShip.prefab = &prefab;
-	playerShip.prevPos = initialPos;
-	playerShip.id = id;
-	playerShip.fireTimer = 0.f;
-	playerShip.fireBoost = 1.f;
-	playerShip.state = PlayerShip::State::normal;
-	playerShip.speedBoost = 1.f;
-	playerShip.score = 0;
-	playerShip.input = std::move(input_);
-	playerShip.powerUpTimer = 0.f;
-	playerShip.invulnerabilityTime = 0.f;
-	playerShip.accumTime = 0.f;
-	playerShip.size = GetImageSize(prefab.imageId);
-	playerShip.laserShots = 0;
-	playerShip.doubleFire = false;
-	playerShip.tripleFire = false;
-	playerShip.hasShield = false;
-	return playerShip;
+	PlayerShip player;
+	player.pos = initialPos;
+	player.prefab = &prefab;
+	player.prevPos = initialPos;
+	player.id = id;
+	player.fireTimer = 0.f;
+	player.fireBoost = 1.f;
+	player.state = PlayerShip::State::normal;
+	player.speedBoost = 1.f;
+	player.score = 0;
+	player.input = std::move(input_);
+	player.powerUpTimer = 0.f;
+	player.shieldTime = 0.f;
+	player.invulnerabilityTime = 0.f;
+	player.accumTime = 0.f;
+	player.size = GetImageSize(prefab.imageId);
+	player.laserShots = 0;
+	player.lives = 3;
+	player.doubleFire = false;
+	player.tripleFire = false;
+	player.hasShield = false;
+	player.visible = true;
+	return player;
 }
 
 
 void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig)
 {
+	if (player.state == PlayerShip::State::dead)
+	{
+		return;
+	}
+	
 	// Update input state
 	player.input->Update(dt);
 
@@ -105,8 +113,9 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 		player.pos.x += player.prefab->velocity * player.speedBoost * dt;
 		player.pos.x = std::min(player.pos.x, worldBounds.x - halfWidth);
 	}
-	if (player.input->Fire()) {
-		ShootLasers(player, dt, world, gameConfig.playerLaserVelocity, gameConfig.playerFireRate);
+	if (player.input->Fire()) 
+	{
+		PlayerShootLasers(player, dt, world, gameConfig.playerLaserVelocity, gameConfig.playerFireRate);
 	}
 
 	// Boosts lasts a certain amount of time
@@ -123,32 +132,60 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 
 	player.accumTime += dt; // useful for time based effects
 
-	player.invulnerabilityTime = std::max(0.f, player.invulnerabilityTime - dt);
-	if (player.invulnerabilityTime > 3.f)
+	// Invulnerability when just hit
+	if (player.state == PlayerShip::State::justHit)
 	{
-		player.visual.color = player.prefab->invulnColor;
+		player.invulnerabilityTime = std::max(0.f, player.invulnerabilityTime - dt);
+		if (player.invulnerabilityTime > 0.f)
+		{
+			// Flicker player to indicate invulnerability is about to expire
+			player.visible = std::sin(40.f * player.accumTime) > 0.f ? true : false;
+		}
+		else
+		{
+			player.visual.color = player.prefab->color;
+			player.visible = true;
+			player.state = PlayerShip::State::normal;
+		}
+	}
+
+	// Shield
+	player.shieldTime = std::max(0.f, player.shieldTime - dt);
+	if (player.shieldTime > 3.f)
+	{
+		player.shieldColor = Color::yellowIntense;
 		player.hasShield = true;
 	}
-	else if (player.invulnerabilityTime > 0)
+	else if (player.shieldTime > 0.f)
 	{
-		// Flicker player color to indicate invulnerability is about to expire
-		player.visual.color = std::sin(20.f * player.accumTime) > 0.f ? player.prefab->invulnColor : player.prefab->color;
+		// Flicker shield color to indicate invulnerability is about to expire
+		player.shieldColor = std::sin(20.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
 		player.hasShield = true;
 	}
 	else
 	{
-		player.visual.color = player.prefab->color;
 		player.hasShield = false;
 	}
+
 	player.visual.imageId = player.prefab->imageId;
 }
 
 
-void PlayerDestroy(PlayerShip& player)
+void PlayerHit(PlayerShip& player)
 {
-	if (! player.hasShield)
+	if (! player.hasShield && player.state == PlayerShip::State::normal)
 	{
-		player.state = PlayerShip::State::dead;
+		assert(player.lives > 0);
+		--player.lives;
+		if (player.lives == 0)
+		{
+			player.state = PlayerShip::State::dead;
+		}
+		else 
+		{
+			player.state = PlayerShip::State::justHit;
+		    player.SetInvulnerable(4.f);
+		}
 	}
 }
 
@@ -196,6 +233,11 @@ void PlayerShip::SetInvulnerable(float timer)
 	invulnerabilityTime = timer;
 }
 
+
+void PlayerShip::SetShield(float time) 
+{
+	shieldTime = time;
+}
 
 void PlayerShip::AddScore(int increment)
 {

@@ -104,17 +104,25 @@ void Console::ClearLine(int row)
 }
 
 
-void Console::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
+void Console::DisplayText(const char* str, int col, int row, Color color, TextAlignment alignment)
 {
 	assert(str);
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
-	if (hAlignment == ImageAlignment::centered)
+	if (alignment == TextAlignment::centered)
 	{
 		col = (bounds.x - (int)strlen(str)) / 2 + col;
 	}
+	else if (alignment == TextAlignment::right)
+	{
+		col = (bounds.x - 1 - (int)strlen(str)) + col;
+	}
 	for (int i = 0; str[i] != 0; ++i)
 	{
-		if (col >= 0 && col < bounds.x)
+		if (col >= bounds.x)
+		{
+			break;
+		}
+		if (col >= 0)
 		{
 			curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
 			curCanvas[i + col].Attributes = charColors[(int)color];

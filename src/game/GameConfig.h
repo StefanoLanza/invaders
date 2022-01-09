@@ -25,7 +25,7 @@ struct GameConfig
 	float explosionTimer;  // explosion lasts some time  before it disappears
 	// Power ups
 	float powerUpVelocity;
-	float powerUpInvulnerabilityTime;
+	float powerUpShieldTime;
 	float powerUpFireBoost;
 	int  alienDestroyedScore;
 	int bossDestroyedScore;

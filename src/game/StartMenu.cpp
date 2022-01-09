@@ -123,6 +123,7 @@ void EnterStartMenu(void* data_, Game& game, int currentState)
 	data.snow_t = 0.f;
 #endif
 	data.t = 0.f;
+	game.world.DestroyAll();
 }
 
 
@@ -136,7 +137,6 @@ int StartMenu(Game& game, void* data_, float dt)
 	GameStateId newState;
 	game.numPlayers = 0;
 	game.messageLog.Clear();
-	game.world.DestroyAll(); // FIXME OnEnter
 
 	if (KeyJustPressed(KeyCode::_1))
 	{
@@ -145,22 +145,7 @@ int StartMenu(Game& game, void* data_, float dt)
 	}
 	else if (KeyJustPressed(KeyCode::_2))
 	{
-		game.mode = Game::Mode::cpu1;
-		newState = GameStateId::intro;
-	}
-	else if (KeyJustPressed(KeyCode::_3))
-	{
 		game.mode = Game::Mode::p1p2;
-		newState = GameStateId::intro;
-	}
-	else if (KeyJustPressed(KeyCode::_4))
-	{
-		game.mode = Game::Mode::p1cpu2;
-		newState = GameStateId::intro;
-	}
-	else if (KeyJustPressed(KeyCode::_5))
-	{
-		game.mode = Game::Mode::cpu1cpu2;
 		newState = GameStateId::intro;
 	}
 	else if (KeyJustPressed(KeyCode::escape))
@@ -175,10 +160,10 @@ int StartMenu(Game& game, void* data_, float dt)
 }
 
 
-void DisplayStartMenu(Console& renderer, const void* data_)
+void DisplayStartMenu(Console& console, const void* data_)
 {
-#if XMAS_EDITION
 	const StartMenuData& data = *(const StartMenuData*)data_;
+#if XMAS_EDITION
 	const Image& snowFlakeImage = GetImage(GetImageId(GameImageId::snowFlake));
 	for (const auto& sf : data.snowFlakes)
 	{
@@ -186,34 +171,39 @@ void DisplayStartMenu(Console& renderer, const void* data_)
 	}
 #endif
 
-	renderer.DrawImage(ikaImg, 0, 4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::top);
-	renderer.DrawImage(invadersImg, 0, 11, Color::yellowIntense, ImageAlignment::centered,  ImageAlignment::top);
+	const float blink = std::sin(20.f * data.t);
+	const Color logoColors[4] = 
+	{
+		Color::yellowIntense,
+		Color::yellow,
+		Color::red,
+		Color::redIntense
+	};
+	const int logoColorIdx = std::clamp((int)(+2.f + blink * 2.f), 0, 3);
+	console.DrawImage(ikaImg, 0, 7, logoColors[logoColorIdx], ImageAlignment::centered, ImageAlignment::top);
+	console.DrawImage(invadersImg, 0, 14, logoColors[logoColorIdx], ImageAlignment::centered,  ImageAlignment::top);
 
 #if XMAS_EDITION
-	const bool blink = std::sin(20.f * data.t) > 0.f;
-	renderer.DisplayText("Christmas Edition", 0, 20, blink ? Color::redIntense : Color::red, ImageAlignment::centered);
+	renderer.DisplayText("Christmas Edition", 0, 20, blink > 0.f ? Color::redIntense : Color::red, ImageAlignment::centered);
 #endif
 	static const char* str[] =
 	{
-		"",
-		"Single Player",
-		"  Press 1 to start one player game",
-		"  Press 2 to start one CPU game",
-		"",
-		"Multi Player",
-		"  Press 3 to start two players game",
-		"  Press 4 to start player and CPU game",
-		"  Press 5 to start two CPUs game",
+		"Press 1 to start one player game",
+		"Press 2 to start two players game",
 		"",
 		"Press ESC to quit"
 	};
-	constexpr int row = 22;
 	constexpr int numRows = static_cast<int>(std::size(str));
-	const int col = (renderer.GetBounds().x - (int)strlen(str[3])) / 2;
+	const IVector2D& bounds = console.GetBounds();
+	const int boxWidth = 50;
+	const int boxHeight = 10;
+	const int top = (bounds.y - boxHeight) / 2; // centered
+	const int left = (bounds.x - boxWidth) / 2;
+	const int textCol = left + 4;
+	const int textRow = top + 3;
 	for (int r = 0; r < numRows; ++r)
 	{
-		//renderer.ClearLine(row + r);
-		renderer.DisplayText(str[r], col, row + r, Color::white);
+		console.DisplayText(str[r], textCol, textRow + r, Color::white);
 	}
 
 #if XMAS_EDITION

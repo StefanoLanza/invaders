@@ -151,11 +151,13 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 	}
 	for (const auto& player : players)
 	{
-		ritems.push_back( { player.pos, player.visual } );
-		if (player.hasShield)
+		if (player.visible)
 		{
-			Color shieldColor = std::sin(20.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
-			ritems.push_back( { Add(player.pos, { 0, -2, }), { GameImageId::shield, shieldColor } } );
+			ritems.push_back( { player.pos, player.visual } );
+			if (player.hasShield)
+			{
+				ritems.push_back( { Add(player.pos, { 0, -2, }), { GameImageId::shield, player.shieldColor } } );
+			}
 		}
 	}
 	for (const auto& alienShip : aliens)

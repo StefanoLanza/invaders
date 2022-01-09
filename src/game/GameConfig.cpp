@@ -23,7 +23,7 @@ GameConfig::GameConfig()
 	// Power ups
 	powerUpHits = 10;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
 	powerUpVelocity = 8.f;
-	powerUpInvulnerabilityTime = 10.f;
+	powerUpShieldTime = 10.f;
 	powerUpFireBoost = 1.5f;
 	alienDestroyedScore = 10;
 	bossDestroyedScore = 100;

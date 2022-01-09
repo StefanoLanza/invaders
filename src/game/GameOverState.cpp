@@ -1,9 +1,9 @@
 #include "GameOverState.h"
 #include "GameStates.h"
+#include "Images.h"
 #include <engine/Input.h>
 #include <engine/Console.h>
 #include <cassert>
-#include <cstring>
 
 
 int GameOverMenu([[maybe_unused]] Game& game, [[maybe_unused]] void* data, [[maybe_unused]] float dt)
@@ -17,22 +17,16 @@ int GameOverMenu([[maybe_unused]] Game& game, [[maybe_unused]] void* data, [[may
 }
 
 
-void DisplayGameOver(Console& renderer, [[maybe_unused]] const void* gameState)
+void DisplayGameOver(Console& console, [[maybe_unused]] const void* gameState)
 {
-	static const char* str[] =
-	{
-		"",
-		"Game Over",
-		"",
-		"Press any key to continue",
-		""
-	};
-	constexpr int numRows = (int)std::size(str);
-	const int row = (renderer.bounds.y - numRows) / 2; // centered
-	const int col = (renderer.bounds.x - (int)strlen(str[3])) / 2;
-	for (int r = 0; r < numRows; ++r)
-	{
-		renderer.ClearLine(row + r);
-		renderer.DisplayText(str[r], col, row + r, Color::white);
-	}
+	const int width = 50;
+	const int height = 10;
+	const IVector2D& bounds = console.GetBounds();
+	const int top = (bounds.y - height) / 2; // centered
+	const int left = (bounds.x - width) / 2;
+	const int textCol = left + 5;
+	const int textRow = top + 3;
+	console.DrawBorder(left - 1, top - 1, width + 2, height + 2, Color::white);
+	console.DrawRectangle(left, top, width, height, Color::black);
+	console.DrawImage(GetImage(GameImageId::gameOver), textCol, textRow, Color::white, ImageAlignment::left, ImageAlignment::top);
 }

@@ -20,7 +20,7 @@ namespace
 // <  violet
 // =  violetIntense
 
-const byte alien_color[2 + 8 * 4] = 
+const uint8_t alien_color[2 + 8 * 4] = 
 R"(
 1111199
 1111111
@@ -29,7 +29,7 @@ R"(
 )";
 
 #else
-	#define alien_color nullptr
+	const uint8_t* alien_color = nullptr;
 #endif
 
 const wchar_t stageStr[2 + 21 * 3] = 
@@ -44,6 +44,13 @@ LR"(
 ▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
 █▄▄ █   █ █ █▄█ █▄ 
 ▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
+)";
+
+const wchar_t gameOverStr[2 + 38 * 3] = 
+LR"(
+ ▄▄  ▄▄▄ ▄   ▄ ▄▄▄   ▄▄▄ ▄  ▄ ▄▄▄ ▄▄▄
+█ ▄▄ █▄█ █▀▄▀█ █▄    █ █ █  █ █▄  █▄█
+▀▄▄▀ █ █ █   █ █▄▄   █▄█ ▀▄▄▀ █▄▄ █▀▄
 )";
 
 const wchar_t alien0_0Str[2 + 8 * 4] = 
@@ -185,7 +192,7 @@ LR"(
  █   █   █ 
 ▄█▄█████▄█▄
 )";
-const byte playerShipColors[] =
+const uint8_t playerShipColors[] =
 R"(
      :     
  :  9:9  : 
@@ -431,6 +438,7 @@ const Image gameImages[numGameImages] =
 	{ leafImg, nullptr, 21, 8 },
 	{ stageStr, nullptr, 20, 3},
 	{ scoreStr, nullptr, 19, 3 },
+	{ gameOverStr, nullptr, 37, 3 },
 	{ _0Img, nullptr, 3, 3 },
 	{ _1Img, nullptr, 3, 3 },
 	{ _2Img, nullptr, 3, 3 },

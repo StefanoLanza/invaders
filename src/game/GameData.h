@@ -44,6 +44,7 @@ struct AlienPrefab
 	Animation anim;
 	Color     color;
 	int       hits;
+	const char* landingSeq;
 	const char* actionSeq;
 	float hspeed;
 	float vspeed;

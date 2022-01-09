@@ -18,6 +18,7 @@ struct PlayerShip
 	enum class State
 	{
 		normal,
+		justHit,
 		dead
 	};
 
@@ -26,6 +27,7 @@ struct PlayerShip
 	void SetDoubleFire();
 	void SetTripleFire();
 	void SetInvulnerable(float timer);
+	void SetShield(float time);
 	void AddScore(int increment);
 
 	Vector2D   pos;
@@ -39,20 +41,24 @@ struct PlayerShip
 	State      state;
 	float      accumTime;
 	int        laserShots;
+	int        lives;
+	float      invulnerabilityTime;
+	bool       visible;
 	// Power ups
 	float      fireBoost;
 	float      speedBoost;
 	bool       doubleFire;
 	bool       tripleFire;
 	float      powerUpTimer;
-	float      invulnerabilityTime;
+	float      shieldTime;
 	bool       hasShield;
+	Color      shieldColor;
 	// Dependencies
 	std::shared_ptr<Input> input;
 };
 
 
 PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input);
-void PlayerDestroy(PlayerShip& player);
+void PlayerHit(PlayerShip& player);
 Collider GetCollisionArea(PlayerShip& ship);
 void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig);

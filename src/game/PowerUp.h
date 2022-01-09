@@ -4,7 +4,6 @@
 #include <engine/RenderItem.h>
 
 
-class PlayField;
 struct Collider;
 
 

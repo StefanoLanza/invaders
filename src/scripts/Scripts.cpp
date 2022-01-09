@@ -53,6 +53,10 @@ bool Aim(Vector2D& laserVel, const Vector2D& laserPos, float laserSpeed, const s
 
 void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
+	if (alien.state != Alien::State::attacking)
+	{
+		return;
+	}
 	AlienWave& wave = world.alienWaves[alien.waveIndex];
 
 	const Vector2D size = alien.body.size;

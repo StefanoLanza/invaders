@@ -11,12 +11,14 @@
 namespace
 {
 
-void InitActionSequence(ActionSeq& seq, const char* str)
+void InitActionSequence(ActionSeq& seq, const char* str, bool looping)
 {
 	seq.a = 0;
 	seq.ticks = 0;
 	seq.seq = str;
-	seq.l = (int)strlen(str);
+	seq.length = (int)strlen(str);
+	seq.ticksPerAction = 30; // FIXME config
+	seq.looping = looping;
 	seq.dir = 1;
 }
 
@@ -27,9 +29,9 @@ void AlienSetVelocity(Alien& alien, const Vector2D& newVel)
 	alien.nextVel = newVel;
 }
 
-void ProcessAction(Alien& alien, const AlienWave& wave, char action) 
+void ProcessAction(Alien& alien, char action) 
 {
-	const float speed = alien.gameState.speed; // * wave.speed;
+	const float speed = alien.gameState.speed;
 	const float vspeed = alien.prefab->vspeed;
 	switch (action) 
 	{
@@ -53,26 +55,29 @@ void ProcessAction(Alien& alien, const AlienWave& wave, char action)
 	}
 }
 
-void TickAlien(Alien& alien, const AlienWave& wave) 
+void TickAlien(Alien& alien, ActionSeq& seq) 
 {
-	ActionSeq& seq = alien.actionSeq;
-	if (seq.ticks == 0  && seq.l > 0) {
-		ProcessAction(alien, wave, seq.seq[seq.a]);
+	const int dticks = seq.ticksPerAction;
+	if (seq.a >= seq.length) {
+		return;
+	}
+
+	if (seq.ticks == 0  && seq.length > 0) {
+		ProcessAction(alien, seq.seq[seq.a]);
 		seq.a = (seq.a + seq.dir);
-		if (seq.a >= seq.l) {
+		if (seq.a >= seq.length) {
 			seq.a = 0;
 		}
 		else if (seq.a < 0) 
 		{
-			seq.a = seq.l - 1;
+			seq.a = seq.length - 1;
 		}
 	}
-	constexpr int dticks = 30;
 	const float t = (float)seq.ticks / (float)dticks;
 
 	// Next tick
 	seq.ticks++;
-	if (seq.ticks >= dticks) {
+	if (seq.ticks >= dticks && seq.looping) {
 		seq.ticks = 0;
 	}
 
@@ -94,24 +99,35 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
 	alien.gameState.speed = prefab.hspeed;
-	alien.state = Alien::State::alive;
+	alien.state = Alien::State::landing;
 	alien.animState.t = randomOffset;
 	alien.waveIndex = -1;
 	alien.indexInWave = -1;
 	alien.randomOffset = randomOffset;
-	InitActionSequence(alien.actionSeq, prefab.actionSeq);
+	InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
+	InitActionSequence(alien.attackSeq, prefab.actionSeq, true);
 	return alien;
 }
 
 void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
-	AlienWave& wave = world.alienWaves[alien.waveIndex];
 	const Image& image = GetImage( alien.prefab->anim.images[alien.animState.frame] );
 	alien.body.size = { (float)image.width, (float)image.height };
 	UpdateAnimation(alien.animState, alien.prefab->anim, dt);
 	alien.visual.imageId = alien.prefab->anim.images[alien.animState.frame];
 	alien.visual.color =  alien.prefab->color;
-	TickAlien(alien, wave);
+	if (alien.state == Alien::State::landing)
+	{
+		TickAlien(alien, alien.landingSeq);
+		if (alien.landingSeq.a >= alien.landingSeq.length)
+		{
+			alien.state = Alien::State::attacking;
+		}
+	}
+	else if (alien.state == Alien::State::attacking)
+	{
+		TickAlien(alien, alien.attackSeq);
+	}
 	alien.body.prevPos = alien.body.pos;
 	alien.body.pos = Mad(alien.body.pos, alien.body.velocity, dt);
 }

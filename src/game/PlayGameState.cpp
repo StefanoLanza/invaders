@@ -229,7 +229,7 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 	DestroyLaser(alienLaser);
 	if (! context.gameConfig->godMode && ! player.hasShield)
 	{
-		PlayerDestroy(player);
+		PlayerHit(player);
 	}
 	Vector2D explosionPos = player.pos;
 	if (player.hasShield)
@@ -249,7 +249,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	AlienDestroy(alien, context.world->alienWaves[alien.waveIndex]);
 	if (! context.gameConfig->godMode)
 	{
-		PlayerDestroy(player);
+		PlayerHit(player);
 	}
 	context.world->AddExplosion(alien.body.pos, context.gameConfig->explosionTimer);
 }
@@ -299,7 +299,7 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 		break;
 	case PowerUp::shield:
 		messageLog.AddMessage("Shield!");
-		player.SetInvulnerable(gameConfig.powerUpInvulnerabilityTime);
+		player.SetShield(gameConfig.powerUpShieldTime);
 		break;
 	case PowerUp::bomb:
 		messageLog.AddMessage("Bomb!");
@@ -436,7 +436,7 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 	const Vector2D player0Size = GetImageSize(prefab0.imageId);
 	const Vector2D player1Size = GetImageSize(prefab1.imageId);
 
-	if (mode == Game::Mode::p1 || mode == Game::Mode::p1cpu2 || mode == Game::Mode::p1p2)
+	if (mode == Game::Mode::p1 || mode == Game::Mode::p1p2)
 	{
 		input0 = std::make_unique<KeyboardInput>(KeyCode::left, KeyCode::right, KeyCode::rctrl);
 	}
@@ -447,10 +447,6 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 	if (mode == Game::Mode::p1p2)
 	{
 		input1 = std::make_unique<KeyboardInput>(KeyCode::A, KeyCode::D, KeyCode::lctrl);
-	}
-	else if (mode == Game::Mode::p1cpu2 || mode == Game::Mode::cpu1cpu2)
-	{
-		input1 = std::make_unique<RndInput>(game.rGen);
 	}
 	if (input1)
 	{

@@ -26,6 +26,13 @@ enum class ImageAlignment
 	bottom
 };
 
+enum class TextAlignment
+{
+	left,
+	centered,
+	right
+};
+
 
 class Console
 {
@@ -40,7 +47,7 @@ public:
 	// Prints canvas char array on console
 	void DrawCanvas();
 	void ClearLine(int row);
-	void DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment = ImageAlignment::left);
+	void DisplayText(const char* str, int col, int row, Color color, TextAlignment alignment = TextAlignment::left);
 	void DisplayMessages(const MessageLog& messageLog);
 	void DrawImage(const Image& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
 	void DrawColoredImage(const Image& image, int x, int y);

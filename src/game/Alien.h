@@ -28,8 +28,10 @@ struct ActionSeq
 	const char* seq;
 	int ticks;
 	int a;
-	int l;
+	int length;
 	int dir;
+	int ticksPerAction;
+	bool looping;
 };
 
 struct AlienWave {
@@ -45,7 +47,8 @@ struct Alien
 {
 	enum class State
 	{
-		alive,
+		landing,
+		attacking,
 		dead
 	};
 
@@ -59,14 +62,14 @@ struct Alien
 	State   state;
 	Vector2D prevVel;
 	Vector2D nextVel;
-	ActionSeq actionSeq;
+
+	ActionSeq landingSeq;
+	ActionSeq attackSeq;
 	int waveIndex;
 	int indexInWave;
 	float randomOffset; // [0,1]
 };
 
-
-struct AIModule;
 
 // Public API
 Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float randomOffset);

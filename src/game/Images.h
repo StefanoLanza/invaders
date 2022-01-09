@@ -40,6 +40,7 @@ enum GameImageId : ImageId
 	xmasLeaf,
 	stage,
 	score,
+	gameOver,
 	// numbers
 	_0,
 	_1,

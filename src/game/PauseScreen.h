@@ -6,4 +6,4 @@ class Console;
 
 
 int PauseScreen(Game& game, void* data, float dt);
-void DisplayPauseScreen(Console& renderer, const void* data);
+void DisplayPauseScreen(Console& console, const void* data);
