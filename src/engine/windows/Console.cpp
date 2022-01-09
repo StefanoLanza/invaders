@@ -124,7 +124,7 @@ void Console::DisplayText(const char* str, int col, int row, Color color, TextAl
 		}
 		if (col >= 0)
 		{
-			curCanvas[i + col].Char.UnicodeChar = static_cast<CHAR>(str[i]);
+			curCanvas[i + col].Char.UnicodeChar = static_cast<WCHAR>(str[i]);
 			curCanvas[i + col].Attributes = charColors[(int)color];
 		}
 	}
@@ -197,6 +197,17 @@ void Console::DrawColoredImage(const Image& image, int x0, int y0)
 	}
 }
 
+
+void Console::DrawChar(wchar_t ch, int x, int y, Color color)
+{
+	if (x < 0 || x >= bounds.x || y < 0 || y >= bounds.y)
+	{
+		return;
+	}
+	CHAR_INFO* dst = canvas.data() + x + y * bounds.x;
+	dst->Char.UnicodeChar = static_cast<WCHAR>(ch);
+	dst->Attributes = charColors[(int)color];
+}
 
 extern const wchar_t consoleSymbols[];
 

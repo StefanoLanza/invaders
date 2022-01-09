@@ -30,6 +30,7 @@ struct Game
 	Mode mode;
 	int stateId;
 	int score[maxPlayers];
+	int playerLives[maxPlayers];
 	int numPlayers;
 };
 

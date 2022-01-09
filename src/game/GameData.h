@@ -57,8 +57,6 @@ struct AlienPrefab
 struct PlayerPrefab
 {
 	ImageId imageId;
-	Color   color;
-	Color   invulnColor;
 	float   velocity;
 	float   laserOffset;
 };

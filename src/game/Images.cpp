@@ -192,11 +192,17 @@ LR"(
  █   █   █ 
 ▄█▄█████▄█▄
 )";
-const uint8_t playerShipColors[] =
+const uint8_t playerShip1_Colors[] =
 R"(
      :     
  :  9:9  : 
 99999999999
+)";
+const uint8_t playerShip2_Colors[] =
+R"(
+     :     
+ :  ;:;  : 
+;;;;;;;;;;;
 )";
 
 const wchar_t explosion0_Str[] = 
@@ -420,7 +426,8 @@ const Image gameImages[numGameImages] =
 	{ boss2_1Str, nullptr, 11,	5 },
 	{ playerLaserStr,	nullptr, 1, 3 },
 	{ alienLaserStr,	nullptr, 1, 2 },
-	{ playerShipStr, playerShipColors, 11, 3 },
+	{ playerShipStr, playerShip1_Colors, 11, 3 },
+	{ playerShipStr, playerShip2_Colors, 11, 3 },
 	{ explosion0_Str,	nullptr, 7, 3 },
 	{ explosion1_Str,	nullptr, 7, 3 },
 	{ DbonusStr, nullptr, 5,	3 },

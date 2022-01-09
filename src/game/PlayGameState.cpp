@@ -20,6 +20,7 @@
 #include <cassert>
 #include <functional>
 
+extern const wchar_t consoleSymbols[];
 
 namespace
 {
@@ -57,6 +58,7 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config);
 void Start(Game& game, const GameConfig& config, Game::Mode mode);
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
+void DisplayLivesAndScores(const Game& game, Console& console);
 
 }
 
@@ -82,11 +84,12 @@ int PlayGame(Game& game, void* data, float dt)
 		return (int)GameStateId::over;
 	}
 
-	// Update score
+	// Update score and lives
 	for (const auto& player : world.GetPlayers())
 	{
 		assert(player.id < game.maxPlayers);
 		game.score[player.id] = player.score;
+		game.playerLives[player.id] = player.lives;
 	}
 
 	if (timeline.IsOver() && world.NoAliens())
@@ -119,14 +122,16 @@ int PlayGame(Game& game, void* data, float dt)
 }
 
 
-void DisplayPlayGame(Console& renderer, const void* data)
+void DisplayPlayGame(Console& console, const void* data)
 {
+	const Game& game = *static_cast<const Game*>(data);
 	if (playGameStateData.showLevel)
 	{
 		ImageId imageId = (playGameStateData.stageIndex + (int)GameImageId::_1);
-		renderer.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
-		renderer.DrawImage(GetImage(GameImageId::stage), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
+		console.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
+		console.DrawImage(GetImage(GameImageId::stage), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
+	DisplayLivesAndScores(game, console);
 }
 
 
@@ -345,10 +350,6 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 		case GameEventId::spawnWave:
 			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
 			break;
-//		case GameEventId::boss:
-	//		SpawnBoss(*(const BossInfo*)event.data, world, gameConfig);
-		
-			//break;
 		case GameEventId::wait:
 			break;
 		default:
@@ -418,6 +419,7 @@ void Start(Game& game, const GameConfig& config, Game::Mode mode)
 	for (int s = 0; s < game.maxPlayers; ++s)
 	{
 		game.score[s] = 0;
+		game.playerLives[s] = 0;
 	}
 	CreatePlayers(game, game.world, mode);
 	game.world.Restart();
@@ -458,6 +460,23 @@ void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 	{
 		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, std::move(input0) ) );
 		game.numPlayers = 1;
+	}
+}
+
+void DisplayLivesAndScores(const Game& game, Console& console)
+{
+	const int x[2] = { 0, console.GetBounds().x / 2 };
+	const Color color[2] = { Color::white, Color::lightBlueIntense };
+	for (int p = 0; p < game.numPlayers; ++p)
+	{
+		int lx = x[p] + 50;
+		for (int l = 0; l < game.playerLives[p]; ++l)
+		{
+			console.DrawChar(consoleSymbols[1], lx, 1, color[p]);
+			lx += 3;	
+		}
+		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 0, color[p], ImageAlignment::left, ImageAlignment::top);
+		console.DrawNumber(game.score[p], x[p] + 30, 0, &GetImage(GameImageId::_0), color[p]);
 	}
 }
 

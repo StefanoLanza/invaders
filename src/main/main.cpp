@@ -36,7 +36,6 @@ namespace
 	
 bool ReadGameConfig(GameConfig& config, const char* iniFile);
 void RegisterGameStates(Game& game);
-void DisplayScores(const Game& game, Console& renderer);
 
 }
 
@@ -131,7 +130,6 @@ int main()
 				console.Clear(Color::black);
 				console.DrawSprites(renderItems.data(), (int)renderItems.size());
 				console.DisplayMessages(messageLog);
-				DisplayScores(game, console);
 				DrawGameState(game, console);
 				console.DrawCanvas();
 
@@ -231,19 +229,11 @@ void RegisterGameStates(Game& game)
 {
 	RegisterGameState(game, &startMenuData, StartMenu, DisplayStartMenu, EnterStartMenu);
 	RegisterGameState(game, &introScreenData, IntroScreen, DisplayIntroScreen, EnterIntroScreen);
-	RegisterGameState(game, nullptr, PlayGame, DisplayPlayGame, EnterPlayGame);
+	RegisterGameState(game, &game, PlayGame, DisplayPlayGame, EnterPlayGame);
 	RegisterGameState(game, nullptr, PauseScreen, DisplayPauseScreen, nullptr);
 	RegisterGameState(game, nullptr, GameOverMenu, DisplayGameOver, nullptr);
 	RegisterGameState(game, nullptr, VictoryScreen, DisplayVictoryScreen, nullptr);
 	RegisterGameState(game, nullptr, nullptr, nullptr, nullptr);
-}
-
-void DisplayScores(const Game& game, Console& console) {
-	for (int p = 0; p < game.numPlayers; ++p)
-	{
-		console.DrawImage(GetImage(GameImageId::score), 0, 0, Color::white, ImageAlignment::left, ImageAlignment::top);
-		console.DrawNumber(game.score[p], 32, 0, &GetImage(GameImageId::_0), Color::white);
-	}
 }
 
 }

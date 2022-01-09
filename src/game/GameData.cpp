@@ -134,8 +134,8 @@ const AlienPrefab alienPrefabs[] =
 
 const PlayerPrefab playerPrefabs[] =
 {
-	{ .imageId = GameImageId::player, .color = Color::white, .invulnColor = Color::yellow, .velocity= 30.f, .laserOffset = 4.f },
-	{ .imageId = GameImageId::player, .color = Color::yellow, .invulnColor = Color::white, .velocity = 30.f, .laserOffset = 4.f, },
+	{ .imageId = GameImageId::player1, .velocity= 30.f, .laserOffset = 4.f },
+	{ .imageId = GameImageId::player2, .velocity= 30.f, .laserOffset = 4.f },
 };
 
 const AlienWaveInfo stage1 =
@@ -309,7 +309,6 @@ const Event stage8Events[] =
 
 const Stage stages[] =
 {
-	{ stage4Events, static_cast<int>(std::size(stage4Events)) },//fixme
 	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
 	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
 	{ stage3Events, static_cast<int>(std::size(stage3Events)) },

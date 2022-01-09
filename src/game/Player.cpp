@@ -85,6 +85,7 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 	player.tripleFire = false;
 	player.hasShield = false;
 	player.visible = true;
+	player.shieldColor = Color::yellowIntense;
 	return player;
 }
 
@@ -143,7 +144,6 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 		}
 		else
 		{
-			player.visual.color = player.prefab->color;
 			player.visible = true;
 			player.state = PlayerShip::State::normal;
 		}
@@ -159,7 +159,7 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 	else if (player.shieldTime > 0.f)
 	{
 		// Flicker shield color to indicate invulnerability is about to expire
-		player.shieldColor = std::sin(20.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
+		player.shieldColor = std::sin(40.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
 		player.hasShield = true;
 	}
 	else
