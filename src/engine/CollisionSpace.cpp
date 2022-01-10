@@ -73,3 +73,19 @@ void CollisionSpace::Execute(const CollisionCallbackInfo callbackInfo[], int num
 		}
 	}
 }
+
+
+bool CollisionSpace::TestRect(const Rectangle& rect, ColliderId colliderId) const
+{
+	const int nc = (int)colliderData.size();
+	const ColliderData* c0 = colliderData.data();
+	const Rectangle* r0 = rectangles.data();
+	for (int c = 0; c < nc; ++c, ++c0, ++r0)
+	{
+		if (c0->id == colliderId && Intersect(rect, *r0))
+		{
+			return true;
+		}
+	}
+	return false;
+}

@@ -40,7 +40,6 @@ struct AlienWave {
 	int numRows;
 	float speed;
 	float fireRate;
-	uint8_t collisionMask[6 * 8]; // FIXME optimize
 };
 
 struct Alien

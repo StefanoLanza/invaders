@@ -46,6 +46,12 @@ Console::Console() :
 Console::~Console() = default;
 
 
+bool Console::IsMinimized() const
+{
+	return IsWindowMinimized(GetConsoleWindow());
+}
+
+
 bool Console::Initialize(int width, int height, int fontSize)
 {
 	assert(width > 0);
@@ -64,8 +70,11 @@ bool Console::Initialize(int width, int height, int fontSize)
 	const HANDLE inputHandle = GetStdHandle(STD_INPUT_HANDLE);
 	SetConsoleMode(inputHandle, ENABLE_EXTENDED_FLAGS);
 
+	const HWND hwnd = GetConsoleWindow();
+	DisableMaximize(hwnd);
+
 	bool r = ResizeConsole(consoleHandle, width, height, fontSize);
-	r = r && CenterConsoleOnDesktop();
+	r = r && CenterWindowOnDesktop(hwnd);
 
 	CONSOLE_CURSOR_INFO info {};
 	info.dwSize = 100;

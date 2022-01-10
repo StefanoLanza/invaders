@@ -158,7 +158,5 @@ void AlienDestroy(Alien& alien, AlienWave& wave)
 		alien.state = Alien::State::dead;
 		assert(wave.numAliens > 0);
 		--wave.numAliens;
-		assert(wave.collisionMask[alien.indexInWave] == 1);
-		wave.collisionMask[alien.indexInWave] = 0;
 	}
 }

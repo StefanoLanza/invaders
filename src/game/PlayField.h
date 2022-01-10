@@ -57,8 +57,7 @@ public:
 
 	void DeletePlayers();
 
-	// TODO Remove gamePlay from PlayField
-	void Update(float dt, const AIModule& scriptModule);
+	void RemoveDead();
 
 	void DestroyAll();
 
@@ -69,8 +68,6 @@ public:
 	void DestroyAllExplosions();
 
 	int GetAvailablePlayerLasers() const;
-
-public:
 
 	void AddScore(int score, int playerId);
 

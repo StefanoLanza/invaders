@@ -11,7 +11,6 @@
 #include <engine/Utils.h>
 #include <engine/MessageLog.h>
 #include "Images.h"
-#include "AIModule.h"
 #include <algorithm>
 #include <cassert>
 #include <functional>
@@ -97,8 +96,7 @@ void PlayField::SpawnRandomPowerUp(const Vector2D& position)
 
 void PlayField::SpawnPowerUp(const Vector2D& position, int type)
 {
-	constexpr int c = (int)PowerUp::count;
-	constexpr Visual visuals[c] =
+	constexpr Visual visuals[] =
 	{
 		{ GameImageId::sPowerUp, Color::yellowIntense, },
 		{ GameImageId::fPowerUp, Color::yellowIntense, },
@@ -184,37 +182,8 @@ const Vector2D& PlayField::GetBounds() const
 	return bounds;
 }
 
-
-void PlayField::Update(float dt, const AIModule& aiModule)
+void PlayField::RemoveDead()
 {
-	// Update all waves
-	const ScriptArgs scriptArgs = { dt, nullptr, this, &config };
-
-	// First move all game objects
-	for (auto& player : players)
-	{
-		Move(player,dt, bounds, *this, config);
-	}
-	for (auto& powerUp : powerUps)
-	{
-		PowerUpMove(powerUp, dt, bounds);
-	}
-	for (auto& laser : lasers)
-	{
-		MoveLaser(laser, dt, bounds);
-	}
-	for (auto& alienShip : aliens)
-	{
-		AlienUpdate(alienShip, dt, *this, config);
-	}
-	if (aiModule.alienScript)
-	{
-		for (auto& alien : aliens)
-		{
-			aiModule.alienScript(alien, scriptArgs);
-		}
-	}
-
 	// Loop over game objects and delete dead ones. The "swap and pop_back" technique is used to delete items
 	// in O(1) as their order is not important.
 	Utils::RemoveElements(players, 
@@ -233,7 +202,7 @@ void PlayField::Update(float dt, const AIModule& aiModule)
 	Utils::RemoveElements(walls, 
 		[](const Wall& wall){ return wall.state == Wall::State::dead; } );
 	// Update and delete explosions in the same loop
-	Utils::RemoveElements(explosions, [=](Explosion& explosion){ return UpdateExplosion(explosion, dt); } );
+	Utils::RemoveElements(explosions, [=](Explosion& explosion){ return IsExplosionOver(explosion); });
 }
 
 

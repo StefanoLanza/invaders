@@ -104,12 +104,16 @@ int main()
 	auto t0 = std::chrono::steady_clock::now();
 	while (game.stateId != (int)GameStateId::quit)
 	{
-		//ReloadDLL(consoleDLL);
 		ReloadScriptModule(aiModule);
 
 		auto t1 = std::chrono::steady_clock::now();
 		const auto elapsedTime = t1 - t0; // includes logic, rendering and sleeping
 		t0 = t1;
+
+		if (console.IsMinimized())
+		{
+			continue;
+		}
 		
 		elapsedTimeHistory[frameIndex]  = elapsedTime;
 		frameIndex = (frameIndex + 1) % std::size(elapsedTimeHistory);

@@ -22,6 +22,7 @@ public:
 	void Add(const Collider& collider);
 	void Clear();
 	void Execute(const CollisionCallbackInfo callbackInfo[], int numCallbacks, void* context) const;
+	bool TestRect(const Rectangle& rect, ColliderId colliderId) const;
 
 private:
 

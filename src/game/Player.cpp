@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <cassert>
 
+namespace
+{
+
 void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laserVelocity, float fireRate)
 {
 	constexpr Visual laserVisual =
@@ -61,6 +64,9 @@ void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laser
 }
 
 
+}
+
+
 PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input_)
 {
 	PlayerShip player;
@@ -86,6 +92,7 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 	player.hasShield = false;
 	player.visible = true;
 	player.shieldColor = Color::yellowIntense;
+	player.visual.imageId = player.prefab->imageId;
 	return player;
 }
 
@@ -159,15 +166,13 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 	else if (player.shieldTime > 0.f)
 	{
 		// Flicker shield color to indicate invulnerability is about to expire
-		player.shieldColor = std::sin(40.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::yellow;
+		player.shieldColor = std::sin(40.f * player.accumTime) > 0.f ? Color::yellowIntense : Color::black;
 		player.hasShield = true;
 	}
 	else
 	{
 		player.hasShield = false;
 	}
-
-	player.visual.imageId = player.prefab->imageId;
 }
 
 

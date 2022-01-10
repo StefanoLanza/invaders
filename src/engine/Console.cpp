@@ -3,6 +3,7 @@
 #include "Image.h"
 #include <cmath>
 
+
 const IVector2D& Console::GetBounds() const
 {
 	return bounds;

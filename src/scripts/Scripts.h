@@ -3,6 +3,7 @@
 struct Game;
 class PlayField;
 struct GameConfig;
+class CollisionSpace;
 
 struct ScriptArgs
 {
@@ -10,4 +11,5 @@ struct ScriptArgs
 	Game*      game;
 	PlayField* world;
 	const GameConfig* gameConfig;
+	const CollisionSpace* collisionSpace;
 };

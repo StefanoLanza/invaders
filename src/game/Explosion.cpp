@@ -21,7 +21,7 @@ Explosion NewExplosion(const Vector2D& initialPos, float timer, float delay)
 }
 
 
-bool UpdateExplosion(Explosion& explosion, float dt)
+void UpdateExplosion(Explosion& explosion, float dt)
 {
 	assert(explosion.timer > 0.f);
 	UpdateAnimation(explosion.animState, explosionAnim, dt);
@@ -36,6 +36,10 @@ bool UpdateExplosion(Explosion& explosion, float dt)
 		explosion.visual.imageId = explosionAnim.images[explosion.animState.frame];
 		explosion.timer -= dt;
 	}
+}
+
+bool IsExplosionOver(const Explosion& explosion) 
+{
 	// Delete if timer <= 0.f
 	return (explosion.timer <= 0.f);
 }

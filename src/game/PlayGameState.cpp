@@ -9,7 +9,9 @@
 #include "Laser.h"
 #include "PowerUp.h"
 #include "Wall.h"
+#include "Explosion.h"
 #include "GameData.h"
+#include "AIModule.h"
 
 #include <engine/Timeline.h>
 #include <engine/Input.h>
@@ -43,6 +45,7 @@ struct CollisionContext
 	PlayGameStateData* stateData;
 };
 
+void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace);
 void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameStateData& stateData);
 // Collision callbacks
 void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1);
@@ -114,7 +117,8 @@ int PlayGame(Game& game, void* data, float dt)
 	}
 	if (! playGameStateData.showLevel)
 	{
-		world.Update(dt, game.scriptModule);
+		UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
+		world.RemoveDead();
 		CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
 	}
 
@@ -137,6 +141,42 @@ void DisplayPlayGame(Console& console, const void* data)
 
 namespace
 {
+
+
+void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace)
+{
+	// Update all waves
+	const ScriptArgs scriptArgs = { dt, nullptr, &world, &world.config, &collisionSpace };
+
+	// First move all game objects
+	for (auto& player : world.players)
+	{
+		Move(player,dt, world.bounds, world, world.config);
+	}
+	for (auto& powerUp : world.powerUps)
+	{
+		PowerUpMove(powerUp, dt, world.bounds);
+	}
+	for (auto& laser : world.lasers)
+	{
+		MoveLaser(laser, dt, world.bounds);
+	}
+	for (auto& alienShip : world.aliens)
+	{
+		AlienUpdate(alienShip, dt, world, world.config);
+	}
+	for (auto& explosion : world.explosions)
+	{
+		UpdateExplosion(explosion, dt);
+	}
+	if (aiModule.alienScript)
+	{
+		for (auto& alien : world.aliens)
+		{
+			aiModule.alienScript(alien, scriptArgs);
+		}
+	}
+}
 
 void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameStateData& stateData)
 {
@@ -392,11 +432,6 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 				alien.indexInWave = indexInWave;
 				world.AddAlienShip(alien);
 				++wave.numAliens;
-				wave.collisionMask[indexInWave] = 1;
-			}
-			else 
-			{
-				wave.collisionMask[indexInWave] = 0;
 			}
 			++c;
 		}
@@ -423,7 +458,6 @@ void Start(Game& game, const GameConfig& config, Game::Mode mode)
 	}
 	CreatePlayers(game, game.world, mode);
 	game.world.Restart();
-	game.world.Update(0.f, game.scriptModule);
 	game.messageLog.Clear();
 }
 

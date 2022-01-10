@@ -14,4 +14,5 @@ struct Explosion
 
 
 Explosion NewExplosion(const Vector2D& initialPos, float timer, float delay);
-bool UpdateExplosion(Explosion& explosion, float dt);
+void UpdateExplosion(Explosion& explosion, float dt);
+bool IsExplosionOver(const Explosion& explosion);

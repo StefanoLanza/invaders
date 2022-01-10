@@ -1,60 +1,31 @@
-#include "../Base.h"
+#include "ConsoleUtils.h"
 #include "../Console.h"
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
 
 
-namespace
+void DisableMaximize(HWND hwndWindow)
 {
+	const auto style = GetWindowLong(hwndWindow, GWL_STYLE);
+	SetWindowLong(hwndWindow, GWL_STYLE, style & ~WS_MAXIMIZEBOX);
+}
 
-bool CenterWindowOnDesktop(HWND hwndWindow);
-bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle);
 
-
-bool CenterWindowOnDesktop(HWND hwndWindow)
+bool IsWindowMinimized(HWND hwnd) 
 {
-	// make the window relative to its parent
-	if (HWND hwndParent = GetDesktopWindow(); hwndParent != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
-	{
-		RECT rectWindow, rectParent;
-		GetWindowRect(hwndWindow, &rectWindow);
-		GetWindowRect(hwndParent, &rectParent);
- 
-		int nWidth = rectWindow.right - rectWindow.left;
-		int nHeight = rectWindow.bottom - rectWindow.top;
- 
-		int nX = ((rectParent.right - rectParent.left) - nWidth) / 2 + rectParent.left;
-		int nY = ((rectParent.bottom - rectParent.top) - nHeight) / 2 + rectParent.top;
- 
-		int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-		int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
- 
-		// make sure that the dialog box never moves outside of the screen
-		if (nX < 0) nX = 0;
-		if (nY < 0) nY = 0;
-		if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
-		if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
- 
-		SetWindowPos(hwndWindow, nullptr, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW || SWP_NOSIZE);
- 
-		return true;
-	}
-
-	return false;
+	LONG styles = GetWindowLong(hwnd, GWL_STYLE);
+	return styles & WS_MINIMIZE; 
 }
 
 // Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
-bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
+bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize)
 {
-	CONSOLE_FONT_INFOEX cfi;
+	CONSOLE_FONT_INFOEX cfi {};
 	cfi.cbSize = sizeof(cfi);
 	cfi.nFont = 0;
 	cfi.dwFontSize.X = 0;                   // Width of each character in the font
-	cfi.dwFontSize.Y = fontSize;                  // Height
+	cfi.dwFontSize.Y =  static_cast<SHORT>(fontSize);                  // Height
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
 	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
@@ -72,7 +43,7 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 	}
 
 	const COORD largestSize = GetLargestConsoleWindowSize(handle);
-	const COORD bufferSize = { cols, rows };
+	const COORD bufferSize = {  static_cast<SHORT>(cols),  static_cast<SHORT>(rows) };
 
 	bufferInfo.dwSize = bufferSize;
 	bufferInfo.dwMaximumWindowSize  = bufferSize;
@@ -81,7 +52,7 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 		std::cerr << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
 		return false;
 	}
-	SMALL_RECT newWindowRect = { 0, 0, cols - 1, rows - 1};
+	SMALL_RECT newWindowRect = { 0, 0,  static_cast<SHORT>(cols - 1),  static_cast<SHORT>(rows - 1) };
 	if (!SetConsoleWindowInfo(handle, TRUE, &newWindowRect))
 	{
 		std::cerr << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
@@ -92,14 +63,41 @@ bool ResizeConsoleImpl(SHORT cols, SHORT rows, SHORT fontSize, HANDLE handle)
 }
 
 
-}
-
-bool ResizeConsole(void* handle, int cols, int rows, int fontSize)
+bool CenterWindowOnDesktop(HWND hWnd)
 {
-	return ResizeConsoleImpl(static_cast<SHORT>(cols), static_cast<SHORT>(rows), static_cast<SHORT>(fontSize), handle);
-}
+	const UINT dpi = GetDpiForWindow(hWnd);
+	// make the window relative to its parent
+	if (HWND hwndParent = GetDesktopWindow(); hwndParent != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
+	{
+		RECT rectWindow, rectParent;
+		if (FALSE == GetWindowRect(hWnd, &rectWindow))
+		{
+			return false;
+		}
+		if (FALSE == GetWindowRect(hwndParent, &rectParent))
+		{
+			return false;
+		}
+ 
+		int nWidth = rectWindow.right - rectWindow.left;
+		int nHeight = rectWindow.bottom - rectWindow.top;
+ 
+		int nX = ((rectParent.right - rectParent.left) - nWidth) / 2 + rectParent.left;
+		int nY = ((rectParent.bottom - rectParent.top) - nHeight) / 2 + rectParent.top;
+ 
+		int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+		int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+ 
+		// make sure that the dialog box never moves outside of the screen
+		if (nX < 0) nX = 0;
+		if (nY < 0) nY = 0;
+		if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
+		if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
+ 
+		SetWindowPos(hWnd, nullptr, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOACTIVATE);
+ 
+		return true;
+	}
 
-bool CenterConsoleOnDesktop()
-{
-	return CenterWindowOnDesktop(GetConsoleWindow());
+	return false;
 }

@@ -41,6 +41,7 @@ public:
 	Console();
 	~Console();
 
+	bool IsMinimized() const;
 	const IVector2D& GetBounds() const;
 	bool Initialize(int width, int height, int fontSize);
 	void Clear(Color color);
