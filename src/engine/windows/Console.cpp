@@ -73,15 +73,20 @@ bool Console::Initialize(int width, int height, int fontSize)
 	const HWND hwnd = GetConsoleWindow();
 	DisableMaximize(hwnd);
 
-	bool r = ResizeConsole(consoleHandle, width, height, fontSize);
-	r = r && CenterWindowOnDesktop(hwnd);
+	SetConsoleFontSize(consoleHandle, fontSize);
+
+	if (!ResizeConsole(consoleHandle, width, height))
+	{
+		return false;
+	}
+	CenterWindowOnDesktop(hwnd);
 
 	CONSOLE_CURSOR_INFO info {};
 	info.dwSize = 100;
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);
 
-	return r;
+	return true;
 }
 
 void Console::Clear(Color color)

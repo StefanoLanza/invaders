@@ -5,6 +5,7 @@
 #include <windows.h>
 
 void DisableMaximize(HWND hwndWindow);
-bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize);
+bool SetConsoleFontSize(HANDLE handle, int fontSize);
+bool ResizeConsole(HANDLE handle, int cols, int rows);
 bool CenterWindowOnDesktop(HWND hwndWindow);
 bool IsWindowMinimized(HWND hwnd);

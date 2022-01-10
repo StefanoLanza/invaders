@@ -18,8 +18,7 @@ bool IsWindowMinimized(HWND hwnd)
 	return styles & WS_MINIMIZE; 
 }
 
-// Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
-bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize)
+bool SetConsoleFontSize(HANDLE handle, int fontSize)
 {
 	CONSOLE_FONT_INFOEX cfi {};
 	cfi.cbSize = sizeof(cfi);
@@ -29,12 +28,24 @@ bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize)
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
 	std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
-	if (!SetCurrentConsoleFontEx(handle, TRUE, &cfi))
+	if (SetCurrentConsoleFontEx(handle, TRUE, &cfi))
 	{
+		return true;
+	}
+	return false;
+}
+
+// Code taken and adapter from http://www.cplusplus.com/forum/windows/121444/
+bool ResizeConsole(HANDLE handle, int cols, int rows)
+{
+	const COORD largestSize = GetLargestConsoleWindowSize(handle);
+	if (cols > largestSize.X || rows > largestSize.Y) 
+	{
+		std::cerr << "Invalid console size" << std::endl;
 		return false;
 	}
 
-	CONSOLE_SCREEN_BUFFER_INFOEX bufferInfo;
+	CONSOLE_SCREEN_BUFFER_INFOEX bufferInfo {};
 	bufferInfo.cbSize = sizeof(bufferInfo);
 	if (!GetConsoleScreenBufferInfoEx(handle, &bufferInfo))
 	{
@@ -42,9 +53,7 @@ bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize)
 		return false;
 	}
 
-	const COORD largestSize = GetLargestConsoleWindowSize(handle);
 	const COORD bufferSize = {  static_cast<SHORT>(cols),  static_cast<SHORT>(rows) };
-
 	bufferInfo.dwSize = bufferSize;
 	bufferInfo.dwMaximumWindowSize  = bufferSize;
 	if (!SetConsoleScreenBufferInfoEx(handle, &bufferInfo))
@@ -52,7 +61,8 @@ bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize)
 		std::cerr << "SetConsoleScreenBufferInfoEx error: " << GetLastError() << std::endl;
 		return false;
 	}
-	SMALL_RECT newWindowRect = { 0, 0,  static_cast<SHORT>(cols - 1),  static_cast<SHORT>(rows - 1) };
+
+	const SMALL_RECT newWindowRect = { 0, 0,  static_cast<SHORT>(cols - 1),  static_cast<SHORT>(rows - 1) };
 	if (!SetConsoleWindowInfo(handle, TRUE, &newWindowRect))
 	{
 		std::cerr << "SetConsoleWindowInfo error: " << GetLastError() << std::endl;
@@ -65,7 +75,9 @@ bool ResizeConsole(HANDLE handle, int cols, int rows, int fontSize)
 
 bool CenterWindowOnDesktop(HWND hWnd)
 {
-	const UINT dpi = GetDpiForWindow(hWnd);
+	// Needed ? Sometimes the window is not centered vertically
+	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+
 	// make the window relative to its parent
 	if (HWND hwndParent = GetDesktopWindow(); hwndParent != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
 	{
@@ -94,7 +106,7 @@ bool CenterWindowOnDesktop(HWND hWnd)
 		if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
 		if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
  
-		SetWindowPos(hWnd, nullptr, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOACTIVATE);
+		SetWindowPos(hWnd, HWND_TOPMOST, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOACTIVATE);
  
 		return true;
 	}
