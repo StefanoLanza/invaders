@@ -106,6 +106,10 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 	alien.randomOffset = randomOffset;
 	InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
 	InitActionSequence(alien.attackSeq, prefab.actionSeq, true);
+	if (prefab.actionPlan)
+	{
+		InitPlan(alien.planState, *prefab.actionPlan);
+	}
 	return alien;
 }
 
@@ -116,19 +120,27 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	UpdateAnimation(alien.animState, alien.prefab->anim, dt);
 	alien.visual.imageId = alien.prefab->anim.images[alien.animState.frame];
 	alien.visual.color =  alien.prefab->color;
-	if (alien.state == Alien::State::landing)
+
+	alien.body.prevPos = alien.body.pos;
+
+	if (alien.prefab->actionPlan)
 	{
-		TickAlien(alien, alien.landingSeq);
-		if (alien.landingSeq.a >= alien.landingSeq.length)
+		TickPlan(alien.planState, alien.body.velocity, alien.body.pos);
+	}
+	else {
+		if (alien.state == Alien::State::landing)
 		{
-			alien.state = Alien::State::attacking;
+			TickAlien(alien, alien.landingSeq);
+			if (alien.landingSeq.a >= alien.landingSeq.length)
+			{
+				alien.state = Alien::State::attacking;
+			}
+		}
+		else if (alien.state == Alien::State::attacking)
+		{
+			TickAlien(alien, alien.attackSeq);
 		}
 	}
-	else if (alien.state == Alien::State::attacking)
-	{
-		TickAlien(alien, alien.attackSeq);
-	}
-	alien.body.prevPos = alien.body.pos;
 	alien.body.pos = Mad(alien.body.pos, alien.body.velocity, dt);
 }
 

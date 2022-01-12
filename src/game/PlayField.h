@@ -14,6 +14,7 @@ struct Laser;
 struct Explosion;
 struct PowerUp;
 struct Wall;
+struct Particle;
 struct GameConfig;
 struct RenderItem;
 class MessageLog;
@@ -82,6 +83,7 @@ public:
 	std::vector<Explosion>   explosions;
 	std::vector<PowerUp>     powerUps;
 	std::vector<Wall>        walls;
+	std::vector<Particle>    particles;
 
 	std::vector<AlienWave> alienWaves;
 

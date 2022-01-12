@@ -27,9 +27,9 @@ const wchar_t invadersTxt[] =
 {
 	#include "texts/invaders.txt"
 };
-const Image ikaImg = { ikaLogo, nullptr, 18, 5 };
+const Image ikaImg = { ikaLogo, nullptr, 20, 4 };
 const Image raidersImg = { raidersTxt, nullptr, 46, 6 };
-const Image invadersImg = { invadersTxt, nullptr, 45, 5 };
+const Image invadersImg = { invadersTxt, nullptr, 48, 4 };
 }
 
 

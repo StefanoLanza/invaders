@@ -4,6 +4,7 @@
 #include <engine/RenderItem.h>
 #include <engine/Body.h>
 #include <engine/Collision.h>
+#include <engine/Plan.h>
 #include <scripts/Scripts.h>
 #include <random>
 
@@ -36,8 +37,6 @@ struct ActionSeq
 
 struct AlienWave {
 	int numAliens;
-	int numCols;
-	int numRows;
 	float speed;
 	float fireRate;
 };
@@ -61,6 +60,7 @@ struct Alien
 	State   state;
 	Vector2D prevVel;
 	Vector2D nextVel;
+	PlanState planState;
 
 	ActionSeq landingSeq;
 	ActionSeq attackSeq;

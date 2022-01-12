@@ -32,19 +32,29 @@ R"(
 	const uint8_t* alien_color = nullptr;
 #endif
 
-const wchar_t stageStr[2 + 21 * 3] = 
+const wchar_t stageStr[2 + 31 * 5] = 
 LR"(
-▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
-█▄▄  █  █▄█ █ ▄▄ █▄ 
-▄▄█  █  █ █ ▀▄▄▀ █▄▄
+   ____  __                   
+  / __/ / /_ ___ _  ___ _ ___ 
+ _\ \  / __// _ `/ / _ `// -_)
+/___/  \__/ \_,_/  \_, / \__/ 
+                  /___/       
 )";
 
-const wchar_t scoreStr[2 + 20 * 3] = 
+//▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
+//█▄▄  █  █▄█ █ ▄▄ █▄ 
+//▄▄█  █  █ █ ▀▄▄▀ █▄▄
+
+const wchar_t scoreStr[2 + 27 * 3] = 
 LR"(
-▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
-█▄▄ █   █ █ █▄█ █▄ 
-▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
+  ___ ____ ___   ____ ___ 
+ (_-</ __// _ \ / __// -_)
+/___/\__/ \___//_/   \__/ 
 )";
+//const wchar_t scoreStr[2 + 20 * 3] = 
+//▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
+//█▄▄ █   █ █ █▄█ █▄ 
+//▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
 
 const wchar_t gameOverStr[2 + 38 * 3] = 
 LR"(
@@ -221,49 +231,43 @@ LR"(
 
 const wchar_t DbonusStr[] = 
 LR"(
- ▄▄▄ 
-█ D █
- ▀▀▀ 
+╭───╮
+| D |
+╰───╯
 )";
 
 const wchar_t TbonusStr[] = 
 LR"(
- ▄▄▄ 
-█ T █
- ▀▀▀ 
+╭───╮
+| T |
+╰───╯
 )";
  
 const wchar_t IbonusStr[] =
 LR"(
- ▄▄▄ 
-█ I █
- ▀▀▀ 
+╭───╮
+| I |
+╰───╯
 )";
 const wchar_t SbonusStr[] = 
 LR"(
- ▄▄▄ 
-█ S █
- ▀▀▀ 
+╭───╮
+| S |
+╰───╯
 )";
 const wchar_t FbonusStr[] = 
 LR"(
- ▄▄▄ 
-█ F █
- ▀▀▀ 
+╭───╮
+| F |
+╰───╯
 )";
 const wchar_t bombStr[] = 
 LR"(
- ▄▄█▀
-█ B █
- ▀▀▀ 
+╭───╮
+| B |
+╰───╯
 )";
 
-/*const wchar_t FbonusStr[] = 
-LR"(
-╭---╮
-| f |
-╰---╯
-)";*/
 const wchar_t solidWallStr[] = 
 LR"(
 ████
@@ -276,7 +280,11 @@ LR"(
 )";
 const wchar_t shieldStr[] =
 LR"(
-▄ ▄ ▄▄▄▄▄▄▄ ▄ ▄
+■ ■ ■■■■■■■ ■ ■
+)";
+const wchar_t particleStr[] =
+LR"(
+■
 )";
 
 const wchar_t planetStr[] = 
@@ -294,32 +302,36 @@ LR"(
 )";
 
 
-const wchar_t _0Img[2 + 4 * 3] =
+const wchar_t _0Img[2 + 7 * 4] =
 LR"(
-▄▄▄
-█ █
-█▄█
+  ___ 
+ / _ \
+/ // /
+\___/ 
 )";
 
-const wchar_t _1Img[2 + 4 * 3] =
+const wchar_t _1Img[2 + 6 * 4] =
 LR"(
-  ▄
- ▀█
-  █
+  ___
+ <  /
+ / / 
+/_/  
 )";
 
-const wchar_t _2Img[2 + 4 * 3] =
+const wchar_t _2Img[2 + 8 * 4] =
 LR"(
-▄▄▄
-▄▄█
-█▄▄
+   ___ 
+  |_  |
+ / __/ 
+/____/ 
 )";
 
-const wchar_t _3Img[2 + 4 * 3] =
+const wchar_t _3Img[2 + 8 * 4] =
 LR"(
-▄▄▄
-▄▄█
-▄▄█
+   ____
+  |_  /
+ _/_ < 
+/____/ 
 )";
 
 const wchar_t _4Img[2 + 4 * 3] =
@@ -436,6 +448,7 @@ const Image gameImages[numGameImages] =
 	{ FbonusStr, nullptr, 5, 3 },
 	{ IbonusStr, nullptr, 5, 3 },
 	{ shieldStr, nullptr, 15, 1 },
+	{ particleStr, nullptr, 1, 1 },
 	{ solidWallStr,	nullptr, 4, 2 },
 	{ brittleWallStr, nullptr, 4, 2 },
 	{ bombStr, nullptr, 5, 3 },
@@ -443,13 +456,13 @@ const Image gameImages[numGameImages] =
 	{ giftImg, nullptr, 24, 8 },
 	{ happyHolImg, nullptr, 30, 8 },
 	{ leafImg, nullptr, 21, 8 },
-	{ stageStr, nullptr, 20, 3},
-	{ scoreStr, nullptr, 19, 3 },
+	{ stageStr, nullptr, 30, 5},
+	{ scoreStr, nullptr, 26, 3 }, // 19, 3
 	{ gameOverStr, nullptr, 37, 3 },
-	{ _0Img, nullptr, 3, 3 },
-	{ _1Img, nullptr, 3, 3 },
-	{ _2Img, nullptr, 3, 3 },
-	{ _3Img, nullptr, 3, 3 },
+	{ _0Img, nullptr, 6, 4 },
+	{ _1Img, nullptr, 5, 4 },
+	{ _2Img, nullptr, 7, 4 },
+	{ _3Img, nullptr, 7, 4 },
 	{ _4Img, nullptr, 3, 3 },
 	{ _5Img, nullptr, 3, 3 },
 	{ _6Img, nullptr, 3, 3 },

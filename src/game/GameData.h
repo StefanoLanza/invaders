@@ -39,6 +39,8 @@ struct Stage
 	int numEvents;
 };
 
+struct Plan;
+
 struct AlienPrefab
 {
 	Animation anim;
@@ -51,6 +53,7 @@ struct AlienPrefab
 	float fireRate;
 	float laserSpeed;
 	bool  aimAtPlayer;
+	const Plan* actionPlan;
 };
 
 

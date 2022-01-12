@@ -27,9 +27,9 @@ void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laser
 		ship.fireTimer = 1.f / (fireRate * ship.fireBoost);
 		const float l = laserVelocity;
 		// Spawn lasers in front
-		const Vector2D laserPos_l = { ship.pos.x - ship.prefab->laserOffset, ship.pos.y - ship.size.y * 0.5f };
-		const Vector2D laserPos_r = { ship.pos.x + ship.prefab->laserOffset, ship.pos.y - ship.size.y * 0.5f };
-		const Vector2D laserPos_m = { ship.pos.x, ship.pos.y - ship.size.y * 0.5f };
+		const Vector2D laserPos_l = { ship.body.pos.x - ship.prefab->laserOffset, ship.body.pos.y - ship.body.size.y * 0.5f };
+		const Vector2D laserPos_r = { ship.body.pos.x + ship.prefab->laserOffset, ship.body.pos.y - ship.body.size.y * 0.5f };
+		const Vector2D laserPos_m = { ship.body.pos.x, ship.body.pos.y - ship.body.size.y * 0.5f };
 		if (ship.doubleFire)
 		{
 			if (world.GetAvailablePlayerLasers() >= 2)
@@ -70,9 +70,10 @@ void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laser
 PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input_)
 {
 	PlayerShip player;
-	player.pos = initialPos;
+	player.body.pos = initialPos;
+	player.body.prevPos = initialPos;
+	player.body.size = GetImageSize(prefab.imageId);
 	player.prefab = &prefab;
-	player.prevPos = initialPos;
 	player.id = id;
 	player.fireTimer = 0.f;
 	player.fireBoost = 1.f;
@@ -84,7 +85,6 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 	player.shieldTime = 0.f;
 	player.invulnerabilityTime = 0.f;
 	player.accumTime = 0.f;
-	player.size = GetImageSize(prefab.imageId);
 	player.laserShots = 0;
 	player.lives = 3;
 	player.doubleFire = false;
@@ -107,19 +107,19 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 	// Update input state
 	player.input->Update(dt);
 
-	const float halfWidth = player.size.x / 2.f;
+	const float halfWidth = player.body.size.x / 2.f;
 
-	player.prevPos = player.pos;
+	player.body.prevPos = player.body.pos;
 	// The original code did not handle the first and last column robustly
 	if (player.input->Left())
 	{
-		player.pos.x -= player.prefab->velocity * player.speedBoost * dt;
-		player.pos.x = std::max(halfWidth, player.pos.x);
+		player.body.pos.x -= player.prefab->velocity * player.speedBoost * dt;
+		player.body.pos.x = std::max(halfWidth, player.body.pos.x);
 	}
 	else if (player.input->Right())
 	{
-		player.pos.x += player.prefab->velocity * player.speedBoost * dt;
-		player.pos.x = std::min(player.pos.x, worldBounds.x - halfWidth);
+		player.body.pos.x += player.prefab->velocity * player.speedBoost * dt;
+		player.body.pos.x = std::min(player.body.pos.x, worldBounds.x - halfWidth);
 	}
 	if (player.input->Fire()) 
 	{
@@ -197,7 +197,7 @@ void PlayerHit(PlayerShip& player)
 
 Collider GetCollisionArea(PlayerShip& ship)
 {
-	return { &ship, ColliderId::player, ship.prevPos, ship.pos, ship.size };
+	return { &ship, ColliderId::player, ship.body.prevPos, ship.body.pos, ship.body.size };
 }
 
 

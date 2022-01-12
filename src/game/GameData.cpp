@@ -1,9 +1,29 @@
 #include "GameData.h"
+#include <engine/Plan.h>
 #include <engine/Timeline.h>
 #include <cstdlib>
 #include <cassert>
 #include <cstddef>
 #include <array> // std::size
+
+
+
+constexpr Action testPlanActions[] =
+{
+	{ .id = ActionId::move, .move = { .x = 80, .y = 27, .speed = 16.f } },
+	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .ticks = 20 } },
+	{ .id = ActionId::rotate, .rotate = { .dtheta = 0.02f, .ticks = 240 } },
+	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .ticks = 120 } },
+	{ .id = ActionId::translate, .translate = { .dx = +16, .dy = 0, .ticks = 120 } },
+	{ .id = ActionId::translate, .translate = { .dx = 0, .dy = -16, .ticks = 120 } },
+};
+constexpr Plan testPlan = 
+{
+	.actions = testPlanActions,
+	.actionCount = (int)std::size(testPlanActions),
+	.loop = true,
+};
+
 
 namespace
 {
@@ -105,7 +125,7 @@ const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
 	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, .landingSeq = nullSeq, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed,
-	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, },
+	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
 	{ .anim = alien0Anim, .color = Color::white, .hits = oneHit, .landingSeq = nullSeq, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
 	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, .landingSeq = nullSeq, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
 	{ .anim = alien0Anim, .color = Color::redIntense, .hits = twoHits, .landingSeq = nullSeq, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,  },
@@ -137,6 +157,18 @@ const PlayerPrefab playerPrefabs[] =
 	{ .imageId = GameImageId::player1, .velocity= 30.f, .laserOffset = 4.f },
 	{ .imageId = GameImageId::player2, .velocity= 30.f, .laserOffset = 4.f },
 };
+
+const AlienWaveInfo teststage =
+{
+	.mask = 
+	"0",
+	.numCols = 1, 
+	.numRows = 1,
+	.dx = 12.f, 
+	.dy = 4.f, 
+	.start_y = 2.5,
+};
+
 
 const AlienWaveInfo stage1 =
 {
@@ -247,7 +279,7 @@ const Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage1, },
+	{ GameEventId::spawnWave, 2.f, &teststage }, //&stage1, },
 	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 

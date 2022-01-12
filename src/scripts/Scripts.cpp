@@ -30,14 +30,14 @@ bool Aim(Vector2D& laserVel, const Vector2D& laserPos, float laserSpeed, const s
 	float mind = std::numeric_limits<float>::max();
 	for (const auto& player : players)
 	{
-		if (float d = std::abs(player.pos.x - laserPos.x); d < mind)
+		if (float d = std::abs(player.body.pos.x - laserPos.x); d < mind)
 		{
 			mind = d;
 			targetPlayer = &player;
 		}
 	}
 	assert(targetPlayer);
-	Vector2D diff = Sub(targetPlayer->pos, laserPos);
+	Vector2D diff = Sub(targetPlayer->body.pos, laserPos);
 	// Limit angle
 	if (2 * std::abs(diff.y) > std::abs(diff.x)) 
 	{

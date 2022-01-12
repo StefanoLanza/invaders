@@ -50,8 +50,19 @@ Vector2D Normalize(const Vector2D& v, float nl)
 	return { v.x * (nl / l), v.y * (nl / l) };
 }
 
+Vector2D Rotate(const Vector2D& v, float cos, float sin)
+{
+	return { v.x * cos + v.y * sin, -v.x * sin + v.y * cos };
+}
+
+
 float Length(const Vector2D& v)
 {
 	return std::sqrt(v.x * v.x + v.y * v.y);
 }
 
+
+float SquareLength(const Vector2D& v)
+{
+	return Dot(v, v);
+}

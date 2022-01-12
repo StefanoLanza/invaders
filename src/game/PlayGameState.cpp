@@ -276,7 +276,7 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 	{
 		PlayerHit(player);
 	}
-	Vector2D explosionPos = player.pos;
+	Vector2D explosionPos = player.body.pos;
 	if (player.hasShield)
 	{
 		explosionPos = Add(explosionPos, { 0.f, -3.f} );
@@ -412,8 +412,6 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	}
 	AlienWave& wave = world.alienWaves[waveIndex];
 	wave.numAliens = 0;
-	wave.numCols = waveInfo.numCols;
-	wave.numRows = waveInfo.numRows;
 	wave.speed = 0.f;
 	wave.fireRate = 0.f;
 
@@ -509,7 +507,7 @@ void DisplayLivesAndScores(const Game& game, Console& console)
 			console.DrawChar(consoleSymbols[1], lx, 1, color[p]);
 			lx += 3;	
 		}
-		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 0, color[p], ImageAlignment::left, ImageAlignment::top);
+		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 1, color[p], ImageAlignment::left, ImageAlignment::top);
 		console.DrawNumber(game.score[p], x[p] + 30, 0, &GetImage(GameImageId::_0), color[p]);
 	}
 }

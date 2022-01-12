@@ -75,8 +75,8 @@ bool ResizeConsole(HANDLE handle, int cols, int rows)
 
 bool CenterWindowOnDesktop(HWND hWnd)
 {
-	// Needed ? Sometimes the window is not centered vertically
-	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
+	// Needed ? Sometimes the window is not centered vertically  
+	SetWindowPos(hWnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
 
 	// make the window relative to its parent
 	if (HWND hwndParent = GetDesktopWindow(); hwndParent != NULL) //  GetAncestor(hwndWindow, GA_PARENT)) != NULL)
@@ -106,7 +106,7 @@ bool CenterWindowOnDesktop(HWND hWnd)
 		if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
 		if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
  
-		SetWindowPos(hWnd, HWND_TOPMOST, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOACTIVATE);
+		SetWindowPos(hWnd, nullptr, nX, nY, nWidth, nHeight, SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOACTIVATE);
  
 		return true;
 	}

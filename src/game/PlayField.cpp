@@ -6,6 +6,7 @@
 #include "Explosion.h"
 #include "PowerUp.h"
 #include "Wall.h"
+#include "Particle.h"
 #include "GameConfig.h"
 #include <engine/Console.h>
 #include <engine/Utils.h>
@@ -151,10 +152,10 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 	{
 		if (player.visible)
 		{
-			ritems.push_back( { player.pos, player.visual } );
+			ritems.push_back( { player.body.pos, player.visual } );
 			if (player.hasShield)
 			{
-				ritems.push_back( { Add(player.pos, { 0, -2, }), { GameImageId::shield, player.shieldColor } } );
+				ritems.push_back( { Add(player.body.pos, { 0, -2, }), { GameImageId::shield, player.shieldColor } } );
 			}
 		}
 	}
@@ -174,6 +175,10 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 	{
 		ritems.push_back( { powerUp.pos, powerUp.visual } );
 	}
+	for (const auto& particle : particles)
+	{
+		ritems.push_back( { particle.pos, { GameImageId::particle, Color::yellowIntense }});
+	}
 }
 
 
@@ -187,22 +192,22 @@ void PlayField::RemoveDead()
 	// Loop over game objects and delete dead ones. The "swap and pop_back" technique is used to delete items
 	// in O(1) as their order is not important.
 	Utils::RemoveElements(players, 
-		[](PlayerShip& player){ return player.state == PlayerShip::State::dead; } );
+		[](const PlayerShip& player){ return player.state == PlayerShip::State::dead; } );
 	Utils::RemoveElements(lasers, 
-		[this](Laser& laser)
+		[this](const Laser& laser)
 		{
 			const bool res = laser.state == Laser::State::dead;
 			if (res && laser.ownerId == -1) ++availableAlienLasers; else ++availablePlayerLasers; 
 			return res;
 		} );
 	Utils::RemoveElements(aliens, 
-		[](Alien& alien){ return alien.state == Alien::State::dead; } );
+		[](const Alien& alien){ return alien.state == Alien::State::dead; } );
 	Utils::RemoveElements(powerUps, 
-		[](PowerUp& powerUp){ return powerUp.state == PowerUp::State::dead; } );
+		[](const PowerUp& powerUp){ return powerUp.state == PowerUp::State::dead; } );
 	Utils::RemoveElements(walls, 
 		[](const Wall& wall){ return wall.state == Wall::State::dead; } );
-	// Update and delete explosions in the same loop
-	Utils::RemoveElements(explosions, [=](Explosion& explosion){ return IsExplosionOver(explosion); });
+	Utils::RemoveElements(explosions, [=](const Explosion& explosion){ return IsExplosionOver(explosion); });
+	Utils::RemoveElements(particles, [=](const Particle& particle){ return particle.life < 0; });
 }
 
 

@@ -20,7 +20,9 @@ Vector2D Mul(const Vector2D& v, float s);
 float Dot(const Vector2D& v0, const Vector2D& v1);
 Vector2D Reflect(const Vector2D& v, const Vector2D& n);
 Vector2D Normalize(const Vector2D& v, float l = 1.f);
+Vector2D Rotate(const Vector2D& v, float cos, float sin);
 float Length(const Vector2D& v);
+float SquareLength(const Vector2D& v);
 Vector2D ComputeClosestNormal(const Vector2D& v);
 
 

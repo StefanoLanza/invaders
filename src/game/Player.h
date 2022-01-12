@@ -2,6 +2,7 @@
 
 #include <engine/Vector2D.h>
 #include <engine/RenderItem.h>
+#include <engine/Body.h>
 #include <random>
 #include <memory>
 
@@ -30,11 +31,9 @@ struct PlayerShip
 	void SetShield(float time);
 	void AddScore(int increment);
 
-	Vector2D   pos;
+	Body      body;
 	const PlayerPrefab* prefab;
-	Vector2D   prevPos;
 	Visual     visual;
-	Vector2D   size;
 	int        id;
 	float      fireTimer;
 	int        score;
