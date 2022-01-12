@@ -284,7 +284,7 @@ LR"(
 )";
 const wchar_t particleStr[] =
 LR"(
-■
+.
 )";
 
 const wchar_t planetStr[] = 

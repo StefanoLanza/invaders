@@ -141,9 +141,14 @@ void PlayField::DeletePlayers()
 
 void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 {
-	ritems.reserve(walls.size() + players.size() + aliens.size() + lasers.size() + explosions.size() + powerUps.size() );
+	ritems.reserve(particles.size() + walls.size() + players.size() + aliens.size() + lasers.size() + explosions.size() + powerUps.size() );
 	ritems.clear();
 
+	// Note: order is important. Latter elements cover the former ones on screen
+	for (const auto& particle : particles)
+	{
+		ritems.push_back( { particle.pos, { GameImageId::particle, Color::yellowIntense }});
+	}
 	for (const auto& wall : walls)
 	{
 		ritems.push_back( { wall.pos, wall.visual } );
@@ -174,10 +179,6 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 	for (const auto& powerUp : powerUps)
 	{
 		ritems.push_back( { powerUp.pos, powerUp.visual } );
-	}
-	for (const auto& particle : particles)
-	{
-		ritems.push_back( { particle.pos, { GameImageId::particle, Color::yellowIntense }});
 	}
 }
 
@@ -233,6 +234,7 @@ void PlayField::DestroyAll()
 	powerUps.clear();
 	walls.clear();
 	alienWaves.clear();
+	particles.clear();
 }
 
 

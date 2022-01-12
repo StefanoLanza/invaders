@@ -24,16 +24,19 @@ struct Action
 		{
 			float dx;
 			float dy;
-			int ticks;
+			int duration;
 		} translate;
 		struct
 		{
 			float dtheta; // per tick
-			int ticks;
+			int duration;
 		} rotate;
 		struct
 		{
 			const char* seq;
+			float vx;
+			float vy;
+			int duration;
 		} path;
 	};
 };
@@ -52,6 +55,8 @@ struct PlanState
 	// For current action
 	int ticks;
 	int pathLength;
+	int pathNodeIdx;
+	int pathTicks;
 	float cosTheta;
 	float sinTheta;
 };

@@ -7,24 +7,6 @@
 #include <array> // std::size
 
 
-
-constexpr Action testPlanActions[] =
-{
-	{ .id = ActionId::move, .move = { .x = 80, .y = 27, .speed = 16.f } },
-	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .ticks = 20 } },
-	{ .id = ActionId::rotate, .rotate = { .dtheta = 0.02f, .ticks = 240 } },
-	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .ticks = 120 } },
-	{ .id = ActionId::translate, .translate = { .dx = +16, .dy = 0, .ticks = 120 } },
-	{ .id = ActionId::translate, .translate = { .dx = 0, .dy = -16, .ticks = 120 } },
-};
-constexpr Plan testPlan = 
-{
-	.actions = testPlanActions,
-	.actionCount = (int)std::size(testPlanActions),
-	.loop = true,
-};
-
-
 namespace
 {
 // Animations
@@ -65,43 +47,43 @@ const Animation boss2Anim =
 };
 
 // Action sequences
-const char* circleSeq = {
+constexpr const char* circleSeq = {
 	"llddbbeerrffttdd"
 };
 
 
-const char* nullSeq = {
+constexpr const char* nullSeq = {
 	""
 };
 
-const char* alienSeq0 = {
+constexpr const char* alienSeq0 = {
 	"lllrrrblllrrrb"
 	"lllllrbrrrrllrrb"
 };
 
-const char* alienSeq1 = {
+constexpr const char* alienSeq1 = {
 	"rrrlllbrrrlllb"
 	"rrrrrlbllllrrllb"
 };
 
 // Sentinels
-const char* alienSeq2 = {
+constexpr const char* alienSeq2 = {
 	"brbrblblbltrlltrrtrls"
 };
 
-const char* alienSeq3 = {
+constexpr const char* alienSeq3 = {
 	"blblbrbrbrtlrrtlltlrs"
 };
 
-const char* boss0Seq = {
+constexpr const char* boss0Seq = {
 	"brrbrlbllrlltlrrbtlltlrtrrlrrrll"
 };
 
-const char* boss1Seq = {
+constexpr const char* boss1Seq = {
 	"brbrblblltltrtrt"
 };
 
-const char* boss2Seq = {
+constexpr const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
@@ -120,6 +102,25 @@ constexpr float midLaserSpeed = 35.f;
 constexpr float fastLaserSpeed = 40.f;
 constexpr bool aim = true;
 constexpr bool doNotAim = false;
+
+constexpr Action testPlanActions[] =
+{
+//	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 16.f, .vy = 4.f, .duration = 30 } },
+	{ .id = ActionId::translate, .translate = { .dx = 16, .dy = 0, .duration = 1 } },
+	{ .id = ActionId::rotate, .rotate = { .dtheta = -2160.f, .duration = 240 } },
+//	{ .id = ActionId::move, .move = { .x = 80, .y = 27, .speed = 16.f } },
+//	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .duration = 20 } },
+//	{ .id = ActionId::rotate, .rotate = { .dtheta = 0.02f, .duration = 240 } },
+//	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .duration = 120 } },
+//	{ .id = ActionId::translate, .translate = { .dx = +16, .dy = 0, .duration = 120 } },
+//	{ .id = ActionId::translate, .translate = { .dx = 0, .dy = -16, .duration = 120 } },
+};
+constexpr Plan testPlan = 
+{
+	.actions = testPlanActions,
+	.actionCount = (int)std::size(testPlanActions),
+	.loop = true,
+};
 
 const AlienPrefab alienPrefabs[] =
 {

@@ -55,6 +55,10 @@ Vector2D Rotate(const Vector2D& v, float cos, float sin)
 	return { v.x * cos + v.y * sin, -v.x * sin + v.y * cos };
 }
 
+Vector2D Rotate(const Vector2D& v, float angle)
+{
+	return Rotate(v, std::cos(angle), std::sin(angle));
+}
 
 float Length(const Vector2D& v)
 {

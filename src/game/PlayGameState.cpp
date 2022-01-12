@@ -9,6 +9,7 @@
 #include "Laser.h"
 #include "PowerUp.h"
 #include "Wall.h"
+#include "Particle.h"
 #include "Explosion.h"
 #include "GameData.h"
 #include "AIModule.h"
@@ -169,6 +170,13 @@ void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const Col
 	{
 		UpdateExplosion(explosion, dt);
 	}
+	for (auto& particle : world.particles)
+	{
+		// Euler integration
+		particle.pos = Mad(particle.pos, particle.vel, dt);
+		particle.vel = Mad(particle.vel, particle.accel, dt);
+		--particle.life;
+	}
 	if (aiModule.alienScript)
 	{
 		for (auto& alien : world.aliens)
@@ -250,10 +258,21 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 		wave.fireRate += gameConfig.alienWaveFireRateInc;
 		AlienDestroy(alien, wave);
 		context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
+
+		for (int i = 0; i < 7; ++i)
+		{
+			Particle p;
+			p.pos = alien.body.pos;
+			p.vel = Rotate({64.f,0.f}, two_pi * (float)i / (float)7);
+			p.vel.y *= 0.5f; // aspect ratio
+			p.accel = Vector2D(0, 0);
+			p.life = 30;
+			context.world->particles.push_back(p);
+		}
 	}
 
 	// Spawn explosion 
-	context.world->AddExplosion(alien.body.pos, gameConfig.explosionTimer);
+	//context.world->AddExplosion(alien.body.pos, gameConfig.explosionTimer);
 
 	// Spawn random power ups
 	++context.stateData->numHits;

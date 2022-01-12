@@ -6,5 +6,6 @@ struct Particle
 {
 	Vector2D pos;
 	Vector2D vel;
+	Vector2D accel;
 	int      life;
 };
