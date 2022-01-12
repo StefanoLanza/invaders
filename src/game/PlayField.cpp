@@ -44,6 +44,11 @@ bool PlayField::NoAliens() const
 }
 
 
+bool PlayField::NoParticles() const
+{
+	return particles.empty();
+}
+
 void PlayField::Restart()
 {
 	availableAlienLasers = config.maxAlienLasers;
@@ -147,7 +152,7 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 	// Note: order is important. Latter elements cover the former ones on screen
 	for (const auto& particle : particles)
 	{
-		ritems.push_back( { particle.pos, { GameImageId::particle, Color::yellowIntense }});
+		ritems.push_back( { particle.pos, { GameImageId::particle, particle.color }});
 	}
 	for (const auto& wall : walls)
 	{

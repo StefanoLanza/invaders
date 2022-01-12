@@ -16,6 +16,7 @@ constexpr attr_t attrs[colorCount] = {
 	A_BOLD,
 	A_NORMAL,
 	A_BOLD,
+	A_NORMAL,
 	A_BOLD,
 	A_NORMAL,
 	A_BOLD,

@@ -44,7 +44,7 @@ void Console::DisplayMessages(const MessageLog& messageLog)
 }
 
 
-void Console::DrawNumber(int number, int x, int y, const Image digitImages[10], Color color)
+void Console::DrawNumber(int number, int x, int y, const Image digitImages[10], Color color, TextAlignment alignment)
 {
 	int digits[16] = {};
 	int digitCount = 0;
@@ -55,10 +55,29 @@ void Console::DrawNumber(int number, int x, int y, const Image digitImages[10], 
 		++digitCount;
 		number /= base;
 	} while (number > 0);
+
+	constexpr int spacing = 1;
+	int totalWidth = 0;
+	if (alignment != TextAlignment::left) 
+	{
+		for (int i = 0; i < digitCount; ++i)
+		{
+			totalWidth += digitImages[digits[i]].width;
+		}
+		totalWidth += (digitCount - 1) * spacing;
+	}
+	if (alignment == TextAlignment::centered)
+	{
+		x -= totalWidth / 2;
+	}
+	else if (alignment == TextAlignment::right)
+	{
+		x -= totalWidth;
+	}
 	do 
 	{ 
 		int digit = digits[--digitCount];
 		DrawImage(digitImages[digit], x, y, color, ImageAlignment::left, ImageAlignment::top);
-		x += (digitImages[digit].width + 1);
+		x += (digitImages[digit].width + spacing);
 	} while (digitCount > 0);
 }

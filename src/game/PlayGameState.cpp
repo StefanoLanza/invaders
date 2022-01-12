@@ -96,7 +96,7 @@ int PlayGame(Game& game, void* data, float dt)
 		game.playerLives[player.id] = player.lives;
 	}
 
-	if (timeline.IsOver() && world.NoAliens())
+	if (timeline.IsOver() && world.NoAliens() && world.NoParticles())
 	{
 		if (playGameStateData.stageIndex < GetNumStages() - 1)
 		{
@@ -142,6 +142,26 @@ void DisplayPlayGame(Console& console, const void* data)
 
 namespace
 {
+
+void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, float velocity, int life, Color color, float randomOffset)
+{
+	float angle = two_pi * randomOffset;
+	float dangle = two_pi / (float)particleCount;
+	for (int i = 0; i < particleCount; ++i)
+	{
+		Vector2D dir = Rotate({1.0f,0.f}, angle);
+		Particle p;
+		p.pos = Add(pos, dir);
+		p.vel = Mul(dir, velocity);
+		angle += dangle;
+		dangle *= 1.02f; // randomize
+		p.vel.y *= 0.5f; // aspect ratio
+		p.accel = Vector2D(0, 0);
+		p.life = life;
+		p.color = color;
+		world.particles.push_back(p);
+	}
+}
 
 
 void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace)
@@ -239,7 +259,8 @@ void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1)
 	Laser& alienLaser = *static_cast<Laser*>(ud1);
 	// Spawn explosion, kill this and the alien laser
 	Vector2D pos = Lerp(playerLaser.body.pos, alienLaser.body.pos, 0.5f);
-	context.world->AddExplosion(pos, context.gameConfig->explosionTimer);
+	SpawnParticles(*context.world, pos, 7, 32.f, 30, Color::yellowIntense, 0.5f);
+//	context.world->AddExplosion(pos, context.gameConfig->explosionTimer);
 	DestroyLaser(alienLaser);
 	DestroyLaser(playerLaser);
 }
@@ -252,24 +273,18 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 	Alien& alien = *(Alien*)ud0;
 	Laser& playerLaser = *(Laser*)ud1;
 	DestroyLaser(playerLaser);
+	int particleCount = 3;
+	Color particleColor = Color::redIntense;
 	if (AlienHit(alien)) {
 		AlienWave& wave = context.world->alienWaves[alien.waveIndex];
 		wave.speed += gameConfig.alienWaveSpeedInc;
 		wave.fireRate += gameConfig.alienWaveFireRateInc;
 		AlienDestroy(alien, wave);
 		context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
-
-		for (int i = 0; i < 7; ++i)
-		{
-			Particle p;
-			p.pos = alien.body.pos;
-			p.vel = Rotate({64.f,0.f}, two_pi * (float)i / (float)7);
-			p.vel.y *= 0.5f; // aspect ratio
-			p.accel = Vector2D(0, 0);
-			p.life = 30;
-			context.world->particles.push_back(p);
-		}
+		particleCount = 7;
+		particleColor = Color::yellowIntense;
 	}
+	SpawnParticles(*context.world, alien.body.pos, particleCount, 32.f, 30, particleColor, alien.randomOffset);
 
 	// Spawn explosion 
 	//context.world->AddExplosion(alien.body.pos, gameConfig.explosionTimer);
@@ -300,7 +315,8 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 	{
 		explosionPos = Add(explosionPos, { 0.f, -3.f} );
 	}
-	context.world->AddExplosion(explosionPos, context.gameConfig->explosionTimer);
+	SpawnParticles(*context.world, explosionPos, 7, 32.f, 30, Color::yellowIntense, 0.f);
+	//context.world->AddExplosion(explosionPos, context.gameConfig->explosionTimer);
 }
 
 
@@ -315,7 +331,8 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	{
 		PlayerHit(player);
 	}
-	context.world->AddExplosion(alien.body.pos, context.gameConfig->explosionTimer);
+	SpawnParticles(*context.world, alien.body.pos, 7, 32.f, 30, Color::yellowIntense, alien.randomOffset);
+	//context.world->AddExplosion(alien.body.pos, context.gameConfig->explosionTimer);
 }
 
 
@@ -523,11 +540,13 @@ void DisplayLivesAndScores(const Game& game, Console& console)
 		int lx = x[p] + 50;
 		for (int l = 0; l < game.playerLives[p]; ++l)
 		{
-			console.DrawChar(consoleSymbols[1], lx, 1, color[p]);
+//			console.DrawChar(consoleSymbols[1], lx, 1, color[p]);
 			lx += 3;	
 		}
 		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 1, color[p], ImageAlignment::left, ImageAlignment::top);
-		console.DrawNumber(game.score[p], x[p] + 30, 0, &GetImage(GameImageId::_0), color[p]);
+		console.DrawImage(GetImage(GameImageId::lives), x[p] + 46, 1, color[p], ImageAlignment::left, ImageAlignment::top);
+		console.DrawNumber(game.score[p], x[p] + 40, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
+		console.DrawNumber(game.playerLives[p], x[p] + 66, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
 	}
 }
 

@@ -32,35 +32,37 @@ R"(
 	const uint8_t* alien_color = nullptr;
 #endif
 
-const wchar_t stageStr[2 + 31 * 5] = 
+const wchar_t stageStr[2 + 17 * 3] = 
 LR"(
-   ____  __                   
-  / __/ / /_ ___ _  ___ _ ___ 
- _\ \  / __// _ `/ / _ `// -_)
-/___/  \__/ \_,_/  \_, / \__/ 
-                  /___/       
+ _ |_  _   _   _
+_) |_ (_| (_) (-
+          _/    
 )";
 
 //▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
 //█▄▄  █  █▄█ █ ▄▄ █▄ 
 //▄▄█  █  █ █ ▀▄▄▀ █▄▄
 
-const wchar_t scoreStr[2 + 27 * 3] = 
+const wchar_t scoreStr[2 + 16 * 2] = 
 LR"(
-  ___ ____ ___   ____ ___ 
- (_-</ __// _ \ / __// -_)
-/___/\__/ \___//_/   \__/ 
+ _  _  _   _  _
+_) (_ (_) |  (-
 )";
 //const wchar_t scoreStr[2 + 20 * 3] = 
 //▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
 //█▄▄ █   █ █ █▄█ █▄ 
 //▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
 
-const wchar_t gameOverStr[2 + 38 * 3] = 
+const wchar_t livesStr[2 + 13 * 2] = 
 LR"(
- ▄▄  ▄▄▄ ▄   ▄ ▄▄▄   ▄▄▄ ▄  ▄ ▄▄▄ ▄▄▄
-█ ▄▄ █▄█ █▀▄▀█ █▄    █ █ █  █ █▄  █▄█
-▀▄▄▀ █ █ █   █ █▄▄   █▄█ ▀▄▄▀ █▄▄ █▀▄
+| .     _  _
+| | \/ (- _)
+)";
+const wchar_t gameOverStr[2 + 32 * 3] = 
+LR"(
+ __                __          
+/ _   _   _   _   /  \     _  _
+\__) (_| ||| (-   \__/ \/ (- | 
 )";
 
 const wchar_t alien0_0Str[2 + 8 * 4] = 
@@ -98,7 +100,7 @@ LR"(
 
 const wchar_t alien2_0Str[2 + 8 * 4] = 
 LR"(
- ▄ ▄ ▄ 
+ ▄ █ ▄ 
 █▀▀█▀▀█
 █▀▀▀▀▀█
  ▀   ▀ 
@@ -106,7 +108,7 @@ LR"(
 
 const wchar_t alien2_1Str[2 + 8 * 4] = 
 LR"(
- ▄ ▄ ▄ 
+ ▄ █ ▄ 
 █▀▀█▀▀█
 ▀█▀▀▀█▀
   ▀ ▀  
@@ -114,15 +116,31 @@ LR"(
 
 const wchar_t alien3_0Str[2 + 8 * 4] = 
 LR"(
-  ▄ ▄  
-▄▀▀█▀▀▄
+█▄ ▄ ▄█
+█▀▀█▀▀█
 ▀█▀▀▀█▀
   ▀ ▀  
 )";
 
 const wchar_t alien3_1Str[2 + 8 * 4] = 
 LR"(
-  ▄ ▄  
+█▄ ▄ ▄█
+█▀▀█▀▀█
+█▀▀▀▀▀█
+ ▀   ▀ 
+)";
+
+const wchar_t alien4_0Str[2 + 8 * 4] = 
+LR"(
+█▄   ▄█
+▄▀▀█▀▀▄
+▀█▀▀▀█▀
+  ▀ ▀  
+)";
+
+const wchar_t alien4_1Str[2 + 8 * 4] = 
+LR"(
+█▄   ▄█
 ▄▀▀█▀▀▄
 █▀▀▀▀▀█
  ▀   ▀ 
@@ -301,79 +319,79 @@ LR"(
      O      *        '       .   
 )";
 
-
-const wchar_t _0Img[2 + 7 * 4] =
+/*
+  __       __   __          __   __   ___   __    __  
+ /  \  /|   _)   _)  |__|  |_   /__     /  (__)  (__\ 
+ \__/   |  /__  __)     |  __)  \__)   /   (__)   __/
+ */
+const wchar_t _0Img[2 + 6 * 3] =
 LR"(
-  ___ 
- / _ \
-/ // /
-\___/ 
+  __ 
+ /  \
+ \__/
 )";
 
-const wchar_t _1Img[2 + 6 * 4] =
+const wchar_t _1Img[2 + 3 * 3] =
 LR"(
-  ___
- <  /
- / / 
-/_/  
+  
+/|
+ |
 )";
 
-const wchar_t _2Img[2 + 8 * 4] =
+const wchar_t _2Img[2 + 5 * 3] =
 LR"(
-   ___ 
-  |_  |
- / __/ 
-/____/ 
+ __ 
+  _)
+ (__
 )";
 
-const wchar_t _3Img[2 + 8 * 4] =
+const wchar_t _3Img[2 + 5 * 3] =
 LR"(
-   ____
-  |_  /
- _/_ < 
-/____/ 
+ __ 
+  _)
+ __)
 )";
 
-const wchar_t _4Img[2 + 4 * 3] =
+const wchar_t _4Img[2 + 5 * 3] =
 LR"(
-▄ ▄
-█▄█
-  █
+    
+|__|
+   |
 )";
 
 const wchar_t _5Img[2 + 4 * 3] =
 LR"(
-▄▄▄
-█▄▄
-▄▄█
+ __
+|_ 
+__)
 )";
 
-const wchar_t _6Img[2 + 4 * 3] =
+const wchar_t _6Img[2 + 5 * 3] =
 LR"(
-▄▄▄
-█▄▄
-█▄█
+ __ 
+/__ 
+(__)
 )";
 
 const wchar_t _7Img[2 + 4 * 3] =
 LR"(
-▄▄▄
-  █
-  █
+___
+  /
+ / 
 )";
 
-const wchar_t _8Img[2 + 4 * 3] =
+const wchar_t _8Img[2 + 5 * 3] =
 LR"(
-▄▄▄
-█▄█
-█▄█
+ __ 
+(__)
+(__)
 )";
 
-const wchar_t _9Img[2 + 4 * 3] =
+const wchar_t _9Img[2 + 5 * 3] =
 LR"(
-▄▄▄
-█▄█
-  █
+ __ 
+(__)
+ __/
 )";
 
 const wchar_t snowFlakeImg[] =
@@ -430,6 +448,8 @@ const Image gameImages[numGameImages] =
 	{ alien2_1Str, alien_color, 7, 4 },
 	{ alien3_0Str, alien_color, 7,	4 },
 	{ alien3_1Str, alien_color, 7,	4 },
+	{ alien4_0Str, alien_color, 7,	4 },
+	{ alien4_1Str, alien_color, 7,	4 },
 	{ boss0_0Str, nullptr, 11, 5 },
 	{ boss0_1Str, nullptr, 11, 5 },
 	{ boss1_0Str, nullptr, 11, 5 },
@@ -456,19 +476,20 @@ const Image gameImages[numGameImages] =
 	{ giftImg, nullptr, 24, 8 },
 	{ happyHolImg, nullptr, 30, 8 },
 	{ leafImg, nullptr, 21, 8 },
-	{ stageStr, nullptr, 30, 5},
-	{ scoreStr, nullptr, 26, 3 }, // 19, 3
-	{ gameOverStr, nullptr, 37, 3 },
-	{ _0Img, nullptr, 6, 4 },
-	{ _1Img, nullptr, 5, 4 },
-	{ _2Img, nullptr, 7, 4 },
-	{ _3Img, nullptr, 7, 4 },
-	{ _4Img, nullptr, 3, 3 },
+	{ stageStr, nullptr, 16, 3},
+	{ scoreStr, nullptr, 15, 2 }, // 19, 3
+	{ livesStr, nullptr, 12, 2 }, // 19, 3
+	{ gameOverStr, nullptr, 31, 3 },
+	{ _0Img, nullptr, 5, 3 },
+	{ _1Img, nullptr, 2, 3 },
+	{ _2Img, nullptr, 4, 3 },
+	{ _3Img, nullptr, 4, 3 },
+	{ _4Img, nullptr, 4, 3 },
 	{ _5Img, nullptr, 3, 3 },
-	{ _6Img, nullptr, 3, 3 },
+	{ _6Img, nullptr, 4, 3 },
 	{ _7Img, nullptr, 3, 3 },
-	{ _8Img, nullptr, 3, 3 },
-	{ _9Img, nullptr, 3, 3 },
+	{ _8Img, nullptr, 4, 3 },
+	{ _9Img, nullptr, 4, 3 },
 };
 
 long GetFileSize(const char* fileName)

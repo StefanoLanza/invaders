@@ -7,6 +7,7 @@ enum class Color
 	green,
 	greenIntense,
 	blue,
+	blueIntense,
 	yellow,
 	yellowIntense,
 	black,

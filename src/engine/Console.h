@@ -53,7 +53,7 @@ public:
 	void DrawImage(const Image& image, int x, int y, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment);
 	void DrawColoredImage(const Image& image, int x, int y);
 	void DrawSprites(const RenderItem* sprites, int count);
-	void DrawNumber(int number, int x, int y, const Image digitImages[10], Color color);
+	void DrawNumber(int number, int x, int y, const Image digitImages[10], Color color, TextAlignment alignment);
 	void DrawBorder(int x, int y, int width, int height, Color color);
 	void DrawRectangle(int x, int y, int width, int height, Color color);
 	void DrawChar(wchar_t ch, int x, int y, Color color); 

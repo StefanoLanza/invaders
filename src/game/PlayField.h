@@ -31,6 +31,7 @@ public:
 
 	const std::vector<PlayerShip>& GetPlayers() const;
 	bool NoAliens() const;
+	bool NoParticles() const;
 
 	void GetRenderItems(std::vector<RenderItem>& ritems);
 	const Vector2D& GetBounds() const;

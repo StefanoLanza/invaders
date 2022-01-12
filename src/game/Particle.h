@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/Vector2D.h>
+#include <engine/Colors.h>
 
 struct Particle
 {
@@ -8,4 +9,5 @@ struct Particle
 	Vector2D vel;
 	Vector2D accel;
 	int      life;
+	Color    color;
 };

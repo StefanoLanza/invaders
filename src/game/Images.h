@@ -14,6 +14,8 @@ enum GameImageId : ImageId
 	alien2_1,
 	alien3_0,
 	alien3_1,
+	alien4_0,
+	alien4_1,
 	boss0_0,
 	boss0_1,
 	boss1_0,
@@ -42,6 +44,7 @@ enum GameImageId : ImageId
 	xmasLeaf,
 	stage,
 	score,
+	lives,
 	gameOver,
 	// numbers
 	_0,
