@@ -51,6 +51,11 @@ Console::~Console() {
 	endwin();
 }
 
+bool Console::IsMinimized() const
+{
+	return false;
+}
+
 
 bool Console::Initialize(int width, int height, int fontSize)
 {
@@ -77,15 +82,16 @@ bool Console::Initialize(int width, int height, int fontSize)
 	init_pair(3, COLOR_GREEN, COLOR_BLACK);
 	init_pair(4, COLOR_GREEN, COLOR_BLACK);
 	init_pair(5, COLOR_BLUE, COLOR_BLACK);
-	init_pair(6, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(6, COLOR_BLUE, COLOR_BLACK);
 	init_pair(7, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(8, COLOR_BLACK, COLOR_BLACK);
-	init_pair(9, COLOR_WHITE, COLOR_BLACK);
+	init_pair(8, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(9, COLOR_BLACK, COLOR_BLACK);
 	init_pair(10, COLOR_WHITE, COLOR_BLACK);
-	init_pair(11, COLOR_BLUE, COLOR_BLACK);
-	init_pair(12, COLOR_BLUE, COLOR_BLACK);
-	init_pair(13, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(11, COLOR_WHITE, COLOR_BLACK);
+	init_pair(12, COLOR_CYAN, COLOR_BLACK);
+	init_pair(13, COLOR_CYAN, COLOR_BLACK);
 	init_pair(14, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(15, COLOR_MAGENTA, COLOR_BLACK);
 	return true;
 }
 
@@ -123,7 +129,7 @@ void Console::ClearLine(int row)
 }
 
 
-void Console::DisplayText(const char* str, int col, int row, Color color, ImageAlignment hAlignment)
+void Console::DisplayText(const char* str, int col, int row, Color color, TextAlignment alignment)
 {
 	assert(str);
 	if (row < 0 || row >= bounds.y) {
@@ -132,7 +138,7 @@ void Console::DisplayText(const char* str, int col, int row, Color color, ImageA
 	const int colorPair = toColorPair(color);
 	const attr_t attr = toAttr(color);
 	CHAR_INFO* curCanvas = canvas.data() + row * bounds.x;
-	if (hAlignment == ImageAlignment::centered)
+	if (alignment == TextAlignment::centered)
 	{
 		col = (bounds.x - (int)strlen(str)) / 2 + col;
 	}
@@ -153,7 +159,6 @@ void Console::DisplayText(const char* str, int col, int row, Color color, ImageA
 
 void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAlignment hAlignment, ImageAlignment vAlignment)
 {
-	CHAR_INFO* const dst = canvas.data();
 	if (hAlignment == ImageAlignment::centered)
 	{
 		x0 = (bounds.x - image.width) / 2 + x0;
@@ -178,11 +183,12 @@ void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAl
 	const attr_t attr = toAttr(color);
 	const int colorPair = toColorPair(color);
 
+	CHAR_INFO* dst = canvas.data() + b * bounds.x;
 	for (int y = b; y < t; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + y * bounds.x];
+			auto& c = dst[x];
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
@@ -194,24 +200,25 @@ void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAl
 				assert(err == OK);
 			}
 		}
+		dst += bounds.x;
 	}
 }
 
 
 void Console::DrawColoredImage(const Image& image, int x0, int y0)
 {
-	CHAR_INFO* const dst = canvas.data();
 	// Clip
 	const int l = std::max(0, x0);
 	const int r = std::min(bounds.x, x0 + image.width);
 	const int b = std::max(0, y0);
 	const int t = std::min(bounds.y, y0 + image.height);
 
+	CHAR_INFO* dst = canvas.data() + b * bounds.x;
 	for (int y = b; y < t; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
-			auto& c = dst[x + y * bounds.x];
+			auto& c = dst[x];
 			int s = (x - x0) + (y - y0) * (image.width + 1) + 1;  // +1: remove new lines, the first and at the end of each line
 			if (image.img[s] != ' ')
 			{
@@ -224,5 +231,88 @@ void Console::DrawColoredImage(const Image& image, int x0, int y0)
 				assert(err == OK);
 			}
 		}
+		dst += bounds.x;
+	}
+}
+
+
+extern const wchar_t consoleSymbols[];
+
+
+void Console::DrawBorder(int x0, int y0, int width, int height, Color color)
+{
+	// Clip
+	const int l = std::max(0, x0);
+	const int r = std::min(bounds.x, x0 + width);
+	const int t = std::max(0, y0);
+	const int b = std::min(bounds.y, y0 + height);
+
+	const attr_t attr = toAttr(color);
+	const int colorPair = toColorPair(color);
+
+	CHAR_INFO* const dst = canvas.data() + t * bounds.x;
+
+	wchar_t chstr[2];
+	chstr[0] = consoleSymbols[0];
+	chstr[1] = 0;
+
+	if (y0 == t)
+	{
+		for (int col = l; col < r; ++col)
+		{
+			setcchar(&dst[col], chstr, attr, colorPair, NULL);
+		}
+	}
+	chstr[0] = consoleSymbols[2];
+	if (b == y0 + height)
+	{
+		const int offs = (b - t - 1) * bounds.x;
+		for (int col = l; col < r; ++col)
+		{
+			setcchar(&dst[col + offs], chstr, attr, colorPair, NULL);
+		}
+	}
+
+	chstr[0] = consoleSymbols[1];
+	if (l == x0)
+	{
+		for (int row = 1; row < (b - t - 1); ++row)
+		{
+			setcchar(&dst[row * bounds.x + l], chstr, attr, colorPair, NULL);
+		}
+	}
+	if (r == x0 + width)
+	{
+		for (int row = 1; row < (b - t - 1); ++row)
+		{
+			setcchar(&dst[row * bounds.x + r - 1], chstr, attr, colorPair, NULL);
+		}
+	}
+}
+
+
+void Console::DrawRectangle(int x0, int y0, int width, int height, Color color)
+{
+	// Clip
+	const int l = std::max(0, x0);
+	const int r = std::min(bounds.x, x0 + width);
+	const int t = std::max(0, y0);
+	const int b = std::min(bounds.y, y0 + height);
+
+	wchar_t chstr[2];
+	chstr[0] = consoleSymbols[1];
+	chstr[1] = 0;
+
+	const attr_t attr = toAttr(color);
+	const int colorPair = toColorPair(color);
+
+	CHAR_INFO* dst = canvas.data() + t * bounds.x;
+	for (int y = t; y < b; ++y)
+	{
+		for (int x = l; x < r; ++x)
+		{
+			setcchar(&dst[x], chstr, attr, colorPair, NULL);
+		}
+		dst += bounds.x;
 	}
 }

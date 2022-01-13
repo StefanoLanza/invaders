@@ -2,6 +2,7 @@
 #include "MessageLog.h"
 #include "Image.h"
 #include <cmath>
+#include <cstring>
 
 
 const IVector2D& Console::GetBounds() const
