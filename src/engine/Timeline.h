@@ -21,7 +21,7 @@ public:
 	Timeline();
 
 	void SetCallback(EventCbk callback);
-	void SetEvents(const Event* events, size_t numEvents);
+	void SetEvents(const Event* events, int numEvents);
 	void Restart();
 	void JumpToEventId(EventId eventId);
 	void Advance(float dt);
@@ -30,7 +30,7 @@ public:
 
 private:
 	const Event* events;
-	size_t       numEvents;
+	int          numEvents;
 	EventCbk     callback;
 	int          currEventIndex;
 	float        t;

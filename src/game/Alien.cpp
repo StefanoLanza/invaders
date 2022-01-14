@@ -29,10 +29,9 @@ void AlienSetVelocity(Alien& alien, const Vector2D& newVel)
 	alien.nextVel = newVel;
 }
 
-void ProcessAction(Alien& alien, char action) 
+void ProcessAction(Alien& alien, char action)
 {
 	const float speed = alien.gameState.speed;
-	const float vspeed = alien.prefab->vspeed;
 	switch (action) 
 	{
 		case 'l':
@@ -42,10 +41,10 @@ void ProcessAction(Alien& alien, char action)
 			AlienSetVelocity(alien, { speed, 0.f });
 			break;
 		case 't':
-			AlienSetVelocity(alien, { 0.f, -vspeed });
+			AlienSetVelocity(alien, { 0.f, -speed });
 			break;
 		case 'b':
-			AlienSetVelocity(alien, { 0.f, vspeed });
+			AlienSetVelocity(alien, { 0.f, speed });
 			break;
 		case 's':
 			AlienSetVelocity(alien, { 0.f, 0.f });
@@ -88,7 +87,7 @@ void TickAlien(Alien& alien, ActionSeq& seq)
 }
 
 
-Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float randomOffset)
+Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset)
 {
 	Alien alien;
 	alien.body = { initialPos, initialPos, { 0.f, 0.f }, {0.f, 0.f} };
@@ -98,20 +97,37 @@ Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float rand
 	alien.gameState.hits = prefab.hits;
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
-	alien.gameState.speed = prefab.hspeed;
+	alien.gameState.speed = prefab.speed;
+	alien.gameState.gridPos = gridPos;
 	alien.state = Alien::State::landing;
 	alien.animState.t = randomOffset;
 	alien.waveIndex = -1;
 	alien.indexInWave = -1;
 	alien.randomOffset = randomOffset;
-	InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
-	InitActionSequence(alien.attackSeq, prefab.actionSeq, true);
+//	InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
+//	InitActionSequence(alien.attackSeq, prefab.actionSeq, true);
 	if (prefab.actionPlan)
 	{
 		InitPlan(alien.planState, *prefab.actionPlan);
 	}
 	return alien;
 }
+
+
+void ParkAlien(Alien& alien)
+{
+	Vector2D diff = Sub(alien.gameState.gridPos, alien.body.pos);
+	if (SquareLength(diff) < 0.5f)
+	{
+		alien.body.velocity = { 0.f , 0.f};
+		alien.state = Alien::State::ready;
+	}
+	else
+	{
+		alien.body.velocity = Normalize(diff, alien.gameState.speed);
+	}
+}
+
 
 void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
 {
@@ -121,12 +137,29 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	alien.visual.imageId = alien.prefab->anim.images[alien.animState.frame];
 	alien.visual.color =  alien.prefab->color;
 
-	alien.body.prevPos = alien.body.pos;
-
-	if (alien.prefab->actionPlan)
+	switch (alien.state)
 	{
-		TickPlan(alien.planState, alien.body.velocity, alien.body.pos);
+		case Alien::State::landing:
+			alien.state = Alien::State::parking; // TODO
+			break;
+		case Alien::State::parking:
+			ParkAlien(alien);
+			break;
+		case Alien::State::ready:
+			// Wait
+			break;
+		case Alien::State::attacking:
+			if (alien.prefab->actionPlan)
+			{
+				TickPlan(alien.planState, *alien.prefab->actionPlan, alien.body.velocity, alien.body.pos);
+			}
+			break;
+		case Alien::State::dead:
+			// Wait
+			break;
 	}
+
+/*	
 	else {
 		if (alien.state == Alien::State::landing)
 		{
@@ -141,7 +174,12 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			TickAlien(alien, alien.attackSeq);
 		}
 	}
-	alien.body.pos = Mad(alien.body.pos, alien.body.velocity, dt);
+*/
+	alien.body.prevPos = alien.body.pos;
+	constexpr float aspectRatio = 0.5f; // console chars are two times taller than wide
+	Vector2D velocity = alien.body.velocity;
+	velocity.y *= aspectRatio;
+	alien.body.pos = Mad(alien.body.pos, velocity, dt);
 }
 
 RenderItem AlienGetRenderItem(const Alien& alien)

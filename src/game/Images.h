@@ -46,6 +46,9 @@ enum GameImageId : ImageId
 	score,
 	lives,
 	gameOver,
+	press1,
+	press2,
+	pressESC,
 	// numbers
 	_0,
 	_1,

@@ -50,7 +50,6 @@ struct Plan
 
 struct PlanState
 {
-	Plan plan;
 	int actionIdx;
 	// For current action
 	int ticks;
@@ -59,7 +58,8 @@ struct PlanState
 	int pathTicks;
 	float cosTheta;
 	float sinTheta;
+	Vector2D targetPos;
 };
 
 void InitPlan(PlanState& planState, const Plan& plan);
-void TickPlan(PlanState& planState, Vector2D& velocity, const Vector2D& pos);
+void TickPlan(PlanState& planState, const Plan& plan, Vector2D& velocity, const Vector2D& pos);

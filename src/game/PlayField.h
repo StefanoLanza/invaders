@@ -73,6 +73,8 @@ public:
 
 	void AddScore(int score, int playerId);
 
+	bool PrepareAliensForAttack();
+
 	std::default_random_engine& rGen;
 	MessageLog&                 messageLog;
 	const GameConfig&           config;

@@ -21,6 +21,7 @@ struct AlienGameState
 	float        energy;
 	float        fireTimer;
 	float        speed;
+	Vector2D     gridPos;
 };
 
 
@@ -46,6 +47,8 @@ struct Alien
 	enum class State
 	{
 		landing,
+		parking,
+		ready,
 		attacking,
 		dead
 	};
@@ -62,8 +65,8 @@ struct Alien
 	Vector2D nextVel;
 	PlanState planState;
 
-	ActionSeq landingSeq;
-	ActionSeq attackSeq;
+	//ActionSeq landingSeq;
+	//ActionSeq attackSeq;
 	int waveIndex;
 	int indexInWave;
 	float randomOffset; // [0,1]
@@ -71,7 +74,7 @@ struct Alien
 
 
 // Public API
-Alien NewAlien(const Vector2D& initialPos, const AlienPrefab& prefab, float randomOffset);
+Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset);
 void AlienDestroy(Alien& alien, AlienWave& wave);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);

@@ -48,12 +48,12 @@ struct AlienPrefab
 	int       hits;
 	const char* landingSeq;
 	const char* actionSeq;
-	float hspeed;
-	float vspeed;
+	float speed;
 	float fireRate;
 	float laserSpeed;
 	bool  aimAtPlayer;
 	const Plan* actionPlan;
+	const Plan* landingPlan;
 };
 
 

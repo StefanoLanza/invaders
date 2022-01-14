@@ -58,11 +58,36 @@ LR"(
 | .     _  _
 | | \/ (- _)
 )";
+
 const wchar_t gameOverStr[2 + 32 * 3] = 
 LR"(
  __                __          
 / _   _   _   _   /  \     _  _
 \__) (_| ||| (-   \__/ \/ (- | 
+)";
+
+const wchar_t press1Str[2 + 75 * 4] = 
+LR"(
+ __                                                                       
+|__)_ _ _ _   /|  |_ _    _|_ _  _|_   _  _  _   _ | _    _ _   _  _  _  _
+|  | (-_)_)    |  |_(_)  _)|_(_|| |_  (_)| )(-  |_)|(_|\/(-|   (_)(_||||(-
+                                                |      /       _/         
+)";
+
+const wchar_t press2Str[2 + 78 * 4] = 
+LR"(
+ __            _                                                             
+|__)_ _ _ _    _)  |_ _    _|_ _  _|_  |_    _    _ | _    _ _ _   _  _  _  _
+|  | (-_)_)   /__  |_(_)  _)|_(_|| |_  |_\)/(_)  |_)|(_|\/(-| _)  (_)(_||||(-
+                                                 |      /         _/         
+)";
+
+const wchar_t pressESCStr[2 + 41 * 4] = 
+LR"(
+ __           __ __ __                  
+|__)_ _ _ _  |_ (_ /    |_ _    _    .|_
+|  | (-_)_)  |____)\__  |_(_)  (_||_|||_
+                                 |      
 )";
 
 const wchar_t alien0_0Str[2 + 8 * 4] = 
@@ -480,6 +505,9 @@ const Image gameImages[numGameImages] =
 	{ scoreStr, nullptr, 15, 2 }, // 19, 3
 	{ livesStr, nullptr, 12, 2 }, // 19, 3
 	{ gameOverStr, nullptr, 31, 3 },
+	{ press1Str, nullptr, 74, 4 },
+	{ press2Str, nullptr, 77, 4 },
+	{ pressESCStr, nullptr, 40, 4 },
 	{ _0Img, nullptr, 5, 3 },
 	{ _1Img, nullptr, 2, 3 },
 	{ _2Img, nullptr, 4, 3 },

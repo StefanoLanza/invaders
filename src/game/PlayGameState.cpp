@@ -34,6 +34,7 @@ struct PlayGameStateData
 	int            stageIndex = -1;
 	bool           showLevel;
 	int            numHits;
+	bool           canPlay;
 };
 PlayGameStateData playGameStateData;
 Timeline timeline;
@@ -46,6 +47,7 @@ struct CollisionContext
 	PlayGameStateData* stateData;
 };
 
+void TickPlayers(PlayField& world, float dt);
 void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace);
 void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameStateData& stateData);
 // Collision callbacks
@@ -111,13 +113,20 @@ int PlayGame(Game& game, void* data, float dt)
 	}
 	timeline.Advance(dt);
 
-
 	if (KeyJustPressed(KeyCode::escape))
 	{
 		return (int)GameStateId::paused;
 	}
 	if (! playGameStateData.showLevel)
 	{
+		if (playGameStateData.canPlay)
+		{
+			TickPlayers(world, dt);
+		}
+		else
+		{
+			playGameStateData.canPlay = world.PrepareAliensForAttack();
+		}
 		UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
 		world.RemoveDead();
 		CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
@@ -156,7 +165,7 @@ void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, fl
 		angle += dangle;
 		dangle *= 1.02f; // randomize
 		p.vel.y *= 0.5f; // aspect ratio
-		p.accel = Vector2D(0, 0);
+		p.accel = Vector2D {0.f, 0.f };
 		p.life = life;
 		p.color = color;
 		world.particles.push_back(p);
@@ -164,16 +173,20 @@ void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, fl
 }
 
 
-void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace)
+void TickPlayers(PlayField& world, float dt)
 {
-	// Update all waves
-	const ScriptArgs scriptArgs = { dt, nullptr, &world, &world.config, &collisionSpace };
-
 	// First move all game objects
 	for (auto& player : world.players)
 	{
 		Move(player,dt, world.bounds, world, world.config);
 	}
+}
+
+void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace)
+{
+	// Update all waves
+	const ScriptArgs scriptArgs = { dt, nullptr, &world, &world.config, &collisionSpace };
+
 	for (auto& powerUp : world.powerUps)
 	{
 		PowerUpMove(powerUp, dt, world.bounds);
@@ -260,7 +273,6 @@ void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1)
 	// Spawn explosion, kill this and the alien laser
 	Vector2D pos = Lerp(playerLaser.body.pos, alienLaser.body.pos, 0.5f);
 	SpawnParticles(*context.world, pos, 7, 32.f, 30, Color::yellowIntense, 0.5f);
-//	context.world->AddExplosion(pos, context.gameConfig->explosionTimer);
 	DestroyLaser(alienLaser);
 	DestroyLaser(playerLaser);
 }
@@ -285,9 +297,6 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 		particleColor = Color::yellowIntense;
 	}
 	SpawnParticles(*context.world, alien.body.pos, particleCount, 32.f, 30, particleColor, alien.randomOffset);
-
-	// Spawn explosion 
-	//context.world->AddExplosion(alien.body.pos, gameConfig.explosionTimer);
 
 	// Spawn random power ups
 	++context.stateData->numHits;
@@ -316,7 +325,6 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 		explosionPos = Add(explosionPos, { 0.f, -3.f} );
 	}
 	SpawnParticles(*context.world, explosionPos, 7, 32.f, 30, Color::yellowIntense, 0.f);
-	//context.world->AddExplosion(explosionPos, context.gameConfig->explosionTimer);
 }
 
 
@@ -332,7 +340,6 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 		PlayerHit(player);
 	}
 	SpawnParticles(*context.world, alien.body.pos, 7, 32.f, 30, Color::yellowIntense, alien.randomOffset);
-	//context.world->AddExplosion(alien.body.pos, context.gameConfig->explosionTimer);
 }
 
 
@@ -399,6 +406,7 @@ void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 	data.stageIndex = levelIndex;
 	data.showLevel = true;
 	data.numHits = 0;
+	data.canPlay = false;
 	timeline.SetEvents(GetStage(levelIndex).events, GetStage(levelIndex).numEvents);
 }
 
@@ -454,14 +462,17 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	const float x0 = (world.bounds.x - (waveInfo.numCols * waveInfo.dx)) / 2.f + (waveInfo.dx / 2);
 	float y = waveInfo.start_y;
 	const char* c = waveInfo.mask;
-	for (int j = 0, indexInWave = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy) {
+	for (int j = 0, indexInWave = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy)
+	{
 		float x = x0;
 		for (int k = 0; k < waveInfo.numCols; k++, x += waveInfo.dx, ++indexInWave)
 		{
 			if (*c != ' ') 
 			{
 				const AlienPrefab& alienPrefab = GetAlienPrefab(*c - '0');
-				Alien alien = NewAlien( { x, y }, alienPrefab, world.rndFloat01(world.rGen) );
+				Vector2D initialPos { x, waveInfo.dy * (0 - waveInfo.numRows + j) };
+				Vector2D gridPos { x, y };
+				Alien alien = NewAlien(initialPos, gridPos, alienPrefab, world.rndFloat01(world.rGen) );
 				alien.waveIndex = waveIndex;
 				alien.indexInWave = indexInWave;
 				world.AddAlienShip(alien);
@@ -537,12 +548,6 @@ void DisplayLivesAndScores(const Game& game, Console& console)
 	const Color color[2] = { Color::white, Color::lightBlueIntense };
 	for (int p = 0; p < game.numPlayers; ++p)
 	{
-		int lx = x[p] + 50;
-		for (int l = 0; l < game.playerLives[p]; ++l)
-		{
-//			console.DrawChar(consoleSymbols[1], lx, 1, color[p]);
-			lx += 3;	
-		}
 		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 1, color[p], ImageAlignment::left, ImageAlignment::top);
 		console.DrawImage(GetImage(GameImageId::lives), x[p] + 46, 1, color[p], ImageAlignment::left, ImageAlignment::top);
 		console.DrawNumber(game.score[p], x[p] + 40, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);

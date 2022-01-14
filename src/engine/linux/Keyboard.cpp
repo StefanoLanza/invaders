@@ -54,9 +54,9 @@ int EndsWith(const char *str, const char *suffix)
 void UpdateKeyStatesRaw() {
     struct input_event ev[64];
     const int rd = read(fd, ev, sizeof ev);
-    if (rd >= (int)sizeof(struct input_event))
+    if (rd >= (int)sizeof(input_event))
     {
-        for (size_t i = 0; i < std::size(ev); i++)
+        for (size_t i = 0; i < rd / sizeof(input_event); i++)
         {
             if (ev[i].type == EV_KEY)
             {

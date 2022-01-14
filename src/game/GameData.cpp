@@ -95,7 +95,7 @@ constexpr const char* boss2Seq = {
 constexpr float normalSpeed = 12.f;
 constexpr float midSpeed = 24.f;
 constexpr float fastSpeed = 48.f;
-constexpr float downSpeed = 5.f;
+constexpr float downSpeed = 10.f;
 constexpr int oneHit = 1;
 constexpr int twoHits = 2;
 constexpr int threeHits = 3;
@@ -112,8 +112,8 @@ constexpr bool doNotAim = false;
 constexpr Action testPlanActions[] =
 {
 //	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 16.f, .vy = 4.f, .duration = 30 } },
-	{ .id = ActionId::translate, .translate = { .dx = 16, .dy = 0, .duration = 1 } },
-	{ .id = ActionId::rotate, .rotate = { .dtheta = -2160.f, .duration = 240 } },
+	{ .id = ActionId::translate, .translate = { .dx = 32, .dy = 0, .duration = 1 } },
+	{ .id = ActionId::rotate, .rotate = { .dtheta = -2160.f, .duration = 2040 } },
 //	{ .id = ActionId::move, .move = { .x = 80, .y = 27, .speed = 16.f } },
 //	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .duration = 20 } },
 //	{ .id = ActionId::rotate, .rotate = { .dtheta = 0.02f, .duration = 240 } },
@@ -131,35 +131,21 @@ constexpr Plan testPlan =
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed,
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .actionSeq = alienSeq0, .speed= normalSpeed, 
 	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed,
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .actionSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
+//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .actionSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
 //	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
-//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .actionSeq = alienSeq0, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .actionSeq = alienSeq1, .hspeed = normalSpeed, .vspeed = downSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .actionSeq = alienSeq2, .hspeed = midSpeed, .vspeed = 7.f, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .actionSeq = alienSeq3, .hspeed = midSpeed, .vspeed = 7.f,.fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .landingSeq = nullSeq, .actionSeq = boss0Seq, .hspeed = 40.f, .vspeed = 20.f, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
+//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .actionSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .actionSeq = alienSeq0, .speed= normalSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .actionSeq = alienSeq1, .speed= normalSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,  },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .actionSeq = alienSeq2, .speed= midSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .actionSeq = alienSeq3, .speed= midSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .landingSeq = nullSeq, .actionSeq = boss0Seq, .speed= 40.f,  .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
-	// Stage 5,6,7,8 prefabs
-	{ alien1Anim, Color::white, oneHit, nullSeq, alienSeq0, normalSpeed, downSpeed, normalFire, midLaserSpeed, },
-	{ alien1Anim, Color::white, oneHit, nullSeq, alienSeq1, normalSpeed, downSpeed, normalFire,  midLaserSpeed, },
-	{ alien1Anim, Color::redIntense, twoHits, nullSeq, alienSeq0, normalSpeed, downSpeed, fastFire, midLaserSpeed,  },
-	{ alien1Anim, Color::redIntense, twoHits, nullSeq, alienSeq1, normalSpeed, downSpeed, fastFire, midLaserSpeed,  },
-	{ alien1Anim, Color::yellow, threeHits, nullSeq, alienSeq2, midSpeed, 7.f, fastFire, midLaserSpeed,  },
-	{ alien1Anim, Color::yellow, threeHits, nullSeq, alienSeq3, midSpeed, 7.f, fastFire, midLaserSpeed,  },
-	{ boss1Anim,  Color::violet, 12, nullSeq, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
+//	{ boss1Anim,  Color::violet, 12, nullSeq, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
 
-	// Stage 9,10,11,12 prefabs
-	{ alien2Anim, Color::white, oneHit, nullSeq, alienSeq0, midSpeed, downSpeed, normalFire, midLaserSpeed, },
-	{ alien2Anim, Color::white, oneHit, nullSeq, alienSeq1, midSpeed, downSpeed, normalFire,  midLaserSpeed, },
-	{ alien2Anim, Color::redIntense, twoHits, nullSeq, alienSeq0, midSpeed, downSpeed, fastFire, midLaserSpeed,  },
-	{ alien2Anim, Color::redIntense, twoHits, nullSeq, alienSeq1, midSpeed, downSpeed, fastFire, midLaserSpeed,  },
-	{ alien2Anim, Color::yellow, threeHits, nullSeq, alienSeq2, midSpeed, 7.f, fastFire, midLaserSpeed,  },
-	{ alien2Anim, Color::yellow, threeHits, nullSeq, alienSeq3, midSpeed, 7.f, fastFire, midLaserSpeed,  },
-	{ boss2Anim,  Color::violet, 14, nullSeq, boss2Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
+//	{ boss2Anim,  Color::violet, 14, nullSeq, boss2Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
 };
 
 const PlayerPrefab playerPrefabs[] =
@@ -176,7 +162,7 @@ const AlienWaveInfo teststage =
 	.numRows = 1,
 	.dx = 12.f, 
 	.dy = 4.f, 
-	.start_y = 2.5,
+	.start_y = 3.5,
 };
 
 
@@ -190,7 +176,7 @@ const AlienWaveInfo stage1 =
 	.numRows = 3,
 	.dx = 12.f, 
 	.dy = 4.f, 
-	.start_y = 2.5,
+	.start_y = 3.5,
 };
 
 const AlienWaveInfo stage2 =
@@ -200,7 +186,7 @@ const AlienWaveInfo stage2 =
 	"00001111",
 	8, 3,
 	12.f, 4.f, 
-	2.5
+	3.5
 };
 
 const AlienWaveInfo stage3 =
@@ -211,7 +197,7 @@ const AlienWaveInfo stage3 =
 	" 4    5 ",
 	8, 4,
 	12.f, 4.f, 
-	2.5
+	3.5
 };
 
 const AlienWaveInfo stage4 = 
@@ -222,7 +208,7 @@ const AlienWaveInfo stage4 =
 	7, 3,
 	16.f, 
 	4.f, 
-	2.5
+	3.5
 };
 
 const AlienWaveInfo stage5 =

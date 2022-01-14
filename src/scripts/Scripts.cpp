@@ -17,7 +17,7 @@ namespace
 
 bool AlienCanShoot(const Alien& alien, const CollisionSpace& collisionSpace) {
 	Rectangle rect;
-	constexpr float margin = 1.f;
+	constexpr float margin = 5.f;
 	rect.v0 = Add(alien.body.pos, { -margin, alien.body.size.y});
 	rect.v1 = Add(rect.v0, { margin * 2.f, 80 });
 	return ! collisionSpace.TestRect(rect, ColliderId::alien);

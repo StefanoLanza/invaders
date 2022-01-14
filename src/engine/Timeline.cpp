@@ -17,7 +17,7 @@ void Timeline::SetCallback(EventCbk callback_)
 	callback = std::move(callback_);
 }
 
-void Timeline::SetEvents(const Event* events_, size_t numEvents_) 
+void Timeline::SetEvents(const Event* events_, int numEvents_) 
 {
 	events = events_;
 	numEvents = numEvents_;

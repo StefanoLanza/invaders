@@ -186,30 +186,16 @@ void DisplayStartMenu(Console& console, const void* data_)
 #if XMAS_EDITION
 	renderer.DisplayText("Christmas Edition", 0, 20, blink > 0.f ? Color::redIntense : Color::red, ImageAlignment::centered);
 #endif
-	static const char* str[] =
-	{
-		"Press 1 to start one player game",
-		"Press 2 to start two players game",
-		"",
-		"Press ESC to quit"
-	};
-	constexpr int numRows = static_cast<int>(std::size(str));
-	const IVector2D& bounds = console.GetBounds();
-	const int boxWidth = 50;
-	const int boxHeight = 10;
-	const int top = (bounds.y - boxHeight) / 2; // centered
-	const int left = (bounds.x - boxWidth) / 2;
-	const int textCol = left + 4;
-	const int textRow = top + 3;
-	for (int r = 0; r < numRows; ++r)
-	{
-		console.DisplayText(str[r], textCol, textRow + r, Color::white);
-	}
+	const int textCol = 42;
+	const int textRow = 30;
+	console.DrawImage(GetImage(GameImageId::press1), textCol, textRow, Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::press2), textCol, textRow + 6, Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::pressESC), textCol, textRow + 12, Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
 
 #if XMAS_EDITION
-	renderer.DrawImage(GetImage(GetImageId(GameImageId::gift)), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
-	renderer.DrawImage(GetImage(GetImageId(GameImageId::happyHolidays)), 0, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
-	renderer.DrawImage(GetImage(GetImageId(GameImageId::xmasLeaf)), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
+	console.DrawImage(GetImageId(GameImageId::gift), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
+	console.DrawImage(GetImageId(GameImageId::happyHolidays), 0, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
+	console.DrawImage(GetImageId(GameImageId::xmasLeaf), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
 #endif
 }
 

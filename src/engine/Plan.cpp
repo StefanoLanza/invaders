@@ -6,9 +6,8 @@
 namespace
 {
 
-void InitAction(PlanState& planState, int actionIdx)
+void InitAction(PlanState& planState, const Plan& plan, int actionIdx)
 {
-	const Plan& plan = planState.plan;
 	planState.actionIdx = actionIdx;
 	planState.ticks = 0;
 	planState.pathLength = 0;
@@ -60,14 +59,13 @@ Vector2D PlanNode(char action, float hspeed, float vspeed)
 
 void InitPlan(PlanState& planState, const Plan& plan)
 {
-	planState.plan = plan;
-	InitAction(planState, 0);
+	planState.targetPos = { 0.f, 0.f };
+	InitAction(planState, plan, 0);
 }
 
 
-void TickPlan(PlanState& planState, Vector2D& velocity, const Vector2D& pos)
+void TickPlan(PlanState& planState, const Plan& plan, Vector2D& velocity, const Vector2D& pos)
 {
-	const Plan& plan = planState.plan;
 	if (planState.actionIdx >= plan.actionCount)
 	{
 		return;
@@ -138,6 +136,6 @@ void TickPlan(PlanState& planState, Vector2D& velocity, const Vector2D& pos)
 				return;
 			}
 		}
-		InitAction(planState, actionIdx);
+		InitAction(planState, plan, actionIdx);
 	}
 }
