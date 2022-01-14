@@ -57,7 +57,7 @@ public:
 
 	void AddWall(const Vector2D& position);
 
-	void DeletePlayers();
+	void KillPlayers();
 
 	void RemoveDead();
 

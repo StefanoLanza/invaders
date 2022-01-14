@@ -253,29 +253,48 @@ void Console::DrawBorder(int x0, int y0, int width, int height, Color color)
 	CHAR_INFO* const dst = canvas.data() + t * bounds.x;
 
 	wchar_t chstr[2];
-	chstr[0] = consoleSymbols[0];
 	chstr[1] = 0;
-
 	if (y0 == t)
 	{
-		for (int col = l; col < r; ++col)
+		if (x0 == l)
+		{
+			chstr[0] = consoleSymbols[3];
+			setcchar(&dst[l], chstr, attr, colorPair, NULL);
+		}
+		chstr[0] = consoleSymbols[4];
+		for (int col = l + 1; col < r - 1; ++col)
 		{
 			setcchar(&dst[col], chstr, attr, colorPair, NULL);
 		}
+		if (x0 + width == r) 
+		{
+			chstr[0] = consoleSymbols[5];
+			setcchar(&dst[r - 1], chstr, attr, colorPair, NULL);
+		}
 	}
-	chstr[0] = consoleSymbols[2];
 	if (b == y0 + height)
 	{
 		const int offs = (b - t - 1) * bounds.x;
-		for (int col = l; col < r; ++col)
+		if (x0 == l)
+		{
+			chstr[0] = consoleSymbols[7];
+			setcchar(&dst[l + offs], chstr, attr, colorPair, NULL);
+		}
+		chstr[0] = consoleSymbols[4];
+		for (int col = l + 1; col < r - 1; ++col)
 		{
 			setcchar(&dst[col + offs], chstr, attr, colorPair, NULL);
 		}
+		if (x0 + width == r) 
+		{
+			chstr[0] = consoleSymbols[8];
+			setcchar(&dst[r - 1 + offs], chstr, attr, colorPair, NULL);
+		}
 	}
 
-	chstr[0] = consoleSymbols[1];
 	if (l == x0)
 	{
+		chstr[0] = consoleSymbols[6];
 		for (int row = 1; row < (b - t - 1); ++row)
 		{
 			setcchar(&dst[row * bounds.x + l], chstr, attr, colorPair, NULL);
@@ -283,6 +302,7 @@ void Console::DrawBorder(int x0, int y0, int width, int height, Color color)
 	}
 	if (r == x0 + width)
 	{
+		chstr[0] = consoleSymbols[6];
 		for (int row = 1; row < (b - t - 1); ++row)
 		{
 			setcchar(&dst[row * bounds.x + r - 1], chstr, attr, colorPair, NULL);

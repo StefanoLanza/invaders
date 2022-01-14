@@ -119,13 +119,13 @@ int PlayGame(Game& game, void* data, float dt)
 	}
 	if (! playGameStateData.showLevel)
 	{
-		if (playGameStateData.canPlay)
+		//if (playGameStateData.canPlay)
 		{
 			TickPlayers(world, dt);
 		}
-		else
+		//else
 		{
-			playGameStateData.canPlay = world.PrepareAliensForAttack();
+		//	playGameStateData.canPlay = world.PrepareAliensForAttack();
 		}
 		UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
 		world.RemoveDead();
@@ -145,6 +145,7 @@ void DisplayPlayGame(Console& console, const void* data)
 		console.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 		console.DrawImage(GetImage(GameImageId::stage), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
+	//console.DrawBorder(0, 0, console.GetBounds().x, console.GetBounds().y, Color::white);
 	DisplayLivesAndScores(game, console);
 }
 
@@ -291,7 +292,7 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 		AlienWave& wave = context.world->alienWaves[alien.waveIndex];
 		wave.speed += gameConfig.alienWaveSpeedInc;
 		wave.fireRate += gameConfig.alienWaveFireRateInc;
-		AlienDestroy(alien, wave);
+		AlienDestroy(alien);
 		context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
 		particleCount = 7;
 		particleColor = Color::yellowIntense;
@@ -334,7 +335,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	PlayerShip& player = *(PlayerShip*)ud0;
 	Alien& alien = *(Alien*)ud1;
 	//Spawn explosion, destroy player and alien
-	AlienDestroy(alien, context.world->alienWaves[alien.waveIndex]);
+	AlienDestroy(alien);
 	if (! context.gameConfig->godMode)
 	{
 		PlayerHit(player);

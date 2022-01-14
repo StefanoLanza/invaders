@@ -104,8 +104,8 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienP
 	alien.waveIndex = -1;
 	alien.indexInWave = -1;
 	alien.randomOffset = randomOffset;
-//	InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
-//	InitActionSequence(alien.attackSeq, prefab.actionSeq, true);
+	//InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
+	InitActionSequence(alien.attackSeq, prefab.attackSeq, true);
 	if (prefab.actionPlan)
 	{
 		InitPlan(alien.planState, *prefab.actionPlan);
@@ -124,7 +124,7 @@ void ParkAlien(Alien& alien)
 	}
 	else
 	{
-		alien.body.velocity = Normalize(diff, alien.gameState.speed);
+		alien.body.velocity = Normalize(diff, alien.prefab->landingSpeed);
 	}
 }
 
@@ -147,11 +147,27 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			break;
 		case Alien::State::ready:
 			// Wait
+			alien.state = Alien::State::attacking; // TODO
 			break;
 		case Alien::State::attacking:
 			if (alien.prefab->actionPlan)
 			{
-				TickPlan(alien.planState, *alien.prefab->actionPlan, alien.body.velocity, alien.body.pos);
+				TickPlan(alien.planState, *alien.prefab->actionPlan, alien.body.velocity, alien.gameState.speed, alien.body.pos);
+			}
+			else
+			{
+				if (alien.state == Alien::State::landing)
+				{
+					//TickAlien(alien, alien.landingSeq);
+					//if (alien.landingSeq.a >= alien.landingSeq.length)
+					//{
+					//	alien.state = Alien::State::attacking;
+					//}
+				}
+				else if (alien.state == Alien::State::attacking)
+				{
+					TickAlien(alien, alien.attackSeq);
+				}
 			}
 			break;
 		case Alien::State::dead:
@@ -159,22 +175,6 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			break;
 	}
 
-/*	
-	else {
-		if (alien.state == Alien::State::landing)
-		{
-			TickAlien(alien, alien.landingSeq);
-			if (alien.landingSeq.a >= alien.landingSeq.length)
-			{
-				alien.state = Alien::State::attacking;
-			}
-		}
-		else if (alien.state == Alien::State::attacking)
-		{
-			TickAlien(alien, alien.attackSeq);
-		}
-	}
-*/
 	alien.body.prevPos = alien.body.pos;
 	constexpr float aspectRatio = 0.5f; // console chars are two times taller than wide
 	Vector2D velocity = alien.body.velocity;
@@ -201,12 +201,10 @@ bool AlienHit(Alien& alien)
 }
 
 
-void AlienDestroy(Alien& alien, AlienWave& wave)
+void AlienDestroy(Alien& alien)
 {
 	if (alien.state != Alien::State::dead) 
 	{
 		alien.state = Alien::State::dead;
-		assert(wave.numAliens > 0);
-		--wave.numAliens;
 	}
 }

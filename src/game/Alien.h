@@ -66,7 +66,7 @@ struct Alien
 	PlanState planState;
 
 	//ActionSeq landingSeq;
-	//ActionSeq attackSeq;
+	ActionSeq attackSeq;
 	int waveIndex;
 	int indexInWave;
 	float randomOffset; // [0,1]
@@ -75,7 +75,7 @@ struct Alien
 
 // Public API
 Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset);
-void AlienDestroy(Alien& alien, AlienWave& wave);
+void AlienDestroy(Alien& alien);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);
 void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config);

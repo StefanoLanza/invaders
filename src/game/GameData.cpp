@@ -71,6 +71,14 @@ constexpr const char* alienSeq1 = {
 	"rrrrrlbllllrrllb"
 };
 
+constexpr const char* alienSeq4 = {
+	"llrrlllrrrb"
+};
+
+constexpr const char* alienSeq5 = {
+	"rrllrrrlllb"
+};
+
 // Sentinels
 constexpr const char* alienSeq2 = {
 	"brbrblblbltrlltrrtrls"
@@ -92,6 +100,7 @@ constexpr const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
+constexpr float landingSpeed = 30.f;
 constexpr float normalSpeed = 12.f;
 constexpr float midSpeed = 24.f;
 constexpr float fastSpeed = 48.f;
@@ -111,16 +120,23 @@ constexpr bool doNotAim = false;
 
 constexpr Action testPlanActions[] =
 {
-//	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 16.f, .vy = 4.f, .duration = 30 } },
-	{ .id = ActionId::translate, .translate = { .dx = 32, .dy = 0, .duration = 1 } },
-	{ .id = ActionId::rotate, .rotate = { .dtheta = -2160.f, .duration = 2040 } },
+	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 1.f, .vy = 1.f, .duration = 30 } },
+//	{ .id = ActionId::translate, .translate = { .dx = 1, .dy = 0, .duration = 1 } },
+//	{ .id = ActionId::rotate, .rotate = { .dtheta = -2160.f, .duration = 2040 } },
 //	{ .id = ActionId::move, .move = { .x = 80, .y = 27, .speed = 16.f } },
-//	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .duration = 20 } },
-//	{ .id = ActionId::rotate, .rotate = { .dtheta = 0.02f, .duration = 240 } },
-//	{ .id = ActionId::translate, .translate = { .dx = -16, .dy = 0, .duration = 120 } },
-//	{ .id = ActionId::translate, .translate = { .dx = +16, .dy = 0, .duration = 120 } },
-//	{ .id = ActionId::translate, .translate = { .dx = 0, .dy = -16, .duration = 120 } },
+//
 };
+
+constexpr Action plan0Actions[] =
+{
+	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 1.f, .vy = 1.f, .duration = 30 } },
+};
+
+constexpr Action plan1Actions[] =
+{
+	{ .id = ActionId::path, .path = { .seq = alienSeq1, .vx = 1.f, .vy = 1.f, .duration = 30 } },
+};
+
 constexpr Plan testPlan = 
 {
 	.actions = testPlanActions,
@@ -128,20 +144,34 @@ constexpr Plan testPlan =
 	.loop = true,
 };
 
+constexpr Plan plan0 = 
+{
+	.actions = plan0Actions,
+	.actionCount = (int)std::size(plan0Actions),
+	.loop = true,
+};
+
+constexpr Plan plan1 = 
+{
+	.actions = plan1Actions,
+	.actionCount = (int)std::size(plan1Actions),
+	.loop = true,
+};
+
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .actionSeq = alienSeq0, .speed= normalSpeed, 
-	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .actionSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .actionSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .landingSpeed = landingSpeed,
+	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim,   },
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
+//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
 //	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
-//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .actionSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .actionSeq = alienSeq0, .speed= normalSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .actionSeq = alienSeq1, .speed= normalSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .actionSeq = alienSeq2, .speed= midSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .actionSeq = alienSeq3, .speed= midSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .landingSeq = nullSeq, .actionSeq = boss0Seq, .speed= 40.f,  .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
+//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .attackSeq = alienSeq4, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .attackSeq = alienSeq5, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .landingSeq = nullSeq, .attackSeq = boss0Seq, .speed= 40.f,  .landingSpeed = landingSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
 //	{ boss1Anim,  Color::violet, 12, nullSeq, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
 
@@ -154,7 +184,7 @@ const PlayerPrefab playerPrefabs[] =
 	{ .imageId = GameImageId::player2, .velocity= 30.f, .laserOffset = 4.f },
 };
 
-const AlienWaveInfo teststage =
+constexpr AlienWaveInfo teststage =
 {
 	.mask = 
 	"0",
@@ -166,7 +196,7 @@ const AlienWaveInfo teststage =
 };
 
 
-const AlienWaveInfo stage1 =
+constexpr AlienWaveInfo wave1 =
 {
 	.mask = 
 	"00001111"
@@ -179,7 +209,7 @@ const AlienWaveInfo stage1 =
 	.start_y = 3.5,
 };
 
-const AlienWaveInfo stage2 =
+const AlienWaveInfo wave2 =
 {
 	"22223333"
 	"00001111"
@@ -271,39 +301,39 @@ const char* const hudMessages[] =
 };
 constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 
-const Event stage1Events[] =
+constexpr Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &teststage }, //&stage1, },
+	{ GameEventId::hideStage, 1.f, nullptr },
+	{ GameEventId::spawnWave, 1.f, &wave2, }, // FIXME
 	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 
-const Event stage2Events[] =
+constexpr Event stage2Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage2, },
+	{ GameEventId::hideStage, 1.f, nullptr },
+	{ GameEventId::spawnWave, 1.f, &wave2, },
 	{ GameEventId::message, 4.f, hudMessages[1], },
 };
 
-const Event stage3Events[] =
+constexpr Event stage3Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage3, },
+	{ GameEventId::hideStage, 1.f, nullptr },
+	{ GameEventId::spawnWave, 1.f, &stage3, },
 	{ GameEventId::message, 4.f, hudMessages[2], },
 };
 
-const Event stage4Events[] =
+constexpr Event stage4Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage4, },
+	{ GameEventId::hideStage, 1.f, nullptr },
+	{ GameEventId::spawnWave, 1.f, &stage4, },
 	{ GameEventId::message, 4.f, "Boss", },
 };
 
-const Event stage5Events[] =
+constexpr Event stage5Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },
@@ -311,7 +341,7 @@ const Event stage5Events[] =
 	{ GameEventId::message, 4.f, hudMessages[3], },
 };
 
-const Event stage6Events[] =
+constexpr Event stage6Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 2.f, nullptr },

@@ -127,7 +127,10 @@ void PlayField::SpawnBomb()
 	// All aliens take damage
 	for (auto& alien : aliens)
 	{
-		AlienHit(alien);
+		if (AlienHit(alien))
+		{
+			AlienDestroy(alien);
+		}
 	}
 }
 
@@ -138,9 +141,12 @@ void PlayField::AddWall(const Vector2D& position)
 }
 
 
-void PlayField::DeletePlayers()
+void PlayField::KillPlayers()
 {
-	players.clear();
+	for (PlayerShip& player : players)
+	{
+		PlayerHit(player);
+	}
 }
 	
 

@@ -41,14 +41,17 @@ struct Stage
 
 struct Plan;
 
+//using ActionSeq = const char*;
+
 struct AlienPrefab
 {
 	Animation anim;
 	Color     color;
 	int       hits;
 	const char* landingSeq;
-	const char* actionSeq;
+	const char* attackSeq;
 	float speed;
+	float landingSpeed;
 	float fireRate;
 	float laserSpeed;
 	bool  aimAtPlayer;

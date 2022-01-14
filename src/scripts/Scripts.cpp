@@ -36,7 +36,10 @@ bool Aim(Vector2D& laserVel, const Vector2D& laserPos, float laserSpeed, const s
 			targetPlayer = &player;
 		}
 	}
-	assert(targetPlayer);
+	if (nullptr == targetPlayer)
+	{
+		return false;
+	}
 	Vector2D diff = Sub(targetPlayer->body.pos, laserPos);
 	// Limit angle
 	if (2 * std::abs(diff.y) > std::abs(diff.x)) 
@@ -63,8 +66,8 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	if (alien.body.pos.y >= world.bounds.y - size.y * 0.5f)
 	{
 		// If an alien ship reaches the bottom of the screen the players die
-		world.DeletePlayers();
-		AlienDestroy(alien, wave);// FIXME only mark as dead
+		world.KillPlayers();
+		AlienDestroy(alien);
 	}
 
 	if (alien.gameState.fireTimer == 0.f)

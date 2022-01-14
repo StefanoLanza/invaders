@@ -59,12 +59,11 @@ Vector2D PlanNode(char action, float hspeed, float vspeed)
 
 void InitPlan(PlanState& planState, const Plan& plan)
 {
-	planState.targetPos = { 0.f, 0.f };
 	InitAction(planState, plan, 0);
 }
 
 
-void TickPlan(PlanState& planState, const Plan& plan, Vector2D& velocity, const Vector2D& pos)
+void TickPlan(PlanState& planState, const Plan& plan, Vector2D& velocity, float speed, const Vector2D& pos)
 {
 	if (planState.actionIdx >= plan.actionCount)
 	{
@@ -85,12 +84,12 @@ void TickPlan(PlanState& planState, const Plan& plan, Vector2D& velocity, const 
 		}
 		else
 		{
-			velocity = Normalize(diff, currAction.move.speed);
+			velocity = Normalize(diff, currAction.move.speed * speed);
 		}
 		break;
 	}
 	case ActionId::translate:
-		velocity = {currAction.translate.dx, currAction.translate.dy};
+		velocity = Mul(Vector2D{currAction.translate.dx, currAction.translate.dy}, speed);
 		if (planState.ticks >= currAction.translate.duration)
 		{
 			gotoNextAction = true;
@@ -107,6 +106,7 @@ void TickPlan(PlanState& planState, const Plan& plan, Vector2D& velocity, const 
 		break;
 	case ActionId::path:
 		velocity = PlanNode(currAction.path.seq[planState.pathNodeIdx], currAction.path.vx, currAction.path.vy);
+		velocity = Mul(velocity, speed);
 		++planState.pathTicks;
 		if (planState.pathTicks >= currAction.path.duration)
 		{
