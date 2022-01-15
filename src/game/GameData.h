@@ -28,6 +28,8 @@ enum GameEventId : EventId
 	message,
 	showStage,
 	hideStage,
+	showScore,
+	hideScore,
 	spawnWave,
 };
 

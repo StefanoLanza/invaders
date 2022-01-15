@@ -81,11 +81,11 @@ constexpr const char* alienSeq5 = {
 
 // Sentinels
 constexpr const char* alienSeq2 = {
-	"brbrblblbltrlltrrtrls"
+	"brbrblblltrlltrrtrls"
 };
 
 constexpr const char* alienSeq3 = {
-	"blblbrbrbrtlrrtlltlrs"
+	"blblbrbrrtlrrtlltlrs"
 };
 
 constexpr const char* boss0Seq = {
@@ -192,7 +192,7 @@ constexpr AlienWaveInfo teststage =
 	.numRows = 1,
 	.dx = 12.f, 
 	.dy = 4.f, 
-	.start_y = 3.5,
+	.start_y = 4.0,
 };
 
 
@@ -206,89 +206,47 @@ constexpr AlienWaveInfo wave1 =
 	.numRows = 3,
 	.dx = 12.f, 
 	.dy = 4.f, 
-	.start_y = 3.5,
+	.start_y = 4.0,
 };
 
 const AlienWaveInfo wave2 =
 {
+	.mask = 
 	"22223333"
 	"00001111"
 	"00001111",
-	8, 3,
-	12.f, 4.f, 
-	3.5
+	.numCols = 8, 
+	.numRows = 3,
+	.dx = 12.f, 
+	.dy = 4.f, 
+	.start_y = 4.0,
 };
 
-const AlienWaveInfo stage3 =
+const AlienWaveInfo wave3 =
 {
+	.mask = 
 	"22223333"
 	"00001111"
 	"00001111"
 	" 4    5 ",
-	8, 4,
-	12.f, 4.f, 
-	3.5
+	.numCols = 8, 
+	.numRows = 4,
+	.dx = 12.f, 
+	.dy = 4.f, 
+	.start_y = 4.0,
 };
 
-const AlienWaveInfo stage4 = 
+const AlienWaveInfo wave4 = 
 {
+	.mask = 
 	"0  6  1"
 	"0     1"
 	"0     1",
-	7, 3,
-	16.f, 
-	4.f, 
-	3.5
-};
-
-const AlienWaveInfo stage5 =
-{
-	"77778888"
-	"77778888"
-	"77778888",
-	8, 3,
-	12.f, 4.f, 
-	2.5
-};
-
-const AlienWaveInfo stage6 =
-{
-	"9999::::"
-	"77778888"
-	"77778888",
-	8, 3,
-	12.f, 4.f, 
-	2.5
-};
-
-const AlienWaveInfo stage7 =
-{
-	"9999::::"
-	"77778888"
-	"77778888"
-	" ;    < ",
-	8, 4,
-	12.f, 4.f, 
-	2.5
-};
-
-// Boss 
-const AlienWaveInfo stage8 = 
-{
-	"=",
-	1, 1,
-	0.f, 
-	0.f, 
-	2.5
-};
-
-const AlienWaveInfo stage12 = 
-{
-	"20",//FIXME
-	1, 1,
-	0.f, 
-	0.f, 
-	2.5
+	.numCols = 7, 
+	.numRows = 3,
+	.dx = 16.f, 
+	.dy = 4.f, 
+	.start_y = 4.0,
 };
 
 const char* const hudMessages[] =
@@ -305,7 +263,9 @@ constexpr Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::spawnWave, 1.f, &wave2, }, // FIXME
+	{ GameEventId::hideScore, 1.f, nullptr, },
+	{ GameEventId::spawnWave, 1.f, &wave1, },
+	{ GameEventId::showScore, 2.f, nullptr, },
 	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 
@@ -314,6 +274,7 @@ constexpr Event stage2Events[] =
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::spawnWave, 1.f, &wave2, },
+	{ GameEventId::showScore, 2.f, nullptr, },
 	{ GameEventId::message, 4.f, hudMessages[1], },
 };
 
@@ -321,7 +282,8 @@ constexpr Event stage3Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::spawnWave, 1.f, &stage3, },
+	{ GameEventId::spawnWave, 1.f, &wave3, },
+	{ GameEventId::showScore, 2.f, nullptr, },
 	{ GameEventId::message, 4.f, hudMessages[2], },
 };
 
@@ -329,52 +291,18 @@ constexpr Event stage4Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::spawnWave, 1.f, &stage4, },
+	{ GameEventId::spawnWave, 1.f, &wave4, },
+	{ GameEventId::showScore, 2.f, nullptr, },
 	{ GameEventId::message, 4.f, "Boss", },
 };
 
-constexpr Event stage5Events[] =
-{
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage5, },
-	{ GameEventId::message, 4.f, hudMessages[3], },
-};
 
-constexpr Event stage6Events[] =
-{
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage6, },
-	{ GameEventId::message, 4.f, hudMessages[4], },
-};
-
-const Event stage7Events[] =
-{
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage7, },
-	{ GameEventId::message, 4.f, hudMessages[0], },
-};
-
-const Event stage8Events[] =
-{
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideStage, 2.f, nullptr },
-	{ GameEventId::spawnWave, 2.f, &stage8, },
-	{ GameEventId::message, 4.f, "Boss", },
-};
-
-const Stage stages[] =
+constexpr Stage stages[] =
 {
 	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
 	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
 	{ stage3Events, static_cast<int>(std::size(stage3Events)) },
 	{ stage4Events, static_cast<int>(std::size(stage4Events)) },
-	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
-	{ stage6Events, static_cast<int>(std::size(stage6Events)) },
-	{ stage7Events, static_cast<int>(std::size(stage7Events)) },
-	{ stage8Events, static_cast<int>(std::size(stage8Events)) },
 };
 
 }

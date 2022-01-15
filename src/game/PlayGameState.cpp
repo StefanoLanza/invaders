@@ -33,6 +33,7 @@ struct PlayGameStateData
 	CollisionSpace collisionSpace;
 	int            stageIndex = -1;
 	bool           showLevel;
+	bool           showScore;
 	int            numHits;
 	bool           canPlay;
 };
@@ -146,7 +147,10 @@ void DisplayPlayGame(Console& console, const void* data)
 		console.DrawImage(GetImage(GameImageId::stage), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
 	}
 	//console.DrawBorder(0, 0, console.GetBounds().x, console.GetBounds().y, Color::white);
-	DisplayLivesAndScores(game, console);
+	if (playGameStateData.showScore)
+	{
+		DisplayLivesAndScores(game, console);
+	}
 }
 
 
@@ -166,6 +170,7 @@ void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, fl
 		angle += dangle;
 		dangle *= 1.02f; // randomize
 		p.vel.y *= 0.5f; // aspect ratio
+		velocity *= 1.1f; // randomize
 		p.accel = Vector2D {0.f, 0.f };
 		p.life = life;
 		p.color = color;
@@ -406,6 +411,7 @@ void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 	world.DestroyAllExplosions();
 	data.stageIndex = levelIndex;
 	data.showLevel = true;
+	data.showScore = false;
 	data.numHits = 0;
 	data.canPlay = false;
 	timeline.SetEvents(GetStage(levelIndex).events, GetStage(levelIndex).numEvents);
@@ -428,6 +434,12 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 			break;
 		case GameEventId::hideStage:
 			playGameStateData.showLevel = false;
+			break;
+		case GameEventId::showScore:
+			playGameStateData.showScore = true;
+			break;
+		case GameEventId::hideScore:
+			playGameStateData.showScore = false;
 			break;
 		case GameEventId::message:
 			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);

@@ -32,33 +32,58 @@ R"(
 	const uint8_t* alien_color = nullptr;
 #endif
 
-const wchar_t stageStr[2 + 17 * 3] = 
+#if 0
+const wchar_t stageStr[2 + 28 * 5] = 
 LR"(
- _ |_  _   _   _
-_) |_ (_| (_) (-
-          _/    
+ _____  _                  
+|   __|| |_  ___  ___  ___ 
+|__   ||  _|| .'|| . || -_|
+|_____||_|  |__,||_  ||___|
+                 |___|     
+)";
+#else
+const wchar_t stageStr[2 + 21 * 3] = 
+LR"(
+▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
+█▄▄  █  █▄█ █ ▄▄ █▄ 
+▄▄█  █  █ █ ▀▄▄▀ █▄▄
+)";
+#endif
+
+//const wchar_t scoreStr[2 + 28 * 4] = 
+//LR"(
+// _____                     
+//|   __| ___  ___  ___  ___ 
+//|__   ||  _|| . ||  _|| -_|
+//|_____||___||___||_|  |___|
+//)";
+//const wchar_t scoreStr[2 + 16 * 2] = 
+//LR"(
+// _  _  _   _  _
+//_) (_ (_) |  (-
+//)";
+const wchar_t scoreStr[2 + 20 * 3] = 
+LR"(
+▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
+█▄▄ █   █ █ █▄█ █▄ 
+▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
 )";
 
-//▄▄▄ ▄▄▄ ▄▄▄  ▄▄  ▄▄▄
-//█▄▄  █  █▄█ █ ▄▄ █▄ 
-//▄▄█  █  █ █ ▀▄▄▀ █▄▄
-
-const wchar_t scoreStr[2 + 16 * 2] = 
-LR"(
- _  _  _   _  _
-_) (_ (_) |  (-
-)";
-//const wchar_t scoreStr[2 + 20 * 3] = 
-//▄▄▄  ▄▄ ▄▄▄ ▄▄▄ ▄▄▄
-//█▄▄ █   █ █ █▄█ █▄ 
-//▄▄█ ▀▄▄ █▄█ █▀▄ █▄▄
-
+#if 0
 const wchar_t livesStr[2 + 13 * 2] = 
 LR"(
 | .     _  _
 | | \/ (- _)
 )";
+#else
+const wchar_t livesStr[2 + 20 * 3] = 
+LR"(
+▄   ▄ ▄   ▄ ▄▄▄ ▄▄▄
+█   █ █   █ █▄  █▄▄
+█▄▄ █  ▀▄▀  █▄▄ ▄▄█
+)";
 
+#endif
 const wchar_t gameOverStr[2 + 32 * 3] = 
 LR"(
  __                __          
@@ -66,28 +91,31 @@ LR"(
 \__) (_| ||| (-   \__/ \/ (- | 
 )";
 
-const wchar_t press1Str[2 + 75 * 4] = 
+const wchar_t press1Str[2 + 62 * 5] = 
 LR"(
- __                                                                       
-|__)_ _ _ _   /|  |_ _    _|_ _  _|_   _  _  _   _ | _    _ _   _  _  _  _
-|  | (-_)_)    |  |_(_)  _)|_(_|| |_  (_)| )(-  |_)|(_|\/(-|   (_)(_||||(-
-                                                |      /       _/         
+ ___        _                          _                     
+|_  |      |_|   ___  ___  ___    ___ | | ___  _ _  ___  ___ 
+ _| |_      _   | . ||   || -_|  | . || || .'|| | || -_||  _|
+|_____|    |_|  |___||_|_||___|  |  _||_||__,||_  ||___||_|  
+                                 |_|          |___|          
 )";
 
-const wchar_t press2Str[2 + 78 * 4] = 
+const wchar_t press2Str[2 + 69 * 5] = 
 LR"(
- __            _                                                             
-|__)_ _ _ _    _)  |_ _    _|_ _  _|_  |_    _    _ | _    _ _ _   _  _  _  _
-|  | (-_)_)   /__  |_(_)  _)|_(_|| |_  |_\)/(_)  |_)|(_|\/(-| _)  (_)(_||||(-
-                                                 |      /         _/         
+ ___        _    _                       _                          
+|_  |      |_|  | |_  _ _ _  ___    ___ | | ___  _ _  ___  ___  ___ 
+|  _|       _   |  _|| | | || . |  | . || || .'|| | || -_||  _||_ -|
+|___|      |_|  |_|  |_____||___|  |  _||_||__,||_  ||___||_|  |___|
+                                 |_|          |___|                 
 )";
 
-const wchar_t pressESCStr[2 + 41 * 4] = 
+const wchar_t pressESCStr[2 + 47 * 5] = 
 LR"(
- __           __ __ __                  
-|__)_ _ _ _  |_ (_ /    |_ _    _    .|_
-|  | (-_)_)  |____)\__  |_(_)  (_||_|||_
-                                 |      
+ _____  _____  _____    _              _  _   
+|   __||   __||     |  |_|   ___  _ _ |_|| |_ 
+|   __||__   ||   --|   _   | . || | || ||  _|
+|_____||_____||_____|  |_|  |_  ||___||_||_|  
+                              |_|             
 )";
 
 const wchar_t alien0_0Str[2 + 8 * 4] = 
@@ -501,13 +529,16 @@ const Image gameImages[numGameImages] =
 	{ giftImg, nullptr, 24, 8 },
 	{ happyHolImg, nullptr, 30, 8 },
 	{ leafImg, nullptr, 21, 8 },
-	{ stageStr, nullptr, 16, 3},
-	{ scoreStr, nullptr, 15, 2 }, // 19, 3
-	{ livesStr, nullptr, 12, 2 }, // 19, 3
+	//{ stageStr, nullptr, 27, 5},
+	{ stageStr, nullptr, 20, 3},
+	//{ scoreStr, nullptr, 27, 4 }, // 19, 3
+	{ scoreStr, nullptr, 19, 3 },
+	//{ livesStr, nullptr, 12, 2 }, // 19, 3
+	{ livesStr, nullptr, 19, 3 },
 	{ gameOverStr, nullptr, 31, 3 },
-	{ press1Str, nullptr, 74, 4 },
-	{ press2Str, nullptr, 77, 4 },
-	{ pressESCStr, nullptr, 40, 4 },
+	{ press1Str, nullptr, 61, 5 },
+	{ press2Str, nullptr, 68, 5 },
+	{ pressESCStr, nullptr, 46, 5 },
 	{ _0Img, nullptr, 5, 3 },
 	{ _1Img, nullptr, 2, 3 },
 	{ _2Img, nullptr, 4, 3 },
