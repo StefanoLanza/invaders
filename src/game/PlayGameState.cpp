@@ -561,10 +561,10 @@ void DisplayLivesAndScores(const Game& game, Console& console)
 	const Color color[2] = { Color::white, Color::lightBlueIntense };
 	for (int p = 0; p < game.numPlayers; ++p)
 	{
-		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 1, color[p], ImageAlignment::left, ImageAlignment::top);
-		console.DrawImage(GetImage(GameImageId::lives), x[p] + 46, 1, color[p], ImageAlignment::left, ImageAlignment::top);
+		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 0, color[p], ImageAlignment::left, ImageAlignment::top);
+		console.DrawImage(GetImage(GameImageId::lives), x[p] + 48, 0, color[p], ImageAlignment::left, ImageAlignment::top);
 		console.DrawNumber(game.score[p], x[p] + 40, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
-		console.DrawNumber(game.playerLives[p], x[p] + 66, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
+		console.DrawNumber(game.playerLives[p], x[p] + 74, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
 	}
 }
 

@@ -84,13 +84,21 @@ LR"(
 )";
 
 #endif
+#if 1
+const wchar_t gameOverStr[2 + 38 * 3] = 
+LR"(
+ ▄▄  ▄▄▄ ▄   ▄ ▄▄▄   ▄▄▄ ▄  ▄ ▄▄▄ ▄▄▄
+█ ▄▄ █▄█ █▀▄▀█ █▄    █ █ █  █ █▄  █▄█
+▀▄▄▀ █ █ █   █ █▄▄   █▄█ ▀▄▄▀ █▄▄ █▀▄
+)";
+#else
 const wchar_t gameOverStr[2 + 32 * 3] = 
 LR"(
  __                __          
 / _   _   _   _   /  \     _  _
 \__) (_| ||| (-   \__/ \/ (- | 
 )";
-
+#endif
 const wchar_t press1Str[2 + 62 * 5] = 
 LR"(
  ___        _                          _                     
@@ -372,11 +380,68 @@ LR"(
      O      *        '       .   
 )";
 
-/*
-  __       __   __          __   __   ___   __    __  
- /  \  /|   _)   _)  |__|  |_   /__     /  (__)  (__\ 
- \__/   |  /__  __)     |  __)  \__)   /   (__)   __/
- */
+#if 1
+const wchar_t _0Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█ █
+█▄█
+)";
+const wchar_t _1Img[2 + 4 * 3] =
+LR"(
+  ▄
+ ▀█
+  █
+)";
+const wchar_t _2Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+▄▄█
+█▄▄
+)";
+const wchar_t _3Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+▄▄█
+▄▄█
+)";
+const wchar_t _4Img[2 + 4 * 3] =
+LR"(
+▄ ▄
+█▄█
+  █
+)";
+const wchar_t _5Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄▄
+▄▄█
+)";
+const wchar_t _6Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄▄
+█▄█
+)";
+const wchar_t _7Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+  █
+  █
+)";
+const wchar_t _8Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄█
+█▄█
+)";
+const wchar_t _9Img[2 + 4 * 3] =
+LR"(
+▄▄▄
+█▄█
+  █
+)";
+#else
 const wchar_t _0Img[2 + 6 * 3] =
 LR"(
   __ 
@@ -446,7 +511,7 @@ LR"(
 (__)
  __/
 )";
-
+#endif
 const wchar_t snowFlakeImg[] =
 LR"(
 *
@@ -535,10 +600,23 @@ const Image gameImages[numGameImages] =
 	{ scoreStr, nullptr, 19, 3 },
 	//{ livesStr, nullptr, 12, 2 }, // 19, 3
 	{ livesStr, nullptr, 19, 3 },
-	{ gameOverStr, nullptr, 31, 3 },
+	//{ gameOverStr, nullptr, 31, 3 },
+	{ gameOverStr, nullptr, 37, 3 },
 	{ press1Str, nullptr, 61, 5 },
 	{ press2Str, nullptr, 68, 5 },
 	{ pressESCStr, nullptr, 46, 5 },
+	#if 1
+	{ _0Img, nullptr, 3, 3 },
+	{ _1Img, nullptr, 3, 3 },
+	{ _2Img, nullptr, 3, 3 },
+	{ _3Img, nullptr, 3, 3 },
+	{ _4Img, nullptr, 3, 3 },
+	{ _5Img, nullptr, 3, 3 },
+	{ _6Img, nullptr, 3, 3 },
+	{ _7Img, nullptr, 3, 3 },
+	{ _8Img, nullptr, 3, 3 },
+	{ _9Img, nullptr, 3, 3 },
+#else
 	{ _0Img, nullptr, 5, 3 },
 	{ _1Img, nullptr, 2, 3 },
 	{ _2Img, nullptr, 4, 3 },
@@ -549,6 +627,7 @@ const Image gameImages[numGameImages] =
 	{ _7Img, nullptr, 3, 3 },
 	{ _8Img, nullptr, 4, 3 },
 	{ _9Img, nullptr, 4, 3 },
+#endif
 };
 
 long GetFileSize(const char* fileName)
