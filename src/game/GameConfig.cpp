@@ -6,9 +6,6 @@ GameConfig::GameConfig()
 	consoleWidth = 160;
 	consoleHeight = 54;
 	fontSize = 12;
-	// World
-	maxAlienLasers = 10;
-	maxPlayerLasers = 4;
 	// Player
 	playerFireRate = 0.2f;
 	playerLaserVelocity = 50.f;

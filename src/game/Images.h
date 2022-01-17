@@ -16,6 +16,8 @@ enum GameImageId : ImageId
 	alien3_1,
 	alien4_0,
 	alien4_1,
+	alien5_0,
+	alien5_1,
 	boss0_0,
 	boss0_1,
 	boss1_0,
@@ -49,6 +51,7 @@ enum GameImageId : ImageId
 	press1,
 	press2,
 	pressESC,
+	cursor,
 	// numbers
 	_0,
 	_1,

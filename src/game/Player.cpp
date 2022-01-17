@@ -32,28 +32,14 @@ void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laser
 		const Vector2D laserPos_m = { ship.body.pos.x, ship.body.pos.y - ship.body.size.y * 0.5f };
 		if (ship.doubleFire)
 		{
-			if (world.GetAvailablePlayerLasers() >= 2)
-			{
-				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-			}
-			else
-			{
-				// Try shooting later
-			}
+			world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
 		}
 		else if (ship.tripleFire)
 		{
-			if (world.GetAvailablePlayerLasers() >= 3)
-			{
-				world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-				world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-				world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-			}
-			else
-			{
-				// Try shooting later
-			}
+			world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
 		}
 		else // single fire
 		{

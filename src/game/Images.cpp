@@ -76,11 +76,11 @@ LR"(
 | | \/ (- _)
 )";
 #else
-const wchar_t livesStr[2 + 20 * 3] = 
+const wchar_t livesStr[2 + 18 * 3] = 
 LR"(
-▄   ▄ ▄   ▄ ▄▄▄ ▄▄▄
-█   █ █   █ █▄  █▄▄
-█▄▄ █  ▀▄▀  █▄▄ ▄▄█
+▄   ▄ ▄ ▄ ▄▄▄ ▄▄▄
+█   █ █ █ █▄  █▄▄
+█▄▄ █ ▀▄▀ █▄▄ ▄▄█
 )";
 
 #endif
@@ -99,31 +99,32 @@ LR"(
 \__) (_| ||| (-   \__/ \/ (- | 
 )";
 #endif
-const wchar_t press1Str[2 + 62 * 5] = 
+const wchar_t onePlayerStr[2 + 40 * 3] = 
 LR"(
- ___        _                          _                     
-|_  |      |_|   ___  ___  ___    ___ | | ___  _ _  ___  ___ 
- _| |_      _   | . ||   || -_|  | . || || .'|| | || -_||  _|
-|_____|    |_|  |___||_|_||___|  |  _||_||__,||_  ||___||_|  
-                                 |_|          |___|          
+▄▄▄ ▄  ▄ ▄▄▄    ▄▄▄ ▄   ▄▄▄ ▄ ▄ ▄▄▄ ▄▄▄
+█ █ █▀▄█ █▄     █▄█ █   █▄█ █▄█ █▄  █▄█
+█▄█ █  █ █▄▄    █   █▄▄ █ █   █ █▄▄ █▀▄
 )";
 
-const wchar_t press2Str[2 + 69 * 5] = 
+const wchar_t twoPlayerStr[2 + 44 * 3] = 
 LR"(
- ___        _    _                       _                          
-|_  |      |_|  | |_  _ _ _  ___    ___ | | ___  _ _  ___  ___  ___ 
-|  _|       _   |  _|| | | || . |  | . || || .'|| | || -_||  _||_ -|
-|___|      |_|  |_|  |_____||___|  |  _||_||__,||_  ||___||_|  |___|
-                                 |_|          |___|                 
+▄▄▄ ▄   ▄ ▄▄▄   ▄▄▄ ▄   ▄▄▄ ▄ ▄ ▄▄▄ ▄▄▄ ▄▄▄
+ █  █ ▄ █ █ █   █▄█ █   █▄█ █▄█ █▄  █▄█ █▄▄
+ █   █ █  █▄█   █   █▄▄ █ █   █ █▄▄ █▀▄ ▄▄█
 )";
 
-const wchar_t pressESCStr[2 + 47 * 5] = 
+const wchar_t quitStr[2 + 14 * 3] = 
 LR"(
- _____  _____  _____    _              _  _   
-|   __||   __||     |  |_|   ___  _ _ |_|| |_ 
-|   __||__   ||   --|   _   | . || | || ||  _|
-|_____||_____||_____|  |_|  |_  ||___||_||_|  
-                              |_|             
+▄▄▄ ▄ ▄ ▄ ▄▄▄
+█ █ █ █ █  █ 
+▀▀█ █▄█ █  █ 
+)";
+
+const wchar_t cursorStr[2 + 4 * 3] = 
+LR"(
+▄  
+██▄
+█▀ 
 )";
 
 const wchar_t alien0_0Str[2 + 8 * 4] = 
@@ -207,6 +208,21 @@ LR"(
  ▀   ▀ 
 )";
 
+const wchar_t alien5_1Str[2 + 10 * 4] = 
+LR"(
+ █ ▄ ▄ █ 
+▄█▀▀█▀▀█▄
+█▀▀█▄█▀▀█
+▀▄  ▀  ▄▀
+)";
+
+const wchar_t alien5_0Str[2 + 10 * 4] = 
+LR"(
+ █ ▄ ▄ █ 
+▄█▀▀█▀▀█▄
+█▀▀█▄█▀▀█
+ ▀▄ ▀ ▄▀ 
+)";
 
 const wchar_t boss0_0Str[] = 
 LR"(
@@ -568,6 +584,8 @@ const Image gameImages[numGameImages] =
 	{ alien3_1Str, alien_color, 7,	4 },
 	{ alien4_0Str, alien_color, 7,	4 },
 	{ alien4_1Str, alien_color, 7,	4 },
+	{ alien5_0Str, alien_color, 9,	4 },
+	{ alien5_1Str, alien_color, 9,	4 },
 	{ boss0_0Str, nullptr, 11, 5 },
 	{ boss0_1Str, nullptr, 11, 5 },
 	{ boss1_0Str, nullptr, 11, 5 },
@@ -599,12 +617,13 @@ const Image gameImages[numGameImages] =
 	//{ scoreStr, nullptr, 27, 4 }, // 19, 3
 	{ scoreStr, nullptr, 19, 3 },
 	//{ livesStr, nullptr, 12, 2 }, // 19, 3
-	{ livesStr, nullptr, 19, 3 },
+	{ livesStr, nullptr, 17, 3 },
 	//{ gameOverStr, nullptr, 31, 3 },
 	{ gameOverStr, nullptr, 37, 3 },
-	{ press1Str, nullptr, 61, 5 },
-	{ press2Str, nullptr, 68, 5 },
-	{ pressESCStr, nullptr, 46, 5 },
+	{ onePlayerStr, nullptr, 39, 3 },
+	{ twoPlayerStr, nullptr, 43, 3 },
+	{ quitStr, nullptr, 13, 3 },
+	{ cursorStr, nullptr, 3, 3},
 	#if 1
 	{ _0Img, nullptr, 3, 3 },
 	{ _1Img, nullptr, 3, 3 },

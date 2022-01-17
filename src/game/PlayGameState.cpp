@@ -32,7 +32,7 @@ struct PlayGameStateData
 {
 	CollisionSpace collisionSpace;
 	int            stageIndex = -1;
-	bool           showLevel;
+	bool           showStage;
 	bool           showScore;
 	int            numHits;
 	bool           canPlay;
@@ -118,18 +118,14 @@ int PlayGame(Game& game, void* data, float dt)
 	{
 		return (int)GameStateId::paused;
 	}
-	if (! playGameStateData.showLevel)
+	if (! playGameStateData.showStage)
 	{
-		//if (playGameStateData.canPlay)
-		{
-			TickPlayers(world, dt);
-		}
-		//else
-		{
-		//	playGameStateData.canPlay = world.PrepareAliensForAttack();
-		}
-		UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
-		world.RemoveDead();
+		TickPlayers(world, dt);
+	}
+	UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
+	world.RemoveDead();
+	if (! playGameStateData.showStage)
+	{
 		CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
 	}
 
@@ -140,11 +136,20 @@ int PlayGame(Game& game, void* data, float dt)
 void DisplayPlayGame(Console& console, const void* data)
 {
 	const Game& game = *static_cast<const Game*>(data);
-	if (playGameStateData.showLevel)
+	if (playGameStateData.showStage)
 	{
+		const IVector2D& bounds = console.GetBounds();
+		const int boxWidth = 40;
+		const int boxHeight = 10;
+		const int top = (bounds.y - boxHeight) / 2; // centered
+		const int left = (bounds.x - boxWidth) / 2;
+		const int textCol = left + 4;
+		const int textRow = top + 3;
+		//console.DrawBorder(left - 1, top - 1, boxWidth + 2, boxHeight + 2, Color::white);
+		console.DrawRectangle(left, top, boxWidth, boxHeight, Color::black);
 		ImageId imageId = (playGameStateData.stageIndex + (int)GameImageId::_1);
-		console.DrawImage(GetImage(imageId), 0, 2, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
-		console.DrawImage(GetImage(GameImageId::stage), 0, -4, Color::yellowIntense, ImageAlignment::centered, ImageAlignment::centered);
+		console.DrawImage(GetImage(imageId), 0, 2, Color::green, ImageAlignment::centered, ImageAlignment::centered);
+		console.DrawImage(GetImage(GameImageId::stage), 0, -3, Color::green, ImageAlignment::centered, ImageAlignment::centered);
 	}
 	//console.DrawBorder(0, 0, console.GetBounds().x, console.GetBounds().y, Color::white);
 	if (playGameStateData.showScore)
@@ -410,7 +415,7 @@ void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 	world.DestroyAllLasers();
 	world.DestroyAllExplosions();
 	data.stageIndex = levelIndex;
-	data.showLevel = true;
+	data.showStage = true;
 	data.showScore = false;
 	data.numHits = 0;
 	data.canPlay = false;
@@ -430,10 +435,10 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 	switch (event.id)
 	{
 		case GameEventId::showStage:
-			playGameStateData.showLevel = true;
+			playGameStateData.showStage = true;
 			break;
 		case GameEventId::hideStage:
-			playGameStateData.showLevel = false;
+			playGameStateData.showStage = false;
 			break;
 		case GameEventId::showScore:
 			playGameStateData.showScore = true;

@@ -50,6 +50,7 @@ struct StartMenuData
 	float lastSnowX;
 	float snow_t = 0;
 #endif
+	int   selection = 0;
 	float t = 0;
 };
 StartMenuData startMenuData;
@@ -123,6 +124,7 @@ void EnterStartMenu(void* data_, Game& game, int currentState)
 	data.snow_t = 0.f;
 #endif
 	data.t = 0.f;
+	data.selection = 0;
 	game.world.DestroyAll();
 }
 
@@ -134,27 +136,38 @@ int StartMenu(Game& game, void* data_, float dt)
 #if XMAS_EDITION
 	AnimateFlakes(data, game.world, dt);
 #endif
-	GameStateId newState;
+	GameStateId newState = GameStateId::start;
 	game.numPlayers = 0;
 	game.messageLog.Clear();
 
-	if (KeyJustPressed(KeyCode::_1))
+	if (KeyJustPressed(KeyCode::up))
 	{
-		game.mode = Game::Mode::p1;
-		newState = GameStateId::intro;
+		data.selection = (data.selection - 1 + 3) % 3;
 	}
-	else if (KeyJustPressed(KeyCode::_2))
+	else if (KeyJustPressed(KeyCode::down))
 	{
-		game.mode = Game::Mode::p1p2;
-		newState = GameStateId::intro;
+		data.selection = (data.selection + 1) % 3;
+	}
+	if (KeyJustPressed(KeyCode::enter))
+	{
+		if (data.selection == 0)
+		{
+			game.mode = Game::Mode::p1;
+			newState = GameStateId::intro;
+		}
+		else if (data.selection == 1)
+		{
+			game.mode = Game::Mode::p1p2;
+			newState = GameStateId::intro;
+		}
+		else
+		{
+			newState = GameStateId::quit;
+		}
 	}
 	else if (KeyJustPressed(KeyCode::escape))
 	{
 		newState = GameStateId::quit;
-	}
-	else
-	{
-		newState = GameStateId::start;
 	}
 	return (int)newState;
 }
@@ -186,11 +199,12 @@ void DisplayStartMenu(Console& console, const void* data_)
 #if XMAS_EDITION
 	renderer.DisplayText("Christmas Edition", 0, 20, blink > 0.f ? Color::redIntense : Color::red, ImageAlignment::centered);
 #endif
-	const int textCol = 42;
+	const int textCol = 50;
 	const int textRow = 30;
-	console.DrawImage(GetImage(GameImageId::press1), textCol, textRow, Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
-	console.DrawImage(GetImage(GameImageId::press2), textCol, textRow + 6, Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
-	console.DrawImage(GetImage(GameImageId::pressESC), textCol, textRow + 12, Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::cursor), textCol, textRow + data.selection * 6, Color::white, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::press1), textCol + 8, textRow, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::press2), textCol + 8, textRow + 6, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::pressESC), textCol + 8, textRow + 12, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
 
 #if XMAS_EDITION
 	console.DrawImage(GetImageId(GameImageId::gift), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);

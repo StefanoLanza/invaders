@@ -69,8 +69,6 @@ public:
 
 	void DestroyAllExplosions();
 
-	int GetAvailablePlayerLasers() const;
-
 	void AddScore(int score, int playerId);
 
 	bool PrepareAliensForAttack();
@@ -93,7 +91,4 @@ public:
 	Vector2D                 bounds;
 	std::uniform_real_distribution<float> rndFloat01;
 	Random rndPowerUp;
-	// Number of available active laser slots for aliens and player
-	int availableAlienLasers;
-	int availablePlayerLasers;
 };

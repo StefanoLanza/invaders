@@ -23,9 +23,7 @@ PlayField::PlayField(const Vector2D& iBounds, const GameConfig& config, std::def
 	config { config },
 	bounds { iBounds },
 	rndFloat01 { 0.f, 1.f },
-	rndPowerUp { (int)PowerUp::count, rGen },
-	availableAlienLasers(0),
-	availablePlayerLasers(0)
+	rndPowerUp { (int)PowerUp::count, rGen }
 {}
 
 
@@ -51,29 +49,19 @@ bool PlayField::NoParticles() const
 
 void PlayField::Restart()
 {
-	availableAlienLasers = config.maxAlienLasers;
-	availablePlayerLasers = config.maxPlayerLasers * (int)players.size();
 	rndPowerUp.Reset();
 }
 
 
 void PlayField::SpawnPlayerLaser(const Laser& laser)
 {
-	if (availablePlayerLasers > 0)
-	{
-		availablePlayerLasers--;
-		lasers.push_back(laser);
-	}
+	lasers.push_back(laser);
 }
 
 //
 void PlayField::SpawnAlienLaser(const Laser& laser)
 {
-	if (availableAlienLasers > 0)
-	{
-		availableAlienLasers--;
-		lasers.push_back(laser);
-	}
+	lasers.push_back(laser);
 }
 
 void PlayField::AddPlayerShip(const PlayerShip& playerShip)
@@ -208,9 +196,7 @@ void PlayField::RemoveDead()
 	Utils::RemoveElements(lasers, 
 		[this](const Laser& laser)
 		{
-			const bool res = laser.state == Laser::State::dead;
-			if (res && laser.ownerId == -1) ++availableAlienLasers; else ++availablePlayerLasers; 
-			return res;
+			return laser.state == Laser::State::dead;
 		} );
 	Utils::RemoveElements(aliens, 
 		[](const Alien& alien){ return alien.state == Alien::State::dead; } );
@@ -282,7 +268,3 @@ void PlayField::DestroyAllExplosions()
 	explosions.clear();
 }
 
-int PlayField::GetAvailablePlayerLasers() const 
-{
-	return availablePlayerLasers; 
-}

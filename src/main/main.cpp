@@ -200,8 +200,6 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 	PARSE_INT(consoleWidth, 1, 1000);
 	PARSE_INT(consoleHeight, 1, 1000);
 	PARSE_INT(fontSize, 1, 100);
-	PARSE_INT(maxAlienLasers, 0, 100);
-	PARSE_INT(maxPlayerLasers, 0, 100);
 	PARSE_FLOAT(playerFireRate, 0.f, 1000.f);
 	PARSE_FLOAT(playerLaserVelocity, 0.f, 1000.f);
 	PARSE_FLOAT(alienWaveSpeedInc, 0.f, 100.f);

@@ -28,5 +28,5 @@ void DisplayGameOver(Console& console, [[maybe_unused]] const void* gameState)
 	const int textRow = top + 3;
 	console.DrawBorder(left - 1, top - 1, width + 2, height + 2, Color::white);
 	console.DrawRectangle(left, top, width, height, Color::black);
-	console.DrawImage(GetImage(GameImageId::gameOver), textCol, textRow, Color::white, ImageAlignment::left, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::gameOver), textCol, textRow, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
 }

@@ -7,9 +7,6 @@ struct GameConfig
 	int   consoleWidth;
 	int   consoleHeight;
 	int   fontSize;
-	// World
-	int   maxAlienLasers;
-	int   maxPlayerLasers;
 	// Player
 	float playerFireRate;
 	float playerLaserVelocity;

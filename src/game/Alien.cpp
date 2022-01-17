@@ -93,6 +93,8 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienP
 	alien.body = { initialPos, initialPos, { 0.f, 0.f }, {0.f, 0.f} };
 	alien.prevVel = alien.nextVel = { 0,0};
 	alien.prefab = &prefab;
+	alien.visual.imageId = nullImageId;
+	alien.visual.color = Color::white;
 	// Set default
 	alien.gameState.hits = prefab.hits;
 	alien.gameState.fireTimer  = 0.f;
