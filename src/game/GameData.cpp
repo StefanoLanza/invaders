@@ -100,6 +100,14 @@ constexpr const char* boss0Pattern = {
 	"lrrl"
 };
 
+constexpr const char* landingPattern1 = {
+	"rbl"
+};
+
+constexpr const char* landingPattern0 = {
+	""//"lbr"
+};
+
 constexpr const char* boss1Seq = {
 	"brbrblblltltrtrt"
 };
@@ -108,7 +116,7 @@ constexpr const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
-constexpr float landingSpeed = 30.f;
+constexpr float landingSpeed = 272.f;
 constexpr float normalSpeed = 12.f;
 constexpr float midSpeed = 24.f;
 constexpr float fastSpeed = 48.f;
@@ -126,59 +134,19 @@ constexpr float fastLaserSpeed = 40.f;
 constexpr bool aim = true;
 constexpr bool doNotAim = false;
 
-constexpr Action testPlanActions[] =
-{
-	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 1.f, .vy = 1.f, .duration = 30 } },
-//	{ .id = ActionId::translate, .translate = { .dx = 1, .dy = 0, .duration = 1 } },
-//	{ .id = ActionId::rotate, .rotate = { .dtheta = -2160.f, .duration = 2040 } },
-//	{ .id = ActionId::move, .move = { .x = 80, .y = 27, .speed = 16.f } },
-//
-};
-
-constexpr Action plan0Actions[] =
-{
-	{ .id = ActionId::path, .path = { .seq = alienSeq0, .vx = 1.f, .vy = 1.f, .duration = 30 } },
-};
-
-constexpr Action plan1Actions[] =
-{
-	{ .id = ActionId::path, .path = { .seq = alienSeq1, .vx = 1.f, .vy = 1.f, .duration = 30 } },
-};
-
-constexpr Plan testPlan = 
-{
-	.actions = testPlanActions,
-	.actionCount = (int)std::size(testPlanActions),
-	.loop = true,
-};
-
-constexpr Plan plan0 = 
-{
-	.actions = plan0Actions,
-	.actionCount = (int)std::size(plan0Actions),
-	.loop = true,
-};
-
-constexpr Plan plan1 = 
-{
-	.actions = plan1Actions,
-	.actionCount = (int)std::size(plan1Actions),
-	.loop = true,
-};
-
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ .anim = alien5Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .landingSpeed = landingSpeed,
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = landingPattern0, .attackSeq = alienSeq0, .speed= normalSpeed, .landingSpeed = landingSpeed,
 	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim,   },
-	{ .anim = alien5Anim, .color = Color::blue, .hits = 1, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = landingPattern1, .attackSeq = alienSeq1, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
 //	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
 //	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
 //  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .attackSeq = alienSeq4, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = nullSeq, .attackSeq = alienSeq5, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = landingPattern0, .attackSeq = alienSeq4, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = landingPattern1, .attackSeq = alienSeq5, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = landingPattern0, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = landingPattern1, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
 	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .landingSeq = nullSeq, .attackSeq = boss0Pattern, .speed= 40.f,  .landingSpeed = landingSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
 	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
@@ -262,6 +230,19 @@ const AlienWaveInfo wave4 =
 	.start_y = 4.0,
 };
 
+const AlienWaveInfo testwave = 
+{
+	.mask = 
+	"      3"
+	"       "
+	"       ",
+	.numCols = 7, 
+	.numRows = 3,
+	.dx = 16.f, 
+	.dy = 4.f, 
+	.start_y = 4.0,
+};
+
 const char* const hudMessages[] =
 {
 	"Here they come!",
@@ -275,7 +256,7 @@ constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 const Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnWave, 0.f, &wave4, },
+	{ GameEventId::spawnWave, 0.f, &testwave, },
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },

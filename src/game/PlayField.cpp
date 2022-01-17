@@ -222,22 +222,6 @@ void PlayField::AddScore(int score, int playerId)
 }
 
 
-bool PlayField::PrepareAliensForAttack()
-{
-	for (const auto& alien : aliens)
-	{ 
-		if (alien.state != Alien::State::ready)
-		{
-			return false;
-		}
-	}
-	for (auto& alien : aliens)
-	{ 
-		alien.state = Alien::State::attacking;
-	}
-	return true;
-}
-
 void PlayField::DestroyAll()
 {
 	players.clear();

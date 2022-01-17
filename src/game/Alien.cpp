@@ -19,7 +19,6 @@ void InitActionSequence(ActionSeq& seq, const char* str, bool looping)
 	seq.length = (int)strlen(str);
 	seq.ticksPerAction = 30; // FIXME config
 	seq.looping = looping;
-	seq.dir = 1;
 }
 
 
@@ -54,33 +53,30 @@ void ProcessAction(Alien& alien, char action)
 	}
 }
 
-void TickAlien(Alien& alien, ActionSeq& seq) 
+bool TickAlien(Alien& alien, ActionSeq& seq) 
 {
 	const int dticks = seq.ticksPerAction;
-	if (seq.a >= seq.length) {
-		return;
+	if (seq.a >= seq.length && seq.ticks == dticks - 1) {
+		return false;
 	}
 
 	if (seq.ticks == 0  && seq.length > 0) {
 		ProcessAction(alien, seq.seq[seq.a]);
-		seq.a = (seq.a + seq.dir);
-		if (seq.a >= seq.length) {
+		++seq.a;
+		if (seq.a >= seq.length && seq.looping) {
 			seq.a = 0;
-		}
-		else if (seq.a < 0) 
-		{
-			seq.a = seq.length - 1;
 		}
 	}
 	const float t = (float)seq.ticks / (float)dticks;
 
 	// Next tick
 	seq.ticks++;
-	if (seq.ticks >= dticks && seq.looping) {
+	if (seq.ticks >= dticks) {
 		seq.ticks = 0;
 	}
 
 	alien.body.velocity = Lerp(alien.prevVel, alien.nextVel, t);
+	return true;
 }
 
 
@@ -99,19 +95,13 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienP
 	alien.gameState.hits = prefab.hits;
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
-	alien.gameState.speed = prefab.speed;
+	alien.gameState.speed = prefab.landingSpeed;
 	alien.gameState.gridPos = gridPos;
 	alien.state = Alien::State::landing;
 	alien.animState.t = randomOffset;
 	alien.waveIndex = -1;
-	alien.indexInWave = -1;
 	alien.randomOffset = randomOffset;
-	//InitActionSequence(alien.landingSeq, prefab.landingSeq, false);
-	InitActionSequence(alien.attackSeq, prefab.attackSeq, true);
-	if (prefab.actionPlan)
-	{
-		InitPlan(alien.planState, *prefab.actionPlan);
-	}
+	InitActionSequence(alien.actionSeq, prefab.landingSeq, false);
 	return alien;
 }
 
@@ -119,14 +109,18 @@ Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienP
 void ParkAlien(Alien& alien)
 {
 	Vector2D diff = Sub(alien.gameState.gridPos, alien.body.pos);
-	if (SquareLength(diff) < 0.5f)
+	float sd = SquareLength(diff); 
+	if (sd < 0.5f)
 	{
 		alien.body.velocity = { 0.f , 0.f};
-		alien.state = Alien::State::ready;
+		alien.gameState.speed = alien.prefab->speed;
+		alien.state = Alien::State::attacking;
+		InitActionSequence(alien.actionSeq, alien.prefab->attackSeq, true);
 	}
 	else
 	{
-		alien.body.velocity = Normalize(diff, alien.prefab->landingSpeed);
+		float speed = alien.prefab->landingSpeed * std::clamp(sd / 16.f, 0.f, 1.f);
+		alien.body.velocity = Normalize(diff, speed);
 	}
 }
 
@@ -142,35 +136,16 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	switch (alien.state)
 	{
 		case Alien::State::landing:
-			alien.state = Alien::State::parking; // TODO
+			if (! TickAlien(alien, alien.actionSeq))
+			{
+				alien.state = Alien::State::parking;
+			}
 			break;
 		case Alien::State::parking:
 			ParkAlien(alien);
 			break;
-		case Alien::State::ready:
-			// Wait
-			alien.state = Alien::State::attacking; // TODO
-			break;
 		case Alien::State::attacking:
-			if (alien.prefab->actionPlan)
-			{
-				TickPlan(alien.planState, *alien.prefab->actionPlan, alien.body.velocity, alien.gameState.speed, alien.body.pos);
-			}
-			else
-			{
-				if (alien.state == Alien::State::landing)
-				{
-					//TickAlien(alien, alien.landingSeq);
-					//if (alien.landingSeq.a >= alien.landingSeq.length)
-					//{
-					//	alien.state = Alien::State::attacking;
-					//}
-				}
-				else if (alien.state == Alien::State::attacking)
-				{
-					TickAlien(alien, alien.attackSeq);
-				}
-			}
+			TickAlien(alien, alien.actionSeq);
 			break;
 		case Alien::State::dead:
 			// Wait

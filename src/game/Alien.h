@@ -4,7 +4,6 @@
 #include <engine/RenderItem.h>
 #include <engine/Body.h>
 #include <engine/Collision.h>
-#include <engine/Plan.h>
 #include <scripts/Scripts.h>
 #include <random>
 
@@ -31,7 +30,6 @@ struct ActionSeq
 	int ticks;
 	int a;
 	int length;
-	int dir;
 	int ticksPerAction;
 	bool looping;
 };
@@ -48,7 +46,6 @@ struct Alien
 	{
 		landing,
 		parking,
-		ready,
 		attacking,
 		dead
 	};
@@ -63,12 +60,9 @@ struct Alien
 	State   state;
 	Vector2D prevVel;
 	Vector2D nextVel;
-	PlanState planState;
 
-	//ActionSeq landingSeq;
-	ActionSeq attackSeq;
+	ActionSeq actionSeq;
 	int waveIndex;
-	int indexInWave;
 	float randomOffset; // [0,1]
 };
 

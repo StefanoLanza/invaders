@@ -57,8 +57,6 @@ struct AlienPrefab
 	float fireRate;
 	float laserSpeed;
 	bool  aimAtPlayer;
-	const Plan* actionPlan;
-	const Plan* landingPlan;
 };
 
 

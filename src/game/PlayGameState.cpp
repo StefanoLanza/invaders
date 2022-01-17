@@ -143,9 +143,6 @@ void DisplayPlayGame(Console& console, const void* data)
 		const int boxHeight = 10;
 		const int top = (bounds.y - boxHeight) / 2; // centered
 		const int left = (bounds.x - boxWidth) / 2;
-		const int textCol = left + 4;
-		const int textRow = top + 3;
-		//console.DrawBorder(left - 1, top - 1, boxWidth + 2, boxHeight + 2, Color::white);
 		console.DrawRectangle(left, top, boxWidth, boxHeight, Color::black);
 		ImageId imageId = (playGameStateData.stageIndex + (int)GameImageId::_1);
 		console.DrawImage(GetImage(imageId), 0, 2, Color::green, ImageAlignment::centered, ImageAlignment::centered);
@@ -480,10 +477,10 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	const float x0 = (world.bounds.x - (waveInfo.numCols * waveInfo.dx)) / 2.f + (waveInfo.dx / 2);
 	float y = waveInfo.start_y;
 	const char* c = waveInfo.mask;
-	for (int j = 0, indexInWave = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy)
+	for (int j = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy)
 	{
 		float x = x0;
-		for (int k = 0; k < waveInfo.numCols; k++, x += waveInfo.dx, ++indexInWave)
+		for (int k = 0; k < waveInfo.numCols; k++, x += waveInfo.dx)
 		{
 			if (*c != ' ') 
 			{
@@ -492,7 +489,6 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 				Vector2D gridPos { x, y };
 				Alien alien = NewAlien(initialPos, gridPos, alienPrefab, world.rndFloat01(world.rGen) );
 				alien.waveIndex = waveIndex;
-				alien.indexInWave = indexInWave;
 				world.AddAlienShip(alien);
 				++wave.numAliens;
 			}
