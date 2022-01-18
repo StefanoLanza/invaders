@@ -112,8 +112,8 @@ constexpr PathEntry pathEnd = { -1, -1 };
 // s43 ssw3 sw3 wsw3 w3 wnw3 nw13
 const Path path0
 {
-	.startx = 80, 
-	.starty = -6,
+	.startx = 75, 
+	.starty = -5,
 	.entries = {
 		{8, 43 },
 		{9,  3 },
@@ -129,8 +129,8 @@ const Path path0
 // s43 sse3 se3 ese3 e3 ene3 ne13 
 const Path path1
 {
-	.startx = 80, 
-	.starty = -6,
+	.startx = 85, 
+	.starty = -5,
 	.entries = {
 		{8, 43 },
 		{7,  3 },
@@ -280,7 +280,7 @@ constexpr const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
-constexpr float landingSpeed = 24.f;
+constexpr float landingSpeed = 80.f;
 constexpr float normalSpeed = 12.f;
 constexpr float midSpeed = 24.f;
 constexpr float fastSpeed = 48.f;
@@ -329,23 +329,6 @@ const PlayerPrefab playerPrefabs[] =
 	{ .imageId = GameImageId::player2, .velocity= 30.f, .laserOffset = 4.f },
 };
 
-constexpr AlienWaveInfo testWave =
-{
-	.mask = 
-	"0",
-	.enterDelay = {
-		60,
-	},
-	.path = {
-		0,
-	},
-	.numCols = 1, 
-	.numRows = 1,
-	.dx = 12.f, 
-	.dy = 4.f, 
-	.start_y = 4.0,
-};
-
 
 constexpr AlienWaveInfo wave1 =
 {
@@ -354,16 +337,16 @@ constexpr AlienWaveInfo wave1 =
 	"00001111"
 	"00001111",
 	.enterDelay = {
-		60,60,60,60,60,60,60,60,
-		20,20,30,30,30,30,30,30,
-		0,0,0,0,0,0,0,0,
+		0,10,20,30,30,20,10,0,
+		40,50,60,70,70,60,50,40,
+		80,90,100,110,110,100,90,80,
 	},
 	.path = {
 		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
 	},
-	.numCols = 8, 
+	.numCols = 8,
 	.numRows = 3,
 	.dx = 12.f, 
 	.dy = 4.f, 
@@ -420,7 +403,7 @@ const AlienWaveInfo wave4 =
 	.start_y = 4.0,
 };
 
-const AlienWaveInfo testwave = 
+const AlienWaveInfo testWave = 
 {
 	.mask = 
 	"---0--0---"
@@ -439,14 +422,14 @@ const AlienWaveInfo testwave =
 	},
 	.path = {
 		0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,1,0,1,0,0,
-		0,1,0,1,0,1,0,1,0,1,
-		0,1,0,1,0,1,0,1,0,1,
-		0,1,0,1,0,1,0,1,0,1,
-		0,1,0,1,0,1,0,1,0,1,
+		0,0,0,0,0,1,1,1,1,1,
+		0,0,0,0,0,1,1,1,1,1,
+		0,0,0,0,0,1,1,1,1,1,
+		0,0,0,0,0,1,1,1,1,1,
+		0,0,0,0,0,1,1,1,1,1,
 	},
 	.numCols = 10, 
-	.numRows = 1,
+	.numRows = 6,
 	.dx = 16.f, 
 	.dy = 4.f, 
 	.start_y = 4.0,
@@ -465,7 +448,7 @@ constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 const Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnWave, 0.f, &testwave, },
+	{ GameEventId::spawnWave, 0.f, &wave1, },
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },

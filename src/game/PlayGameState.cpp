@@ -136,7 +136,7 @@ int PlayGame(Game& game, void* data, float dt)
 void DisplayPlayGame(Console& console, const void* data)
 {
 	const Game& game = *static_cast<const Game*>(data);
-	if (playGameStateData.showStage)
+	if (playGameStateData.showStage && 0) //FIXME
 	{
 		const IVector2D& bounds = console.GetBounds();
 		const int boxWidth = 40;

@@ -46,16 +46,11 @@ void InitActionSequence(ActionSeq& seq, const Path& path, bool looping)
 }
 
 
-void FollowPath(Alien& alien, const PathEntry& entry)
+void FollowPath(Alien& alien, const PathEntry& entry, float speed)
 {
-	const float speed = alien.gameState.speed;
-	float xs = (1.f / 400) * 160.f;
-	float ys = (1.f / 500) * 54.f;
-	xs *= 60.f;
-	ys = xs * 0.5f; //60.f;
-	Vector2D velocity { (float)moves[entry.dir][0] * xs, (float)moves[entry.dir][1] * ys };
+	Vector2D velocity { (float)moves[entry.dir][0], (float)moves[entry.dir][1]  };
 	//velocity = Normalize(velocity, speed);
-	//velocity = Mul(velocity, speed);
+	velocity = Mul(velocity, speed * 0.25f);
 	alien.body.velocity = velocity;
 }
 
@@ -70,7 +65,7 @@ bool TickAlien(Alien& alien, ActionSeq& seq)
 	if (seq.duration == 0)
 	{
 		seq.duration = seq.seq[seq.a].duration; //FIXME
-		FollowPath(alien, seq.seq[seq.a]);
+		FollowPath(alien, seq.seq[seq.a], alien.gameState.speed);
 		++seq.a;
 		if (seq.a >= seq.length)
 		{
