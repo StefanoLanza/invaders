@@ -36,10 +36,12 @@ constexpr int moves[16][2] = {
 
 void InitActionSequence(ActionSeq& seq, const Path& path, bool looping)
 {
-	seq.a = (path.len > 0) ? 0 : -1;
+	int pathLen = 0;
+	while (path.entries[pathLen].dir >= 0) ++pathLen;
+	seq.a = (pathLen > 0) ? 0 : -1;
 	seq.duration = 1;
 	seq.seq = path.entries;
-	seq.length = path.len;
+	seq.length = pathLen;
 	seq.looping = looping;
 }
 
@@ -47,7 +49,11 @@ void InitActionSequence(ActionSeq& seq, const Path& path, bool looping)
 void FollowPath(Alien& alien, const PathEntry& entry)
 {
 	const float speed = alien.gameState.speed;
-	Vector2D velocity { (float)moves[entry.dir][0] * 8, (float)moves[entry.dir][1] * 8 };
+	float xs = (1.f / 400) * 160.f;
+	float ys = (1.f / 500) * 54.f;
+	xs *= 60.f;
+	ys = xs * 0.5f; //60.f;
+	Vector2D velocity { (float)moves[entry.dir][0] * xs, (float)moves[entry.dir][1] * ys };
 	//velocity = Normalize(velocity, speed);
 	//velocity = Mul(velocity, speed);
 	alien.body.velocity = velocity;
@@ -107,7 +113,7 @@ void ParkAlien(Alien& alien)
 {
 	Vector2D diff = Sub(alien.gameState.gridPos, alien.body.pos);
 	float sd = SquareLength(diff); 
-	if (sd < 0.5f)
+	if (sd < 0.25f)
 	{
 		alien.body.velocity = { 0.f , 0.f};
 		alien.gameState.speed = alien.prefab->speed;

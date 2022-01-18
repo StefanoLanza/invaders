@@ -91,9 +91,9 @@ int main()
 	EnterGameState(game, (int)GameStateId::start);
 
 	// Simulation and rendering happen at a fixed rate
-	const int fixedFrameTime = 16; // [ms]
-	const float fixedDeltaTime = (float)fixedFrameTime / 1000.f; // [s]
-	const auto fixedFrameTime_ms = std::chrono::milliseconds(fixedFrameTime);
+	const int fixedFrameTime = 16666; // [us]
+	const float fixedDeltaTime = (float)fixedFrameTime / 1000000.f; // [s]
+	const auto fixedFrameTime_ms = std::chrono::microseconds(fixedFrameTime);
 	const auto fixedFrameTime_sc = std::chrono::duration_cast<std::chrono::steady_clock::duration>(fixedFrameTime_ms);
 
 	RenderItemList renderItems;

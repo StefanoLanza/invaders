@@ -106,78 +106,71 @@ constexpr const PathEntry zigzag[] =
 15	CHKDIR("nnw");
 */
 
+constexpr PathEntry pathEnd = { -1, -1 };
+
+// Paths
 // s43 ssw3 sw3 wsw3 w3 wnw3 nw13
-constexpr const PathEntry entryPath0[] = 
+const Path path0
 {
-	{8, 43 },
-	{9,  3 },
-	{10,  3 },
-	{11,  3 },
-	{12,  3 },
-	{13,  3 },
-	{14,  13 },
+	.startx = 80, 
+	.starty = -6,
+	.entries = {
+		{8, 43 },
+		{9,  3 },
+		{10,  3 },
+		{11,  3 },
+		{12,  3 },
+		{13,  3 },
+		{14,  13 },
+		pathEnd
+	},
 };
 
 // s43 sse3 se3 ese3 e3 ene3 ne13 
-constexpr const PathEntry entryPath1[] = 
+const Path path1
 {
-	{8, 43 },
-	{7,  3 },
-	{6,  3 },
-	{5,  3 },
-	{4,  3 },
-	{3,  3 },
-	{2,  13 },
+	.startx = 80, 
+	.starty = -6,
+	.entries = {
+		{8, 43 },
+		{7,  3 },
+		{6,  3 },
+		{5,  3 },
+		{4,  3 },
+		{3,  3 },
+		{2,  13 },
+		pathEnd
+	},
 };
 
 // sw30 wsw3 w13 wnw3 nw6 
-constexpr const PathEntry entryPath2[] = 
+const Path path2
 {
-	{ 10, 30 }, 
-	{ 11, 3 },
-	{ 12, 13 },
-	{ 13, 3 },
-	{ 14, 6 },
+	.startx = 80, 
+	.starty = -6,
+	.entries = {
+		{ 10, 30 }, 
+		{ 11, 3 },
+		{ 12, 13 },
+		{ 13, 3 },
+		{ 14, 6 },
+		pathEnd
+	},
 };
 
 // se30 ese3 e13 ene3 ne6 
-constexpr const PathEntry entryPath3[] = 
-{
-	{ 6, 30 }, 
-	{ 5, 3 },
-	{ 4, 13 },
-	{ 3, 3 },
-	{ 2, 6 },
-};
-
-
-// Paths
-const Path path0
-{
-	80, -30,
-	entryPath0, //peelRight,
-	(int)std::size(entryPath0), //peelRight),
-};
-
-const Path path1
-{
-	80, -30,
-	entryPath1,
-	(int)std::size(entryPath1),
-};
-
-const Path path2
-{
-	80, -30,
-	entryPath2, //peelRight,
-	(int)std::size(entryPath2), //peelRight),
-};
-
 const Path path3
 {
-	80, -30,
-	entryPath3,
-	(int)std::size(entryPath3),
+	.startx = 80, 
+	.starty = -6,
+	.entries = {
+		{ 6, 30 }, 
+		{ 5, 3 },
+		{ 4, 13 },
+		{ 3, 3 },
+		{ 2, 6 },
+		pathEnd
+	},
 };
 
 const Path* paths[] =
@@ -336,7 +329,7 @@ const PlayerPrefab playerPrefabs[] =
 	{ .imageId = GameImageId::player2, .velocity= 30.f, .laserOffset = 4.f },
 };
 
-constexpr AlienWaveInfo teststage =
+constexpr AlienWaveInfo testWave =
 {
 	.mask = 
 	"0",
@@ -453,7 +446,7 @@ const AlienWaveInfo testwave =
 		0,1,0,1,0,1,0,1,0,1,
 	},
 	.numCols = 10, 
-	.numRows = 6,
+	.numRows = 1,
 	.dx = 16.f, 
 	.dy = 4.f, 
 	.start_y = 4.0,

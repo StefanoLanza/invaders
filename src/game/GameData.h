@@ -9,12 +9,13 @@ struct PathEntry
 	int duration;
 };
 
+constexpr size_t maxPathLen = 50;
+
 struct Path
 {
 	float startx;
 	float starty;
-	const PathEntry* entries;
-	int len;
+	const PathEntry entries[maxPathLen];
 };
 
 struct AlienWaveInfo
