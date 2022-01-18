@@ -24,13 +24,14 @@ struct AlienGameState
 };
 
 
+struct PathEntry;
+
 struct ActionSeq 
 {
-	const char* seq;
-	int ticks;
+	const PathEntry* seq;
 	int a;
 	int length;
-	int ticksPerAction;
+	int duration;
 	bool looping;
 };
 
@@ -58,8 +59,7 @@ struct Alien
 	AnimState animState;
 	AlienGameState gameState;
 	State   state;
-	Vector2D prevVel;
-	Vector2D nextVel;
+	int enterDelay;
 
 	ActionSeq actionSeq;
 	int waveIndex;
@@ -67,8 +67,10 @@ struct Alien
 };
 
 
+struct Path;
+
 // Public API
-Alien NewAlien(const Vector2D& initialPos, const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset);
+Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath);
 void AlienDestroy(Alien& alien);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);

@@ -477,22 +477,24 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	const float x0 = (world.bounds.x - (waveInfo.numCols * waveInfo.dx)) / 2.f + (waveInfo.dx / 2);
 	float y = waveInfo.start_y;
 	const char* c = waveInfo.mask;
-	for (int j = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy)
+	for (int j = 0, alienIndex = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy)
 	{
 		float x = x0;
 		for (int k = 0; k < waveInfo.numCols; k++, x += waveInfo.dx)
 		{
-			if (*c != ' ') 
+			if (const int prefabId = *c - '0'; prefabId >= 0 && prefabId < GetNumAlienPrefabs())
 			{
-				const AlienPrefab& alienPrefab = GetAlienPrefab(*c - '0');
-				Vector2D initialPos { x, waveInfo.dy * (0 - waveInfo.numRows + j) };
+				const Path& enterPath = GetPath(waveInfo.path[alienIndex]);
+				const AlienPrefab& alienPrefab = GetAlienPrefab(prefabId);
 				Vector2D gridPos { x, y };
-				Alien alien = NewAlien(initialPos, gridPos, alienPrefab, world.rndFloat01(world.rGen) );
+				Alien alien = NewAlien(gridPos, alienPrefab, world.rndFloat01(world.rGen), waveInfo.enterDelay[alienIndex],
+					enterPath);
 				alien.waveIndex = waveIndex;
 				world.AddAlienShip(alien);
 				++wave.numAliens;
 			}
 			++c;
+			++alienIndex;
 		}
 	}
 }

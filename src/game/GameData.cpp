@@ -1,5 +1,4 @@
 #include "GameData.h"
-#include <engine/Plan.h>
 #include <engine/Timeline.h>
 #include <cstdlib>
 #include <cassert>
@@ -9,10 +8,190 @@
 
 namespace
 {
+
+constexpr int screenWidth = 160;
+
+constexpr const PathEntry peelLeft[] =
+{
+	{ 0, 3},
+	{ 15,3},
+	{ 14,3},
+	{ 13,3},
+	{ 12,3},
+	{ 11,3},
+	{ 10,3},
+	{ 9,3},
+	{ 8,3},
+};
+
+constexpr const PathEntry peelRight[] = 
+{
+	{ 0,3},
+	{ 1,3},
+	{ 2,3},
+	{ 3,3},
+	{ 4,3},
+	{ 5,3},
+	{ 6,3},
+	{ 7,3},
+	{ 8,3},
+};
+
+constexpr const PathEntry loop1[] =
+  {
+	{ 8,2},
+	{ 9,2},
+	{ 10,2},
+	{ 11,2},
+	{ 12,2},
+	{ 13,2},
+	{ 14,2},
+	{ 15,2},
+	{ 0,2},
+	{ 1,2},
+	{ 2,2},
+	{ 3,2},
+	{ 4,2},
+	{ 5,2},
+	{ 6,2},
+	{ 7,2},
+};
+
+constexpr const PathEntry swoop1[] =
+{
+	{ 8,20},
+	{ 9,3},
+	{ 10,3},
+	{ 11,3},
+	{ 12,3},
+};
+
+constexpr const PathEntry swoop2[] =
+{
+	{ 8,20},
+	{ 7,3},
+	{ 6,3},
+	{ 5,3},
+	{ 4,3},
+};
+
+constexpr const PathEntry zigzag[] =
+{
+	{ 7,15 },
+	{ 8,2 },
+	{ 9,15 },
+	{ 8,2 },
+	{ 7,15 },
+	{ 8,2 },
+	{ 9,15 },
+	{ 8,2 },
+};
+
+/*
+0	CHKDIR("n");
+1	CHKDIR("nne");
+2	CHKDIR("ne");
+3	CHKDIR("ene");
+4	CHKDIR("e");
+5	CHKDIR("ese");
+6	CHKDIR("se");
+7	CHKDIR("sse");
+8	CHKDIR("s");
+9	CHKDIR("ssw");
+10	CHKDIR("sw");
+11  CHKDIR("wsw");
+12	CHKDIR("w");
+13	CHKDIR("wnw");
+14	CHKDIR("nw");
+15	CHKDIR("nnw");
+*/
+
+// s43 ssw3 sw3 wsw3 w3 wnw3 nw13
+constexpr const PathEntry entryPath0[] = 
+{
+	{8, 43 },
+	{9,  3 },
+	{10,  3 },
+	{11,  3 },
+	{12,  3 },
+	{13,  3 },
+	{14,  13 },
+};
+
+// s43 sse3 se3 ese3 e3 ene3 ne13 
+constexpr const PathEntry entryPath1[] = 
+{
+	{8, 43 },
+	{7,  3 },
+	{6,  3 },
+	{5,  3 },
+	{4,  3 },
+	{3,  3 },
+	{2,  13 },
+};
+
+// sw30 wsw3 w13 wnw3 nw6 
+constexpr const PathEntry entryPath2[] = 
+{
+	{ 10, 30 }, 
+	{ 11, 3 },
+	{ 12, 13 },
+	{ 13, 3 },
+	{ 14, 6 },
+};
+
+// se30 ese3 e13 ene3 ne6 
+constexpr const PathEntry entryPath3[] = 
+{
+	{ 6, 30 }, 
+	{ 5, 3 },
+	{ 4, 13 },
+	{ 3, 3 },
+	{ 2, 6 },
+};
+
+
+// Paths
+const Path path0
+{
+	80, -30,
+	entryPath0, //peelRight,
+	(int)std::size(entryPath0), //peelRight),
+};
+
+const Path path1
+{
+	80, -30,
+	entryPath1,
+	(int)std::size(entryPath1),
+};
+
+const Path path2
+{
+	80, -30,
+	entryPath2, //peelRight,
+	(int)std::size(entryPath2), //peelRight),
+};
+
+const Path path3
+{
+	80, -30,
+	entryPath3,
+	(int)std::size(entryPath3),
+};
+
+const Path* paths[] =
+{
+	&path0,
+	&path1,
+	&path2,
+	&path3,
+};
+
 // Animations
 const Animation alien0Anim = 
 {
-	.images = { GameImageId::alien0_0, GameImageId::alien0_1 }, 
+	.images	 = { GameImageId::alien0_0, GameImageId::alien0_1 }, 
 	.duration = .5f,
 };
 const Animation alien1Anim = 
@@ -100,14 +279,6 @@ constexpr const char* boss0Pattern = {
 	"lrrl"
 };
 
-constexpr const char* landingPattern1 = {
-	"rbl"
-};
-
-constexpr const char* landingPattern0 = {
-	""//"lbr"
-};
-
 constexpr const char* boss1Seq = {
 	"brbrblblltltrtrt"
 };
@@ -116,7 +287,7 @@ constexpr const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
-constexpr float landingSpeed = 272.f;
+constexpr float landingSpeed = 24.f;
 constexpr float normalSpeed = 12.f;
 constexpr float midSpeed = 24.f;
 constexpr float fastSpeed = 48.f;
@@ -137,22 +308,22 @@ constexpr bool doNotAim = false;
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = landingPattern0, .attackSeq = alienSeq0, .speed= normalSpeed, .landingSpeed = landingSpeed,
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .attackSeq = alienSeq0, .speed= normalSpeed, .landingSpeed = landingSpeed,
 	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim,   },
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .landingSeq = landingPattern1, .attackSeq = alienSeq1, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .attackSeq = alienSeq1, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
 //	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
 //	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
 //  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = landingPattern0, .attackSeq = alienSeq4, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .landingSeq = landingPattern1, .attackSeq = alienSeq5, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = landingPattern0, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .landingSeq = landingPattern1, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10, .landingSeq = nullSeq, .attackSeq = boss0Pattern, .speed= 40.f,  .landingSpeed = landingSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .attackSeq = alienSeq4, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .attackSeq = alienSeq5, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10,.attackSeq = boss0Pattern, .speed= 40.f,  .landingSpeed = landingSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
-	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .landingSeq = nullSeq, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
 
 //	{ boss1Anim,  Color::violet, 12, nullSeq, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
 
@@ -169,6 +340,12 @@ constexpr AlienWaveInfo teststage =
 {
 	.mask = 
 	"0",
+	.enterDelay = {
+		60,
+	},
+	.path = {
+		0,
+	},
 	.numCols = 1, 
 	.numRows = 1,
 	.dx = 12.f, 
@@ -183,6 +360,16 @@ constexpr AlienWaveInfo wave1 =
 	"00001111"
 	"00001111"
 	"00001111",
+	.enterDelay = {
+		60,60,60,60,60,60,60,60,
+		20,20,30,30,30,30,30,30,
+		0,0,0,0,0,0,0,0,
+	},
+	.path = {
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+	},
 	.numCols = 8, 
 	.numRows = 3,
 	.dx = 12.f, 
@@ -196,6 +383,16 @@ const AlienWaveInfo wave2 =
 	"22223333"
 	"00001111"
 	"00001111",
+	.enterDelay = {
+		60,60,60,60,60,60,60,60,
+		20,20,30,30,30,30,30,30,
+		0,0,0,0,0,0,0,0,
+	},
+	.path = {
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+	},
 	.numCols = 8, 
 	.numRows = 3,
 	.dx = 12.f, 
@@ -233,11 +430,30 @@ const AlienWaveInfo wave4 =
 const AlienWaveInfo testwave = 
 {
 	.mask = 
-	"      3"
-	"       "
-	"       ",
-	.numCols = 7, 
-	.numRows = 3,
+	"---0--0---"
+	"--111111--"
+	"1111111111"
+	"1111111111"
+	"1111111111"
+	"1111111111",
+	.enterDelay = {
+		0,0, 0,435, 0,0,430,0,0,0,
+		0,0, 425, 420, 415, 410, 405, 400, 0, 0,
+345, 340, 335, 330, 325, 320, 315, 310, 305, 300,
+245, 240, 235, 230, 225, 220, 215, 210, 205, 200,
+145, 140, 135, 130, 125, 120, 115, 110, 105, 100,
+050, 045, 040, 035, 030, 025, 020, 015, 010, 00,
+	},
+	.path = {
+		0,0,0,0,0,0,1,0,0,0,
+		0,0,0,1,0,1,0,1,0,0,
+		0,1,0,1,0,1,0,1,0,1,
+		0,1,0,1,0,1,0,1,0,1,
+		0,1,0,1,0,1,0,1,0,1,
+		0,1,0,1,0,1,0,1,0,1,
+	},
+	.numCols = 10, 
+	.numRows = 6,
 	.dx = 16.f, 
 	.dy = 4.f, 
 	.start_y = 4.0,
@@ -321,8 +537,19 @@ const AlienPrefab& GetAlienPrefab(int index)
 	return alienPrefabs[index];
 }
 
+int GetNumAlienPrefabs()
+{
+	return (int)std::size(alienPrefabs);
+}
+
+
 const PlayerPrefab& GetPlayerPrefab(int index)
 {
 	assert(index >= 0 && index < (int)std::size(playerPrefabs));
 	return playerPrefabs[index];
+}
+
+const Path& GetPath(int index) 
+{
+	return *paths[index];
 }

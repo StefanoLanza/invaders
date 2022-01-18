@@ -117,7 +117,7 @@ const wchar_t quitStr[2 + 14 * 3] =
 LR"(
 ▄▄▄ ▄ ▄ ▄ ▄▄▄
 █ █ █ █ █  █ 
-▀▀█ █▄█ █  █ 
+▀▀▄ █▄█ █  █ 
 )";
 
 const wchar_t cursorStr[2 + 4 * 3] = 

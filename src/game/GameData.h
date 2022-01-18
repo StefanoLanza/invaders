@@ -3,9 +3,25 @@
 #include <scripts/Scripts.h>
 #include "Images.h"
 
+struct PathEntry
+{
+    int dir;
+	int duration;
+};
+
+struct Path
+{
+	float startx;
+	float starty;
+	const PathEntry* entries;
+	int len;
+};
+
 struct AlienWaveInfo
 {
 	const char* mask;
+	const int enterDelay[10*6];
+	const int path[10*6];
 	int numCols;
 	int numRows;
 	float dx;
@@ -13,12 +29,6 @@ struct AlienWaveInfo
 	float start_y;
 };
 
-
-struct WallInfo
-{
-	int n;
-	float x, y;
-};
 
 using EventId = int;
 
@@ -41,16 +51,11 @@ struct Stage
 	int numEvents;
 };
 
-struct Plan;
-
-//using ActionSeq = const char*;
-
 struct AlienPrefab
 {
 	Animation anim;
 	Color     color;
 	int       hits;
-	const char* landingSeq;
 	const char* attackSeq;
 	float speed;
 	float landingSpeed;
@@ -71,4 +76,6 @@ struct PlayerPrefab
 int GetNumStages();
 const Stage& GetStage(int index);
 const AlienPrefab& GetAlienPrefab(int index);
+int GetNumAlienPrefabs();
 const PlayerPrefab& GetPlayerPrefab(int index);
+const Path& GetPath(int index);
