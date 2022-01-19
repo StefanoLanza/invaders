@@ -238,6 +238,7 @@ void PlayField::DestroyAll()
 	walls.clear();
 	alienWaves.clear();
 	particles.clear();
+	stars.clear();
 }
 
 

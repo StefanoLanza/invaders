@@ -118,12 +118,19 @@ void EnterPlayGame(void* data, Game& game, int currentState)
 		ProcessEvent(event, game.messageLog, game.world, game.config); });
 
 	playGameStateData.messageLog = &game.messageLog;
-	CreateStars(game.world, 30);
 	if (currentState != (int)GameStateId::paused)
 	{
 		RestartGame(playGameStateData, game);
+		CreateStars(game.world, 30);
 	}
 }
+
+// TODO
+/*
+void ExitPlayGame() {
+	world.DestorYall();
+}
+*/
 
 
 int PlayGame(Game& game, void* data, float dt)
