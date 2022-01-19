@@ -82,7 +82,7 @@ int main()
 	std::default_random_engine rGen;
 	MessageLog messageLog;
 	const Vector2D worldSize { (float)gameConfig.consoleWidth, (float)gameConfig.consoleHeight };
-	PlayField world { worldSize, gameConfig, rGen, messageLog };
+	PlayField world { worldSize, gameConfig, rGen };
 	Game game = NewGame(world, gameConfig, rGen, messageLog, aiModule);
 	RegisterGameStates(game);
 

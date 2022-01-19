@@ -66,7 +66,7 @@ void CreateSnowFlake(StartMenuData& data, PlayField& world)
 	data.lastSnowX = x;
 	float dx = -2.f + 4.f * world.rndFloat01(world.rGen);
 	SnowFlake sf = { {x,0.f}, dx, 0.f };
-	const uint maxFlakes = 100;
+	constexpr uint maxFlakes = 100;
 	if (data.snowFlakes.size() > maxFlakes)
 	{
 		data.snowFlakes[data.snowFlakeIndex] = sf;
@@ -85,10 +85,7 @@ void AnimateFlakes(StartMenuData& data, PlayField& world, float dt)
 	if (data.snowFlakes.empty())
 	{
 		data.lastSnowX = 0.f;
-//		for (int i = 0; i < 20; ++i)
-		{
-			CreateSnowFlake(data, world);
-		}
+		CreateSnowFlake(data, world);
 	}
 	if (data.snow_t > interval)
 	{
@@ -105,10 +102,6 @@ void AnimateFlakes(StartMenuData& data, PlayField& world, float dt)
 		{
 			sf.dir = -sf.dir;
 			sf.t = 0.f;
-		}
-		if (sf.pos.y >= world.bounds.y - 0.5f)
-		{
-//			sf.pos.y = world.bounds.y - 0.5f;
 		}
 	}
 }
@@ -153,12 +146,12 @@ int StartMenu(Game& game, void* data_, float dt)
 		if (data.selection == 0)
 		{
 			game.mode = Game::Mode::p1;
-			newState = GameStateId::intro;
+			newState = GameStateId::play;
 		}
 		else if (data.selection == 1)
 		{
 			game.mode = Game::Mode::p1p2;
-			newState = GameStateId::intro;
+			newState = GameStateId::play;
 		}
 		else
 		{
@@ -177,10 +170,10 @@ void DisplayStartMenu(Console& console, const void* data_)
 {
 	const StartMenuData& data = *(const StartMenuData*)data_;
 #if XMAS_EDITION
-	const Image& snowFlakeImage = GetImage(GetImageId(GameImageId::snowFlake));
+	const Image& snowFlakeImage = GetImage(GameImageId::snowFlake);
 	for (const auto& sf : data.snowFlakes)
 	{
-		renderer.DrawImage(snowFlakeImage, (int)std::floor(sf.pos.x), (int)std::floor(sf.pos.y), Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
+		console.DrawImage(snowFlakeImage, (int)std::floor(sf.pos.x), (int)std::floor(sf.pos.y), Color::whiteIntense, ImageAlignment::left, ImageAlignment::top);
 	}
 #endif
 
@@ -197,7 +190,7 @@ void DisplayStartMenu(Console& console, const void* data_)
 	console.DrawImage(invadersImg, 0, 14, logoColors[logoColorIdx], ImageAlignment::centered,  ImageAlignment::top);
 
 #if XMAS_EDITION
-	renderer.DisplayText("Christmas Edition", 0, 20, blink > 0.f ? Color::redIntense : Color::red, ImageAlignment::centered);
+	console.DisplayText("Christmas Edition", 0, 20, blink > 0.f ? Color::redIntense : Color::red, TextAlignment::centered);
 #endif
 	const int textCol = 50;
 	const int textRow = 30;
@@ -207,9 +200,9 @@ void DisplayStartMenu(Console& console, const void* data_)
 	console.DrawImage(GetImage(GameImageId::pressESC), textCol + 8, textRow + 12, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
 
 #if XMAS_EDITION
-	console.DrawImage(GetImageId(GameImageId::gift), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
-	console.DrawImage(GetImageId(GameImageId::happyHolidays), 0, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
-	console.DrawImage(GetImageId(GameImageId::xmasLeaf), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
+	console.DrawImage(GetImage(GameImageId::gift), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
+	console.DrawImage(GetImage(GameImageId::happyHolidays), 30, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
+	console.DrawImage(GetImage(GameImageId::xmasLeaf), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
 #endif
 }
 

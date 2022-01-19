@@ -83,6 +83,7 @@ void ParkAlien(Alien& alien)
 	float sd = SquareLength(diff); 
 	if (sd < 0.25f)
 	{
+		alien.body.pos = alien.gameState.gridPos;
 		alien.body.velocity = { 0.f , 0.f};
 		alien.gameState.speed = alien.prefab->speed;
 		alien.state = Alien::State::attacking;

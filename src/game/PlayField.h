@@ -17,16 +17,21 @@ struct Wall;
 struct Particle;
 struct GameConfig;
 struct RenderItem;
-class MessageLog;
 class CollisionSpace;
 struct AIModule;
 
+struct Star
+{
+	Vector2D pos;
+	float    t;
+	float    speed;
+};
 
 class PlayField
 {
 public:
 
-	PlayField(const Vector2D& iBounds, const GameConfig& config, std::default_random_engine& rGen, MessageLog& messageLog);
+	PlayField(const Vector2D& iBounds, const GameConfig& config, std::default_random_engine& rGen);
 	~PlayField();
 
 	const std::vector<PlayerShip>& GetPlayers() const;
@@ -72,19 +77,18 @@ public:
 	void AddScore(int score, int playerId);
 
 	std::default_random_engine& rGen;
-	MessageLog&                 messageLog;
 	const GameConfig&           config;
 
 	// Game objects
 	std::vector<PlayerShip>  players;
 	std::vector<Alien>       aliens;
+	std::vector<AlienWave>   alienWaves;
 	std::vector<Laser>       lasers;
 	std::vector<Explosion>   explosions;
 	std::vector<PowerUp>     powerUps;
 	std::vector<Wall>        walls;
 	std::vector<Particle>    particles;
-
-	std::vector<AlienWave> alienWaves;
+	std::vector<Star>        stars;
 
 	Vector2D                 bounds;
 	std::uniform_real_distribution<float> rndFloat01;

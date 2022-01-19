@@ -16,7 +16,7 @@ int PauseScreen(Game& game, void* data, float dt)
 	}
 	else if (KeyJustPressed(KeyCode::enter))
 	{
-		newState = GameStateId::running;
+		newState = GameStateId::play;
 	}
 	return (int)newState;
 }

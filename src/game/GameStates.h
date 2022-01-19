@@ -5,7 +5,7 @@ enum class GameStateId
 {
 	start,
 	intro,
-	running,
+	play,
 	paused,
 	over,
 	victory,

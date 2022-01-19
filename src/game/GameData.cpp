@@ -11,6 +11,26 @@ namespace
 
 constexpr int screenWidth = 160;
 
+enum Dir
+{
+	dir_n = 0,
+	dir_nne,
+	dir_ne,
+	dir_ene,
+	dir_e,
+	dir_ese,
+	dir_se,
+	dir_sse,
+	dir_s,
+	dir_ssw,
+	dir_sw,
+	dir_wsw,
+	dir_w,
+	dir_wnw,
+	dir_nw,
+	dir_nnw,
+};
+
 constexpr const PathEntry peelLeft[] =
 {
 	{ 0, 3},
@@ -87,85 +107,36 @@ constexpr const PathEntry zigzag[] =
 	{ 8,2 },
 };
 
-/*
-0	CHKDIR("n");
-1	CHKDIR("nne");
-2	CHKDIR("ne");
-3	CHKDIR("ene");
-4	CHKDIR("e");
-5	CHKDIR("ese");
-6	CHKDIR("se");
-7	CHKDIR("sse");
-8	CHKDIR("s");
-9	CHKDIR("ssw");
-10	CHKDIR("sw");
-11  CHKDIR("wsw");
-12	CHKDIR("w");
-13	CHKDIR("wnw");
-14	CHKDIR("nw");
-15	CHKDIR("nnw");
-*/
-enum Dir
-{
-	dir_n = 0,
-	dir_nne,
-	dir_ne,
-	dir_ene,
-	dir_e,
-	dir_ese,
-	dir_se,
-	dir_sse,
-	dir_s,
-	dir_ssw,
-	dir_sw,
-	dir_wsw,
-	dir_w,
-	dir_wnw,
-	dir_nw,
-	dir_nnw,
-};
 
 constexpr PathEntry pathEnd = { -1, -1 };
 
 // Paths
 // s43 ssw3 sw3 wsw3 w3 wnw3 nw13
-constexpr Path path0
+constexpr Path enterPath0
 {
-	.startx = 75, 
-	.starty = -5,
+	.startx = screenWidth/2 - 5, 
+	.starty = -7,
 	.entries = {
-		{8, 43 },
-		{9,  3 },
-		{10,  3 },
-		{11,  3 },
-		{12,  3 },
-		{13,  3 },
-		{14,  13 },
+		{dir_s, 13 },
 		pathEnd
 	},
 };
 
 // s43 sse3 se3 ese3 e3 ene3 ne13 
-constexpr Path path1
+constexpr Path enterPath1
 {
-	.startx = 85, 
-	.starty = -5,
+	.startx = screenWidth/2 + 5, 
+	.starty = -7,
 	.entries = {
-		{8, 43 },
-		{7,  3 },
-		{6,  3 },
-		{5,  3 },
-		{4,  3 },
-		{3,  3 },
-		{2,  13 },
+		{dir_s, 13 },
 		pathEnd
 	},
 };
 
 // sw30 wsw3 w13 wnw3 nw6 
-constexpr Path path2
+constexpr Path enterPath2
 {
-	.startx = 80, 
+	.startx = screenWidth/2, 
 	.starty = -6,
 	.entries = {
 		{ 10, 30 }, 
@@ -178,9 +149,9 @@ constexpr Path path2
 };
 
 // se30 ese3 e13 ene3 ne6 
-constexpr Path path3
+constexpr Path enterPath3
 {
-	.startx = 80, 
+	.startx = screenWidth/2, 
 	.starty = -6,
 	.entries = {
 		{ 6, 30 }, 
@@ -193,43 +164,34 @@ constexpr Path path3
 };
 
 // Paths
-// e43 ssw3 sw3 wsw3 w3 wnw3 nw13
-constexpr Path path4
+constexpr Path enterPath4
 {
 	.startx = -5, 
-	.starty = 25,
+	.starty = 0,
 	.entries = {
-		{4, 40 },
-		{3,  3 },
-		{2,  3 },
-		{1,  3 },
-		{0,  3 },
+		{dir_e, 10 },
 		pathEnd
 	},
 };
 
-constexpr Path path5
+constexpr Path enterPath5
 {
-	.startx = 165, 
-	.starty = 25,
+	.startx = screenWidth + 5, 
+	.starty = 0,
 	.entries = {
-		{12, 40 },
-		{13,  3 },
-		{14,  3 },
-		{15,  3 },
-		{0,  3 },
+		{dir_w, 10 },
 		pathEnd
 	},
 };
 
 const Path* enterPaths[] =
 {
-	&path0,
-	&path1,
-	&path2,
-	&path3,
-	&path4,
-	&path5
+	&enterPath0,
+	&enterPath1,
+	&enterPath2,
+	&enterPath3,
+	&enterPath4,
+	&enterPath5,
 };
 
 constexpr Path attackPath0
@@ -278,18 +240,64 @@ constexpr Path attackPath1
 	},
 };
 
+// Sentinels
+constexpr Path attackPath2
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		// brrblbllr
+		{ dir_s, 30 },
+		{ dir_e, 60 },
+		{ dir_s, 30 },
+		{ dir_w, 30 },
+		{ dir_s, 30 },
+		{ dir_w, 30 },
+		{ dir_e, 30 },
+		// lltrrtrls
+		{ dir_w, 60 },
+		{ dir_n, 30 },
+		{ dir_e, 60 },
+		{ dir_n, 30 },
+		{ dir_e, 30 },
+		{ dir_w, 30 },
+		//FIXME stop { dir_s, 30 },
+		pathEnd
+	},
+};
 
-/*
-"brrblrbll"
-"rlltlrrb"
-"tlltrltrr"
-"lrrl"
-*/
+constexpr Path attackPath3
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		// bllbrbrrl
+		{ dir_s, 30 },
+		{ dir_w, 60 },
+		{ dir_s, 30 },
+		{ dir_e, 30 },
+		{ dir_s, 30 },
+		{ dir_e, 30 },
+		{ dir_w, 30 },
+		//  rrtlltlrs
+		{ dir_e, 60 },
+		{ dir_n, 30 },
+		{ dir_w, 60 },
+		{ dir_n, 30 },
+		{ dir_w, 30 },
+		{ dir_e, 30 },
+		//FIXME stop { dir_s, 30 },
+		pathEnd
+	},
+};
+
+
 constexpr Path boss0AttackPath
 {
 	.startx = 0, 
 	.starty = 0,
 	.entries = {
+		// brrblrbll
 		{ dir_s, 30 },
 		{ dir_e, 60 },
 		{ dir_s, 30 },
@@ -297,21 +305,21 @@ constexpr Path boss0AttackPath
 		{ dir_e, 30 },
 		{ dir_s, 30 },
 		{ dir_w, 60 },
-
-		{ dir_w, 30 },
-		{ dir_e, 60 },
+		// rlltlrrb
+		{ dir_e, 30 },
+		{ dir_w, 60 },
 		{ dir_n, 30 },
 		{ dir_w, 30 },
 		{ dir_e, 60 },
 		{ dir_s, 30 },
-
+		// tlltrltrr
 		{ dir_n, 30 },
 		{ dir_w, 60 },
 		{ dir_n, 30 },
 		{ dir_e, 30 },
 		{ dir_w, 30 },
 		{ dir_e, 60 },
-
+		// lrrl
 		{ dir_w, 30 },
 		{ dir_e, 60 },
 		{ dir_w, 30 },
@@ -323,51 +331,53 @@ const Path* attackPaths[] =
 {
 	&attackPath0,
 	&attackPath1,
+	&attackPath2,
+	&attackPath3,
 	&boss0AttackPath,
 };
 
 // Animations
-const Animation alien0Anim = 
+constexpr Animation alien0Anim = 
 {
 	.images	 = { GameImageId::alien0_0, GameImageId::alien0_1 }, 
 	.duration = .5f,
 };
-const Animation alien1Anim = 
+constexpr Animation alien1Anim = 
 {
 	.images = { GameImageId::alien1_0, GameImageId::alien1_1 }, 
 	.duration = .5f,
 };
-const Animation alien2Anim = 
+constexpr Animation alien2Anim = 
 {
 	.images = { GameImageId::alien2_0, GameImageId::alien2_1 }, 
 	.duration = .5f,
 };
-const Animation alien3Anim = 
+constexpr Animation alien3Anim = 
 {
 	.images = { GameImageId::alien3_0, GameImageId::alien3_1 }, 
 	.duration = .5f,
 };
-const Animation alien4Anim = 
+constexpr Animation alien4Anim = 
 {
 	.images = { GameImageId::alien4_0, GameImageId::alien4_1 }, 
 	.duration = .5f,
 };
-const Animation alien5Anim = 
+constexpr Animation alien5Anim = 
 {
 	.images = { GameImageId::alien5_0, GameImageId::alien5_1 }, 
 	.duration = .35f,
 };
-const Animation boss0Anim = 
+constexpr Animation boss0Anim = 
 {
 	.images = { GameImageId::boss0_0, GameImageId::boss0_1 }, 
 	.duration = 0.25f,
 };
-const Animation boss1Anim = 
+constexpr Animation boss1Anim = 
 {
 	.images = { GameImageId::boss1_0, GameImageId::boss1_1 },
 	 .duration = 0.25f,
 };
-const Animation boss2Anim = 
+constexpr Animation boss2Anim = 
 {
 	.images = { GameImageId::boss2_0, GameImageId::boss2_1 },
 	.duration = 0.25f,
@@ -387,23 +397,6 @@ constexpr const char* alienSeq5 = {
 	"rrllrrrlllb"
 };
 
-// Sentinels
-constexpr const char* alienSeq2 = {
-	"brrblbllrlltrrtrls"
-};
-
-constexpr const char* alienSeq3 = {
-	"bllbrbrrlrrtlltlrs"
-};
-
-
-constexpr const char* boss1Seq = {
-	"brbrblblltltrtrt"
-};
-
-constexpr const char* boss2Seq = {
-	"brbrblblltltrtrt"
-};
 
 constexpr float enterSpeed = 100.f;
 constexpr float normalSpeed = 12.f;
@@ -423,15 +416,15 @@ constexpr float fastLaserSpeed = 40.f;
 constexpr bool aim = true;
 constexpr bool doNotAim = false;
 
-const AlienPrefab alienPrefabs[] =
+constexpr AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
 	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .speed= normalSpeed, .enterSpeed = enterSpeed,
 	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim,   },
 	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
-//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
+//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .speed= normalSpeed, .vspeed = downSpeed,
 //	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
-//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
+//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
 	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
 	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
 	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
@@ -448,7 +441,7 @@ const AlienPrefab alienPrefabs[] =
 //	{ boss2Anim,  Color::violet, 14, nullSeq, boss2Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
 };
 
-const PlayerPrefab playerPrefabs[] =
+constexpr PlayerPrefab playerPrefabs[] =
 {
 	{ .imageId = GameImageId::player1, .velocity= 30.f, .laserOffset = 4.f },
 	{ .imageId = GameImageId::player2, .velocity= 30.f, .laserOffset = 4.f },
@@ -462,9 +455,9 @@ constexpr AlienWaveInfo wave1 =
 	"00001111"
 	"00001111",
 	.enterDelay = {
-		0,10,20,30,30,20,10,0,
-		40,50,60,70,70,60,50,40,
-		80,90,100,110,110,100,90,80,
+		110,100,90,80,80,90,100,110,
+		70,60,50,40,40,50,60,70,
+		30,20,10,0,0,10,20,30,
 	},
 	.enterPath = {
 		4,4,4,4,5,5,5,5,
@@ -489,10 +482,11 @@ const AlienWaveInfo wave2 =
 	"22223333"
 	"00001111"
 	"00001111",
+	// Entering from above
 	.enterDelay = {
-		60,60,60,60,60,60,60,60,
-		20,20,30,30,30,30,30,30,
-		0,0,0,0,0,0,0,0,
+		80,90,100,110,110,100,90,80,
+		40,50,60,70,70,60,50,40,
+		0,10,20,30,30,20,10,0,
 	},
 	.enterPath = {
 		0,0,0,0,1,1,1,1,
@@ -517,8 +511,16 @@ const AlienWaveInfo wave3 =
 		"22223333"
 		"00001111"
 		"00001111"
-		" 4    5 ",
+		"-4----5-",
+	// Entering from above
+	.enterDelay = {
+		120,130,140,150,150,140,130,120,
+		80,90,100,110,110,100,90,80,
+		40,50,60,70,70,60,50,40,
+		0,10,20,30,30,20,10,0,
+	},
 	.enterPath = {
+		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
@@ -527,6 +529,7 @@ const AlienWaveInfo wave3 =
 		1,1,1,1,1,1,1,1,
 		0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,
+		0,2,0,0,0,0,3,0,
 	},
 	.numCols = 8, 
 	.numRows = 4,
@@ -538,16 +541,22 @@ const AlienWaveInfo wave3 =
 const AlienWaveInfo wave4 = 
 {
 	.mask = 
-	"2  6  3"
-	"0     1"
-	"0     1",
+		"2--6--3"
+		"0-----1"
+		"0-----1",
+	// Entering from left, right and above
+	.enterDelay = {
+		20,0,0,0,0,0,20,
+		10,0,0,0,0,0,10,
+		 0,0,0,0,0,0, 0,
+	},
 	.enterPath = {
-		0,0,0,0,1,1,1,
-		0,0,0,0,1,1,1,
-		0,0,0,0,1,1,1,
+		2,0,0,0,0,0,3,
+		2,0,0,0,0,0,3,
+		2,0,0,0,0,0,3,
 	},
 	.attackPath = {
-		1,0,1,2,1,1,1,
+		1,0,0,4,0,0,1,
 		0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,
 	},
@@ -570,10 +579,10 @@ const AlienWaveInfo testWave =
 	.enterDelay = {
 		0,0, 0,435, 0,0,430,0,0,0,
 		0,0, 425, 420, 415, 410, 405, 400, 0, 0,
-345, 340, 335, 330, 325, 320, 315, 310, 305, 300,
-245, 240, 235, 230, 225, 220, 215, 210, 205, 200,
-145, 140, 135, 130, 125, 120, 115, 110, 105, 100,
-050, 045, 040, 035, 030, 025, 020, 015, 010, 00,
+		345, 340, 335, 330, 325, 320, 315, 310, 305, 300,
+		245, 240, 235, 230, 225, 220, 215, 210, 205, 200,
+		145, 140, 135, 130, 125, 120, 115, 110, 105, 100,
+		050, 045, 040, 035, 030, 025, 020, 015, 010, 00,
 	},
 	.enterPath = {
 		0,0,0,0,0,0,1,0,0,0,
@@ -603,7 +612,7 @@ constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 const Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnWave, 0.f, &wave1, },
+	{ GameEventId::spawnWave, 0.f, &wave2, },
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },

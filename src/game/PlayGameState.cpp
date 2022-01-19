@@ -28,8 +28,10 @@ extern const wchar_t consoleSymbols[];
 namespace
 {
 
+
 struct PlayGameStateData
 {
+	MessageLog* messageLog;
 	CollisionSpace collisionSpace;
 	int            stageIndex = -1;
 	bool           showStage;
@@ -47,6 +49,7 @@ struct CollisionContext
 	MessageLog* messageLog;
 	PlayGameStateData* stateData;
 };
+
 
 void TickPlayers(PlayField& world, float dt);
 void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const CollisionSpace& collisionSpace);
@@ -67,6 +70,45 @@ void Start(Game& game, const GameConfig& config, Game::Mode mode);
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
 void DisplayLivesAndScores(const Game& game, Console& console);
 
+
+void CreateStars(PlayField& world, size_t count)
+{
+	world.stars.resize(count);
+	float lastX = -1;
+	for (Star& star : world.stars) 
+	{
+		float x = 0.f;
+		do
+		{
+			x = 8.f + world.rndFloat01(world.rGen) * (world.bounds.x - 16.f);
+		} while (std::abs(x - lastX) < 2.f);
+		lastX = x;
+		const float rand = world.rndFloat01(world.rGen);
+		float y = rand * world.bounds.y;
+		star.pos = {x,y};
+		star.t = rand;
+		star.speed = rand > 0.5f ? 6.f : 3.f;
+	}
+}
+
+void AnimateStars(PlayField& world, float dt)
+{
+	for (Star& star : world.stars)
+	{
+		star.pos.y += star.speed * dt;
+		star.t += dt;
+		if (star.t > 1.f) 
+		{ 
+			star.t -= 1.f;
+		}
+		// Wrap
+		if (star.pos.y > world.bounds.y)
+		{
+			star.pos.y -= world.bounds.y;
+		}
+	}
+}
+
 }
 
 
@@ -75,6 +117,8 @@ void EnterPlayGame(void* data, Game& game, int currentState)
 	timeline.SetCallback([&game](const Event& event) { 
 		ProcessEvent(event, game.messageLog, game.world, game.config); });
 
+	playGameStateData.messageLog = &game.messageLog;
+	CreateStars(game.world, 30);
 	if (currentState != (int)GameStateId::paused)
 	{
 		RestartGame(playGameStateData, game);
@@ -91,6 +135,8 @@ int PlayGame(Game& game, void* data, float dt)
 		return (int)GameStateId::over;
 	}
 
+	AnimateStars(game.world, dt);
+
 	// Update score and lives
 	for (const auto& player : world.GetPlayers())
 	{
@@ -105,7 +151,7 @@ int PlayGame(Game& game, void* data, float dt)
 		{
 			// Next level
 			SetLevel(playGameStateData.stageIndex + 1, playGameStateData, world);
-			return (int)GameStateId::running;
+			return (int)GameStateId::play;
 		}
 		else
 		{
@@ -129,7 +175,7 @@ int PlayGame(Game& game, void* data, float dt)
 		CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
 	}
 
-	return (int)GameStateId::running;
+	return (int)GameStateId::play;
 }
 
 
@@ -148,7 +194,6 @@ void DisplayPlayGame(Console& console, const void* data)
 		console.DrawImage(GetImage(imageId), 0, 2, Color::green, ImageAlignment::centered, ImageAlignment::centered);
 		console.DrawImage(GetImage(GameImageId::stage), 0, -3, Color::green, ImageAlignment::centered, ImageAlignment::centered);
 	}
-	//console.DrawBorder(0, 0, console.GetBounds().x, console.GetBounds().y, Color::white);
 	if (playGameStateData.showScore)
 	{
 		DisplayLivesAndScores(game, console);
@@ -266,7 +311,7 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	{
 		&world,
 		&world.config,
-		&world.messageLog,
+		stateData.messageLog,
 		&stateData
 	};
 	collisionSpace.Execute(callbacks, (int)std::size(callbacks), &context);

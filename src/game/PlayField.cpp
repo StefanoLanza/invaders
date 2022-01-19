@@ -10,16 +10,14 @@
 #include "GameConfig.h"
 #include <engine/Console.h>
 #include <engine/Utils.h>
-#include <engine/MessageLog.h>
 #include "Images.h"
 #include <algorithm>
 #include <cassert>
 #include <functional>
 
 
-PlayField::PlayField(const Vector2D& iBounds, const GameConfig& config, std::default_random_engine& rGen, MessageLog& messageLog) : 
+PlayField::PlayField(const Vector2D& iBounds, const GameConfig& config, std::default_random_engine& rGen) : 
 	rGen { rGen },
-	messageLog { messageLog },
 	config { config },
 	bounds { iBounds },
 	rndFloat01 { 0.f, 1.f },
@@ -140,8 +138,16 @@ void PlayField::KillPlayers()
 
 void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 {
-	ritems.reserve(particles.size() + walls.size() + players.size() + aliens.size() + lasers.size() + explosions.size() + powerUps.size() );
+	ritems.reserve(stars.size() + particles.size() + walls.size() + players.size() + aliens.size() + lasers.size() + explosions.size() + powerUps.size() );
 	ritems.clear();
+
+	for (const Star& star : stars)
+	{
+		RenderItem ritem;
+		ritem.pos = star.pos;
+		ritem.visual = { GameImageId::particle, star.t > 0.5f ? Color::whiteIntense : Color::white };
+		ritems.push_back(ritem);
+	}
 
 	// Note: order is important. Latter elements cover the former ones on screen
 	for (const auto& particle : particles)

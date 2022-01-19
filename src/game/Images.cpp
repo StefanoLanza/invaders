@@ -13,19 +13,19 @@ namespace
 
 // 0: red
 // 2: green
-// 8: white
-// 9  white intense
-// :  light blue
+// 9: white
+// :  white intense
+// ;  light blue
 // ;  lightBlueIntense
 // <  violet
 // =  violetIntense
 
 const uint8_t alien_color[2 + 8 * 4] = 
 R"(
-1111199
+11111::
 1111111
-8888888
-8888888
+9999999
+9999999
 )";
 
 #else

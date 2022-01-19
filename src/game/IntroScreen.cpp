@@ -29,7 +29,7 @@ int IntroScreen(Game& game, void* data, float dt)
 	constexpr float timeOut = 4.f;
 	if (AnyKeyJustPressed() || screenData.accumTime > timeOut)
 	{
-		nextState = GameStateId::running;
+		nextState = GameStateId::play;
 		screenData.accumTime = 0.f;
 	}
 	return (int)nextState;
