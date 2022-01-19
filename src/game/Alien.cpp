@@ -64,7 +64,7 @@ bool TickAlien(Alien& alien, ActionSeq& seq)
 	--seq.duration;
 	if (seq.duration == 0)
 	{
-		seq.duration = seq.seq[seq.a].duration; //FIXME
+		seq.duration = seq.seq[seq.a].duration;
 		FollowPath(alien, seq.seq[seq.a], alien.gameState.speed);
 		++seq.a;
 		if (seq.a >= seq.length)
@@ -77,10 +77,30 @@ bool TickAlien(Alien& alien, ActionSeq& seq)
 }
 
 
+void ParkAlien(Alien& alien)
+{
+	Vector2D diff = Sub(alien.gameState.gridPos, alien.body.pos);
+	float sd = SquareLength(diff); 
+	if (sd < 0.25f)
+	{
+		alien.body.velocity = { 0.f , 0.f};
+		alien.gameState.speed = alien.prefab->speed;
+		alien.state = Alien::State::attacking;
+		InitActionSequence(alien.actionSeq, *alien.attackPath, true);
+	}
+	else
+	{
+		float speed = alien.prefab->enterSpeed * std::clamp(sd / 16.f, 0.f, 1.f);
+		alien.body.velocity = Normalize(diff, speed);
+	}
 }
 
 
-Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath)
+}
+
+
+Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath,
+	const Path& attackPath)
 {
 	Vector2D initialPos { enterPath.startx, enterPath.starty };
 	Alien alien;
@@ -93,33 +113,15 @@ Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomO
 	alien.gameState.hits = prefab.hits;
 	alien.gameState.fireTimer  = 0.f;
 	alien.gameState.energy = 0.f;
-	alien.gameState.speed = prefab.landingSpeed;
+	alien.gameState.speed = prefab.enterSpeed;
 	alien.gameState.gridPos = gridPos;
-	alien.state = Alien::State::landing;
+	alien.state = Alien::State::entering;
 	alien.animState.t = randomOffset;
 	alien.waveIndex = -1;
 	alien.randomOffset = randomOffset;
+	alien.attackPath = &attackPath;
 	InitActionSequence(alien.actionSeq, enterPath, false);
 	return alien;
-}
-
-
-void ParkAlien(Alien& alien)
-{
-	Vector2D diff = Sub(alien.gameState.gridPos, alien.body.pos);
-	float sd = SquareLength(diff); 
-	if (sd < 0.25f)
-	{
-		alien.body.velocity = { 0.f , 0.f};
-		alien.gameState.speed = alien.prefab->speed;
-		alien.state = Alien::State::attacking;
-		//FIXME InitActionSequence(alien.actionSeq, alien.prefab->attackSeq, true);
-	}
-	else
-	{
-		float speed = alien.prefab->landingSpeed * std::clamp(sd / 16.f, 0.f, 1.f);
-		alien.body.velocity = Normalize(diff, speed);
-	}
 }
 
 
@@ -133,7 +135,7 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 
 	switch (alien.state)
 	{
-		case Alien::State::landing:
+		case Alien::State::entering:
 			--alien.enterDelay;
 			if (alien.enterDelay < 0 && ! TickAlien(alien, alien.actionSeq))
 			{

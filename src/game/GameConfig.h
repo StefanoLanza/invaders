@@ -15,9 +15,6 @@ struct GameConfig
 	float alienWaveFireRateInc;
 	float alienLaserVelocity;
 	int powerUpHits;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
-	// Bosses
-	float bossFireRate;
-	float bossDownVelocity;
 	// Explosions
 	float explosionTimer;  // explosion lasts some time  before it disappears
 	// Power ups

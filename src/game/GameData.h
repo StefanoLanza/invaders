@@ -10,6 +10,7 @@ struct PathEntry
 };
 
 constexpr size_t maxPathLen = 50;
+constexpr size_t maxAliensPerWave = 60;
 
 struct Path
 {
@@ -21,8 +22,9 @@ struct Path
 struct AlienWaveInfo
 {
 	const char* mask;
-	const int enterDelay[10*6];
-	const int path[10*6];
+	const int enterDelay[maxAliensPerWave];
+	const int enterPath[maxAliensPerWave];
+	const int attackPath[maxAliensPerWave];
 	int numCols;
 	int numRows;
 	float dx;
@@ -57,9 +59,8 @@ struct AlienPrefab
 	Animation anim;
 	Color     color;
 	int       hits;
-	const char* attackSeq;
 	float speed;
-	float landingSpeed;
+	float enterSpeed;
 	float fireRate;
 	float laserSpeed;
 	bool  aimAtPlayer;
@@ -79,4 +80,5 @@ const Stage& GetStage(int index);
 const AlienPrefab& GetAlienPrefab(int index);
 int GetNumAlienPrefabs();
 const PlayerPrefab& GetPlayerPrefab(int index);
-const Path& GetPath(int index);
+const Path& GetEnterPath(int index);
+const Path& GetAttackPath(int index);

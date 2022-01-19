@@ -105,12 +105,31 @@ constexpr const PathEntry zigzag[] =
 14	CHKDIR("nw");
 15	CHKDIR("nnw");
 */
+enum Dir
+{
+	dir_n = 0,
+	dir_nne,
+	dir_ne,
+	dir_ene,
+	dir_e,
+	dir_ese,
+	dir_se,
+	dir_sse,
+	dir_s,
+	dir_ssw,
+	dir_sw,
+	dir_wsw,
+	dir_w,
+	dir_wnw,
+	dir_nw,
+	dir_nnw,
+};
 
 constexpr PathEntry pathEnd = { -1, -1 };
 
 // Paths
 // s43 ssw3 sw3 wsw3 w3 wnw3 nw13
-const Path path0
+constexpr Path path0
 {
 	.startx = 75, 
 	.starty = -5,
@@ -127,7 +146,7 @@ const Path path0
 };
 
 // s43 sse3 se3 ese3 e3 ene3 ne13 
-const Path path1
+constexpr Path path1
 {
 	.startx = 85, 
 	.starty = -5,
@@ -144,7 +163,7 @@ const Path path1
 };
 
 // sw30 wsw3 w13 wnw3 nw6 
-const Path path2
+constexpr Path path2
 {
 	.startx = 80, 
 	.starty = -6,
@@ -159,7 +178,7 @@ const Path path2
 };
 
 // se30 ese3 e13 ene3 ne6 
-const Path path3
+constexpr Path path3
 {
 	.startx = 80, 
 	.starty = -6,
@@ -173,12 +192,138 @@ const Path path3
 	},
 };
 
-const Path* paths[] =
+// Paths
+// e43 ssw3 sw3 wsw3 w3 wnw3 nw13
+constexpr Path path4
+{
+	.startx = -5, 
+	.starty = 25,
+	.entries = {
+		{4, 40 },
+		{3,  3 },
+		{2,  3 },
+		{1,  3 },
+		{0,  3 },
+		pathEnd
+	},
+};
+
+constexpr Path path5
+{
+	.startx = 165, 
+	.starty = 25,
+	.entries = {
+		{12, 40 },
+		{13,  3 },
+		{14,  3 },
+		{15,  3 },
+		{0,  3 },
+		pathEnd
+	},
+};
+
+const Path* enterPaths[] =
 {
 	&path0,
 	&path1,
 	&path2,
 	&path3,
+	&path4,
+	&path5
+};
+
+constexpr Path attackPath0
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		{ 12, 90 },
+		{ 4,  90 },
+		{ 8,  30 },
+		{ 12, 90 },
+		{ 4,  90 },
+		{ 8,  30 },
+		{ 12, 150 },
+		{ 4,  30 },
+		{ 8,  30 },
+		{ 4, 120 },
+		{ 12, 60 },
+		{ 4,  60 },
+		{ 8,  30 },
+		pathEnd
+	},
+};
+
+constexpr Path attackPath1
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		// "rrrlllbrrrlllb"
+		{ dir_w, 90 },
+		{ dir_e, 90 },
+		{ dir_s, 30 },
+		{ dir_e, 90 },
+		{ dir_w, 90 },
+		{ dir_s, 30 },
+		// "rrrrrlbllllrrllb"
+		{ dir_w, 150 },
+		{ dir_e, 30 },
+		{ dir_s, 30 },
+		{ dir_e, 120 },
+		{ dir_w, 60 },
+		{ dir_e, 60 },
+		{ dir_s, 30 },
+		pathEnd
+	},
+};
+
+
+/*
+"brrblrbll"
+"rlltlrrb"
+"tlltrltrr"
+"lrrl"
+*/
+constexpr Path boss0AttackPath
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		{ dir_s, 30 },
+		{ dir_e, 60 },
+		{ dir_s, 30 },
+		{ dir_w, 30 },
+		{ dir_e, 30 },
+		{ dir_s, 30 },
+		{ dir_w, 60 },
+
+		{ dir_w, 30 },
+		{ dir_e, 60 },
+		{ dir_n, 30 },
+		{ dir_w, 30 },
+		{ dir_e, 60 },
+		{ dir_s, 30 },
+
+		{ dir_n, 30 },
+		{ dir_w, 60 },
+		{ dir_n, 30 },
+		{ dir_e, 30 },
+		{ dir_w, 30 },
+		{ dir_e, 60 },
+
+		{ dir_w, 30 },
+		{ dir_e, 60 },
+		{ dir_w, 30 },
+		pathEnd
+	},
+};
+
+const Path* attackPaths[] =
+{
+	&attackPath0,
+	&attackPath1,
+	&boss0AttackPath,
 };
 
 // Animations
@@ -234,20 +379,6 @@ constexpr const char* circleSeq = {
 };
 
 
-constexpr const char* nullSeq = {
-	""
-};
-
-constexpr const char* alienSeq0 = {
-	"lllrrrblllrrrb"
-	"lllllrbrrrrllrrb"
-};
-
-constexpr const char* alienSeq1 = {
-	"rrrlllbrrrlllb"
-	"rrrrrlbllllrrllb"
-};
-
 constexpr const char* alienSeq4 = {
 	"llrrlllrrrb"
 };
@@ -265,12 +396,6 @@ constexpr const char* alienSeq3 = {
 	"bllbrbrrlrrtlltlrs"
 };
 
-constexpr const char* boss0Pattern = {
-	"brrblrbll"
-	"rlltlrrb"
-	"tlltrltrr"
-	"lrrl"
-};
 
 constexpr const char* boss1Seq = {
 	"brbrblblltltrtrt"
@@ -280,7 +405,7 @@ constexpr const char* boss2Seq = {
 	"brbrblblltltrtrt"
 };
 
-constexpr float landingSpeed = 80.f;
+constexpr float enterSpeed = 100.f;
 constexpr float normalSpeed = 12.f;
 constexpr float midSpeed = 24.f;
 constexpr float fastSpeed = 48.f;
@@ -301,22 +426,22 @@ constexpr bool doNotAim = false;
 const AlienPrefab alienPrefabs[] =
 {
 	// Stage 1,2,3,4 prefabs
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .attackSeq = alienSeq0, .speed= normalSpeed, .landingSpeed = landingSpeed,
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .speed= normalSpeed, .enterSpeed = enterSpeed,
 	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim,   },
-	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .attackSeq = alienSeq1, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
+	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
 //	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq0, .speed= normalSpeed, .vspeed = downSpeed,
 //	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
 //  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .landingSeq = nullSeq, .attackSeq = alienSeq1, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .attackSeq = alienSeq4, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .attackSeq = alienSeq5, .speed= normalSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10,.attackSeq = boss0Pattern, .speed= 40.f,  .landingSpeed = landingSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10,.speed= 40.f,  .enterSpeed = enterSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
-	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq2, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .attackSeq = alienSeq3, .speed= midSpeed, .landingSpeed = landingSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
 
 //	{ boss1Anim,  Color::violet, 12, nullSeq, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
 
@@ -341,10 +466,15 @@ constexpr AlienWaveInfo wave1 =
 		40,50,60,70,70,60,50,40,
 		80,90,100,110,110,100,90,80,
 	},
-	.path = {
-		0,0,0,0,1,1,1,1,
-		0,0,0,0,1,1,1,1,
-		0,0,0,0,1,1,1,1,
+	.enterPath = {
+		4,4,4,4,5,5,5,5,
+		4,4,4,4,5,5,5,5,
+		4,4,4,4,5,5,5,5,
+	},
+	.attackPath = {
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
 	},
 	.numCols = 8,
 	.numRows = 3,
@@ -364,10 +494,15 @@ const AlienWaveInfo wave2 =
 		20,20,30,30,30,30,30,30,
 		0,0,0,0,0,0,0,0,
 	},
-	.path = {
+	.enterPath = {
 		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
 		0,0,0,0,1,1,1,1,
+	},
+	.attackPath = {
+		1,1,1,1,1,1,1,1,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
 	},
 	.numCols = 8, 
 	.numRows = 3,
@@ -379,10 +514,20 @@ const AlienWaveInfo wave2 =
 const AlienWaveInfo wave3 =
 {
 	.mask = 
-	"22223333"
-	"00001111"
-	"00001111"
-	" 4    5 ",
+		"22223333"
+		"00001111"
+		"00001111"
+		" 4    5 ",
+	.enterPath = {
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+	},
+	.attackPath = {
+		1,1,1,1,1,1,1,1,
+		0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,
+	},
 	.numCols = 8, 
 	.numRows = 4,
 	.dx = 12.f, 
@@ -396,6 +541,16 @@ const AlienWaveInfo wave4 =
 	"2  6  3"
 	"0     1"
 	"0     1",
+	.enterPath = {
+		0,0,0,0,1,1,1,
+		0,0,0,0,1,1,1,
+		0,0,0,0,1,1,1,
+	},
+	.attackPath = {
+		1,0,1,2,1,1,1,
+		0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,
+	},
 	.numCols = 7, 
 	.numRows = 3,
 	.dx = 16.f, 
@@ -420,7 +575,7 @@ const AlienWaveInfo testWave =
 145, 140, 135, 130, 125, 120, 115, 110, 105, 100,
 050, 045, 040, 035, 030, 025, 020, 015, 010, 00,
 	},
-	.path = {
+	.enterPath = {
 		0,0,0,0,0,0,1,0,0,0,
 		0,0,0,0,0,1,1,1,1,1,
 		0,0,0,0,0,1,1,1,1,1,
@@ -525,7 +680,12 @@ const PlayerPrefab& GetPlayerPrefab(int index)
 	return playerPrefabs[index];
 }
 
-const Path& GetPath(int index) 
+const Path& GetEnterPath(int index) 
 {
-	return *paths[index];
+	return *enterPaths[index];
+}
+
+const Path& GetAttackPath(int index) 
+{
+	return *attackPaths[index];
 }

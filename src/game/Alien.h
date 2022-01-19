@@ -25,6 +25,7 @@ struct AlienGameState
 
 
 struct PathEntry;
+struct Path;
 
 struct ActionSeq 
 {
@@ -45,7 +46,7 @@ struct Alien
 {
 	enum class State
 	{
-		landing,
+		entering,
 		parking,
 		attacking,
 		dead
@@ -60,6 +61,7 @@ struct Alien
 	AlienGameState gameState;
 	State   state;
 	int enterDelay;
+	const Path* attackPath;
 
 	ActionSeq actionSeq;
 	int waveIndex;
@@ -70,7 +72,8 @@ struct Alien
 struct Path;
 
 // Public API
-Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath);
+Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath, 
+	const Path& attackPath);
 void AlienDestroy(Alien& alien);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);

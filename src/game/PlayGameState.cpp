@@ -484,11 +484,12 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 		{
 			if (const int prefabId = *c - '0'; prefabId >= 0 && prefabId < GetNumAlienPrefabs())
 			{
-				const Path& enterPath = GetPath(waveInfo.path[alienIndex]);
+				const Path& enterPath = GetEnterPath(waveInfo.enterPath[alienIndex]);
+				const Path& attackPath = GetAttackPath(waveInfo.attackPath[alienIndex]);
 				const AlienPrefab& alienPrefab = GetAlienPrefab(prefabId);
 				Vector2D gridPos { x, y };
 				Alien alien = NewAlien(gridPos, alienPrefab, world.rndFloat01(world.rGen), waveInfo.enterDelay[alienIndex],
-					enterPath);
+					enterPath, attackPath);
 				alien.waveIndex = waveIndex;
 				world.AddAlienShip(alien);
 				++wave.numAliens;

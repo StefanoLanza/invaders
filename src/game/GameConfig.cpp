@@ -13,8 +13,6 @@ GameConfig::GameConfig()
 	alienWaveSpeedInc = 2.f;
 	alienWaveFireRateInc = 0.1f;
 	alienLaserVelocity = 30.f;
-	// Bosses
-	bossFireRate = 1.f; 
 	// Explosions
 	explosionTimer = 0.25f;
 	// Power ups
