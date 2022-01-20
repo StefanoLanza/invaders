@@ -148,7 +148,7 @@ int PlayGame(Game& game, void* data, float dt)
 	for (const auto& player : world.GetPlayers())
 	{
 		assert(player.id < game.maxPlayers);
-		game.score[player.id] = player.score;
+		game.playerScore[player.id] = player.score;
 		game.playerLives[player.id] = player.lives;
 	}
 
@@ -177,10 +177,7 @@ int PlayGame(Game& game, void* data, float dt)
 	}
 	UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
 	world.RemoveDead();
-	if (! playGameStateData.showStage)
-	{
-		CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
-	}
+	CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
 
 	return (int)GameStateId::play;
 }
@@ -257,7 +254,7 @@ void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const Col
 	}
 	for (auto& alienShip : world.aliens)
 	{
-		AlienUpdate(alienShip, dt, world, world.config);
+		AlienUpdate(alienShip, dt, world, world.config, world.alienWaves[alienShip.waveIndex]);
 	}
 	for (auto& explosion : world.explosions)
 	{
@@ -429,27 +426,27 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 {
 	switch (powerUp.type)
 	{
-	case PowerUp::speedBoost:
+	case PowerUp::Type::speedBoost:
 		messageLog.AddMessage("Speed Boost!");
 		player.SetSpeedBoost(2);
 		break;
-	case PowerUp::fireBoost:
+	case PowerUp::Type::fireBoost:
 		messageLog.AddMessage("Fire Boost!");
 		player.SetFireBoost(gameConfig.powerUpFireBoost);
 		break;
-	case PowerUp::doubleFire:
+	case PowerUp::Type::doubleFire:
 		messageLog.AddMessage("Double Fire!");
 		player.SetDoubleFire();
 		break;
-	case PowerUp::tripleFire:
+	case PowerUp::Type::tripleFire:
 		messageLog.AddMessage("Triple Fire!");
 		player.SetTripleFire();
 		break;
-	case PowerUp::shield:
+	case PowerUp::Type::shield:
 		messageLog.AddMessage("Shield!");
 		player.SetShield(gameConfig.powerUpShieldTime);
 		break;
-	case PowerUp::bomb:
+	case PowerUp::Type::bomb:
 		messageLog.AddMessage("Bomb!");
 		world.SpawnBomb();
 		break;
@@ -511,20 +508,12 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 
 void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config)
 {
-	// Look for empty wave
-	int waveIndex = 0;
-	for (; waveIndex < (int)world.alienWaves.size(); ++waveIndex) {
-		if (world.alienWaves[waveIndex].numAliens == 0) {
-			break;
-		}
-	}
-	if (waveIndex == world.alienWaves.size()) {
-		world.alienWaves.resize(waveIndex + 1);
-	}
-	AlienWave& wave = world.alienWaves[waveIndex];
+	const int waveIndex = (int)world.alienWaves.size();
+	AlienWave wave {};
 	wave.numAliens = 0;
 	wave.speed = 0.f;
 	wave.fireRate = 0.f;
+	wave.numReadyAliens = 0;
 
 	const float x0 = (world.bounds.x - (waveInfo.numCols * waveInfo.dx)) / 2.f + (waveInfo.dx / 2);
 	float y = waveInfo.start_y;
@@ -532,7 +521,7 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	for (int j = 0, alienIndex = 0; j < waveInfo.numRows; ++j, y += waveInfo.dy)
 	{
 		float x = x0;
-		for (int k = 0; k < waveInfo.numCols; k++, x += waveInfo.dx)
+		for (int k = 0; k < waveInfo.numCols; ++k, x += waveInfo.dx)
 		{
 			if (const int prefabId = *c - '0'; prefabId >= 0 && prefabId < GetNumAlienPrefabs())
 			{
@@ -540,8 +529,9 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 				const Path& attackPath = GetAttackPath(waveInfo.attackPath[alienIndex]);
 				const AlienPrefab& alienPrefab = GetAlienPrefab(prefabId);
 				Vector2D gridPos { x, y };
-				Alien alien = NewAlien(gridPos, alienPrefab, world.rndFloat01(world.rGen), waveInfo.enterDelay[alienIndex],
-					enterPath, attackPath);
+				Alien alien = NewAlien(gridPos, alienPrefab, world.rndFloat01(world.rGen),
+					enterPath, waveInfo.enterDelay[alienIndex],
+					attackPath);
 				alien.waveIndex = waveIndex;
 				world.AddAlienShip(alien);
 				++wave.numAliens;
@@ -550,6 +540,9 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 			++alienIndex;
 		}
 	}
+
+	wave.numAliveAliens = wave.numAliens;
+	world.alienWaves.push_back(wave);
 }
 
 
@@ -567,7 +560,7 @@ void Start(Game& game, const GameConfig& config, Game::Mode mode)
 	game.world.DestroyAll();
 	for (int s = 0; s < game.maxPlayers; ++s)
 	{
-		game.score[s] = 0;
+		game.playerScore[s] = 0;
 		game.playerLives[s] = 0;
 	}
 	CreatePlayers(game, game.world, mode);
@@ -615,13 +608,24 @@ void DisplayLivesAndScores(const Game& game, Console& console)
 {
 	const int x[2] = { 0, console.GetBounds().x / 2 };
 	const Color color[2] = { Color::white, Color::lightBlueIntense };
+#if 0
 	for (int p = 0; p < game.numPlayers; ++p)
 	{
 		console.DrawImage(GetImage(GameImageId::score), x[p] + 2, 0, color[p], ImageAlignment::left, ImageAlignment::top);
 		console.DrawImage(GetImage(GameImageId::lives), x[p] + 48, 0, color[p], ImageAlignment::left, ImageAlignment::top);
-		console.DrawNumber(game.score[p], x[p] + 40, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
+		console.DrawNumber(game.playerScore[p], x[p] + 40, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
 		console.DrawNumber(game.playerLives[p], x[p] + 74, 0, &GetImage(GameImageId::_0), color[p], TextAlignment::right);
 	}
+#else
+	for (int p = 0; p < game.numPlayers; ++p)
+	{
+		char tmp[256];
+		snprintf(tmp, sizeof tmp, "SCORE: %d", game.playerScore[p]);
+		console.DisplayText(tmp, x[p] + 2, 1, color[p]);
+		snprintf(tmp, sizeof tmp, "LIVES: %d", game.playerLives[p]);
+		console.DisplayText(tmp, x[p] + 16, 1, color[p]);
+	}
+#endif
 }
 
 

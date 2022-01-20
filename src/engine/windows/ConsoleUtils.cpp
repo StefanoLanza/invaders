@@ -5,10 +5,10 @@
 #include <iostream>
 
 
-void DisableMaximize(HWND hwndWindow)
+void DisableCaption(HWND hwndWindow)
 {
 	const auto style = GetWindowLong(hwndWindow, GWL_STYLE);
-	SetWindowLong(hwndWindow, GWL_STYLE, style & ~WS_MAXIMIZEBOX);
+	SetWindowLong(hwndWindow, GWL_STYLE, style & ~WS_CAPTION);
 }
 
 

@@ -70,30 +70,28 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 		AlienDestroy(alien);
 	}
 
-	if (alien.gameState.fireTimer == 0.f)
-	{ 
-		// Randomly shoot lasers
-		alien.gameState.fireTimer = (1.f / (alien.prefab->fireRate + wave.fireRate)) * (1.f + alien.randomOffset);
-	}
 	alien.gameState.fireTimer -= dt;
-	if (alien.gameState.fireTimer < 0.f && AlienCanShoot(alien, collisionSpace)) 
+	if (alien.gameState.fireTimer < 0.f) 
 	{
-		const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
-		Vector2D laserVel;
-		bool shoot = true;
-		if (alien.prefab->aimAtPlayer)
+		if (AlienCanShoot(alien, collisionSpace))
 		{
-			shoot = Aim(laserVel, laserPos, alien.prefab->laserSpeed, world.GetPlayers());
+			const Vector2D laserPos = { alien.body.pos.x, alien.body.pos.y + size.y * 0.5f }; // spawn in front
+			Vector2D laserVel;
+			bool shoot = true;
+			if (alien.prefab->aimAtPlayer)
+			{
+				shoot = Aim(laserVel, laserPos, alien.prefab->laserSpeed, world.GetPlayers());
+			}
+			else 
+			{
+				laserVel = { 0.f, alien.prefab->laserSpeed };
+			}
+			if (shoot)
+			{
+				world.SpawnAlienLaser( NewLaser(laserPos, laserVel, {GameImageId::alienLaser, Color::greenIntense}, -1, ColliderId::alienLaser));
+			}
 		}
-		else 
-		{
-			laserVel = { 0.f, alien.prefab->laserSpeed };
-		}
-		if (shoot)
-		{
-			world.SpawnAlienLaser( NewLaser(laserPos, laserVel, {GameImageId::alienLaser, Color::greenIntense}, -1, ColliderId::alienLaser));
-			alien.gameState.fireTimer = 0.f; // reset it
-		}
+		alien.gameState.fireTimer += (1.f / alien.prefab->fireRate); // reset it
 	}
 }
 

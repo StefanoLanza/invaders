@@ -199,19 +199,12 @@ constexpr Path attackPath0
 	.startx = 0, 
 	.starty = 0,
 	.entries = {
-		{ 12, 90 },
-		{ 4,  90 },
-		{ 8,  30 },
-		{ 12, 90 },
-		{ 4,  90 },
-		{ 8,  30 },
-		{ 12, 150 },
-		{ 4,  30 },
-		{ 8,  30 },
-		{ 4, 120 },
-		{ 12, 60 },
-		{ 4,  60 },
-		{ 8,  30 },
+		 // llrrlllrrrb
+		{ dir_w, 60 },
+		{ dir_e, 60 },
+		{ dir_w, 90 },
+		{ dir_e, 90 },
+		{ dir_s, 30 },
 		pathEnd
 	},
 };
@@ -221,27 +214,56 @@ constexpr Path attackPath1
 	.startx = 0, 
 	.starty = 0,
 	.entries = {
-		// "rrrlllbrrrlllb"
-		{ dir_w, 90 },
-		{ dir_e, 90 },
-		{ dir_s, 30 },
-		{ dir_e, 90 },
-		{ dir_w, 90 },
-		{ dir_s, 30 },
-		// "rrrrrlbllllrrllb"
-		{ dir_w, 150 },
-		{ dir_e, 30 },
-		{ dir_s, 30 },
-		{ dir_e, 120 },
-		{ dir_w, 60 },
+		// rrllrrrlllb
 		{ dir_e, 60 },
+		{ dir_w, 60 },
+		{ dir_e, 90 },
+		{ dir_w, 90 },
 		{ dir_s, 30 },
 		pathEnd
 	},
 };
 
-// Sentinels
 constexpr Path attackPath2
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		// lllllrrrrrb
+		{ dir_w, 150 },
+		{ dir_e, 150 },
+		{ dir_s, 30 },
+		// lllrrrllrrb
+		{ dir_w, 90 },
+		{ dir_e,  90 },
+		{ dir_w,  60 },
+		{ dir_e,  60 },
+		{ dir_s,  30 },
+		pathEnd
+	},
+};
+
+constexpr Path attackPath3
+{
+	.startx = 0, 
+	.starty = 0,
+	.entries = {
+		// rrrrrlllllb
+		{ dir_e, 150 },
+		{ dir_w, 150 },
+		{ dir_s, 30 },
+		// rrrlllrrllb
+		{ dir_e, 90 },
+		{ dir_w,  90 },
+		{ dir_e,  60 },
+		{ dir_w,  60 },
+		{ dir_s,  30 },
+		pathEnd
+	},
+};
+
+// Left sentinel
+constexpr Path attackPath4
 {
 	.startx = 0, 
 	.starty = 0,
@@ -252,21 +274,22 @@ constexpr Path attackPath2
 		{ dir_s, 30 },
 		{ dir_w, 30 },
 		{ dir_s, 30 },
-		{ dir_w, 30 },
+		{ dir_w, 60 },
 		{ dir_e, 30 },
-		// lltrrtrls
+		// lltrrtlrs
 		{ dir_w, 60 },
 		{ dir_n, 30 },
 		{ dir_e, 60 },
 		{ dir_n, 30 },
-		{ dir_e, 30 },
 		{ dir_w, 30 },
+		{ dir_e, 30 },
 		//FIXME stop { dir_s, 30 },
 		pathEnd
 	},
 };
 
-constexpr Path attackPath3
+// Right sentinel
+constexpr Path attackPath5
 {
 	.startx = 0, 
 	.starty = 0,
@@ -277,15 +300,15 @@ constexpr Path attackPath3
 		{ dir_s, 30 },
 		{ dir_e, 30 },
 		{ dir_s, 30 },
-		{ dir_e, 30 },
+		{ dir_e, 60 },
 		{ dir_w, 30 },
-		//  rrtlltlrs
+		//  rrtlltrls
 		{ dir_e, 60 },
 		{ dir_n, 30 },
 		{ dir_w, 60 },
 		{ dir_n, 30 },
-		{ dir_w, 30 },
 		{ dir_e, 30 },
+		{ dir_w, 30 },
 		//FIXME stop { dir_s, 30 },
 		pathEnd
 	},
@@ -305,13 +328,12 @@ constexpr Path boss0AttackPath
 		{ dir_e, 30 },
 		{ dir_s, 30 },
 		{ dir_w, 60 },
-		// rlltlrrb
+		// rlltlrr
 		{ dir_e, 30 },
 		{ dir_w, 60 },
 		{ dir_n, 30 },
 		{ dir_w, 30 },
 		{ dir_e, 60 },
-		{ dir_s, 30 },
 		// tlltrltrr
 		{ dir_n, 30 },
 		{ dir_w, 60 },
@@ -333,6 +355,8 @@ const Path* attackPaths[] =
 	&attackPath1,
 	&attackPath2,
 	&attackPath3,
+	&attackPath4,
+	&attackPath5,
 	&boss0AttackPath,
 };
 
@@ -386,15 +410,6 @@ constexpr Animation boss2Anim =
 // Action sequences
 constexpr const char* circleSeq = {
 	"llddbbeerrffttdd"
-};
-
-
-constexpr const char* alienSeq4 = {
-	"llrrlllrrrb"
-};
-
-constexpr const char* alienSeq5 = {
-	"rrllrrrlllb"
 };
 
 
@@ -465,9 +480,9 @@ constexpr AlienWaveInfo wave1 =
 		4,4,4,4,5,5,5,5,
 	},
 	.attackPath = {
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
 	},
 	.numCols = 8,
 	.numRows = 3,
@@ -494,9 +509,9 @@ const AlienWaveInfo wave2 =
 		0,0,0,0,1,1,1,1,
 	},
 	.attackPath = {
-		1,1,1,1,1,1,1,1,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
+		2,2,2,2,3,3,3,3,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
 	},
 	.numCols = 8, 
 	.numRows = 3,
@@ -526,10 +541,10 @@ const AlienWaveInfo wave3 =
 		0,0,0,0,1,1,1,1,
 	},
 	.attackPath = {
-		1,1,1,1,1,1,1,1,
-		0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,
-		0,2,0,0,0,0,3,0,
+		2,2,2,2,3,3,3,3,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+		0,4,0,0,0,0,5,0,
 	},
 	.numCols = 8, 
 	.numRows = 4,
@@ -556,9 +571,9 @@ const AlienWaveInfo wave4 =
 		2,0,0,0,0,0,3,
 	},
 	.attackPath = {
-		1,0,0,4,0,0,1,
-		0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,
+		2,0,0,6,0,0,3,
+		0,0,0,0,0,0,1,
+		0,0,0,0,0,0,1,
 	},
 	.numCols = 7, 
 	.numRows = 3,
@@ -612,11 +627,11 @@ constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 const Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnWave, 0.f, &wave2, },
+	{ GameEventId::spawnWave, 0.f, &wave2, }, // FIXME
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },
-//	{ GameEventId::message, 4.f, hudMessages[0], },
+	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 
 const Event stage2Events[] =
@@ -626,7 +641,7 @@ const Event stage2Events[] =
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },
-//	{ GameEventId::message, 4.f, hudMessages[1], },
+	{ GameEventId::message, 4.f, hudMessages[1], },
 };
 
 const Event stage3Events[] =
@@ -636,7 +651,7 @@ const Event stage3Events[] =
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },
-//	{ GameEventId::message, 4.f, hudMessages[2], },
+	{ GameEventId::message, 4.f, hudMessages[2], },
 };
 
 const Event stage4Events[] =
@@ -646,7 +661,7 @@ const Event stage4Events[] =
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },
-//	{ GameEventId::message, 4.f, "Boss", },
+	{ GameEventId::message, 4.f, "Boss", },
 };
 
 

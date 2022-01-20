@@ -50,6 +50,16 @@ void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laser
 }
 
 
+void ClearPowerUps(PlayerShip& player)
+{
+	// Restore normal values
+	player.powerUpTimer = 0.f;
+	player.speedBoost = 1.f;
+	player.fireBoost = 1.f;
+	player.doubleFire = false;
+	player.tripleFire = false;
+}
+
 }
 
 
@@ -116,12 +126,7 @@ void Move(PlayerShip& player, float dt, const Vector2D& worldBounds, PlayField& 
 	player.powerUpTimer -= dt;
 	if (player.powerUpTimer < 0.f)
 	{
-		// Restore normal values
-		player.powerUpTimer = 0.f;
-		player.speedBoost = 1.f;
-		player.fireBoost = 1.f;
-		player.doubleFire = false;
-		player.tripleFire = false;
+		ClearPowerUps(player);
 	}
 
 	player.accumTime += dt; // useful for time based effects
@@ -181,6 +186,12 @@ void PlayerHit(PlayerShip& player)
 }
 
 
+void KillPlayer(PlayerShip& player)
+{
+	player.state = PlayerShip::State::dead;
+}
+
+
 Collider GetCollisionArea(PlayerShip& ship)
 {
 	return { &ship, ColliderId::player, ship.body.prevPos, ship.body.pos, ship.body.size };
@@ -190,7 +201,9 @@ Collider GetCollisionArea(PlayerShip& ship)
 void PlayerShip::SetSpeedBoost(float value)
 {
 	assert(value > 0);
+	ClearPowerUps(*this);
 	speedBoost = value;
+	fireBoost = 1.f;
 	powerUpTimer = 10.f;
 }
 
@@ -198,6 +211,7 @@ void PlayerShip::SetSpeedBoost(float value)
 void PlayerShip::SetFireBoost(float boost)
 {
 	assert(boost > 1.f);
+	ClearPowerUps(*this);
 	fireBoost = boost;
 	powerUpTimer = 10.f; // Note specified in the rules, I'm giving the fire boost a fixed amount of time too
 }
@@ -205,17 +219,17 @@ void PlayerShip::SetFireBoost(float boost)
 
 void PlayerShip::SetDoubleFire()
 {
+	ClearPowerUps(*this);
 	doubleFire = true;
-	tripleFire = false;
-	powerUpTimer = 10.f;
+	powerUpTimer = 5.f;
 }
 
 
 void PlayerShip::SetTripleFire()
 {
+	ClearPowerUps(*this);
 	tripleFire = true;
-	doubleFire = false;
-	powerUpTimer = 10.f;
+	powerUpTimer = 5.f;
 }
 
 

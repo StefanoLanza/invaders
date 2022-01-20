@@ -21,7 +21,7 @@ PlayField::PlayField(const Vector2D& iBounds, const GameConfig& config, std::def
 	config { config },
 	bounds { iBounds },
 	rndFloat01 { 0.f, 1.f },
-	rndPowerUp { (int)PowerUp::count, rGen }
+	rndPowerUp { (int)PowerUp::Type::count, rGen }
 {}
 
 
@@ -131,7 +131,7 @@ void PlayField::KillPlayers()
 {
 	for (PlayerShip& player : players)
 	{
-		PlayerHit(player);
+		KillPlayer(player);
 	}
 }
 	

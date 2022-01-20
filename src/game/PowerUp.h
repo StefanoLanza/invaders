@@ -15,7 +15,7 @@ struct PowerUp
 		dead
 	};
 
-	enum Type
+	enum class Type
 	{
 		speedBoost,
 		fireBoost,

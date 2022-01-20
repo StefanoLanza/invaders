@@ -29,7 +29,7 @@ struct Game
 	std::vector<GameState> states;
 	Mode mode;
 	int stateId;
-	int score[maxPlayers];
+	int playerScore[maxPlayers];
 	int playerLives[maxPlayers];
 	int numPlayers;
 };

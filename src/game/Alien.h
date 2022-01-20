@@ -40,6 +40,8 @@ struct AlienWave {
 	int numAliens;
 	float speed;
 	float fireRate;
+	int numReadyAliens;
+	int numAliveAliens;
 };
 
 struct Alien
@@ -48,7 +50,9 @@ struct Alien
 	{
 		entering,
 		parking,
+		ready,
 		attacking,
+		dying,
 		dead
 	};
 
@@ -72,10 +76,11 @@ struct Alien
 struct Path;
 
 // Public API
-Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath, 
+Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, 
+	const Path& enterPath, int enterDelay,  
 	const Path& attackPath);
 void AlienDestroy(Alien& alien);
 RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);
-void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config);
+void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config, AlienWave& wave);
 bool AlienHit(Alien& alien);

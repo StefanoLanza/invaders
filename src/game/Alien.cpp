@@ -77,7 +77,7 @@ bool TickAlien(Alien& alien, ActionSeq& seq)
 }
 
 
-void ParkAlien(Alien& alien)
+void ParkAlien(Alien& alien, AlienWave& wave)
 {
 	Vector2D diff = Sub(alien.gameState.gridPos, alien.body.pos);
 	float sd = SquareLength(diff); 
@@ -86,7 +86,8 @@ void ParkAlien(Alien& alien)
 		alien.body.pos = alien.gameState.gridPos;
 		alien.body.velocity = { 0.f , 0.f};
 		alien.gameState.speed = alien.prefab->speed;
-		alien.state = Alien::State::attacking;
+		alien.state = Alien::State::ready;
+		++wave.numReadyAliens;
 		InitActionSequence(alien.actionSeq, *alien.attackPath, true);
 	}
 	else
@@ -100,7 +101,8 @@ void ParkAlien(Alien& alien)
 }
 
 
-Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, int enterDelay, const Path& enterPath,
+Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, 
+	const Path& enterPath, int enterDelay, 
 	const Path& attackPath)
 {
 	Vector2D initialPos { enterPath.startx, enterPath.starty };
@@ -121,12 +123,14 @@ Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomO
 	alien.waveIndex = -1;
 	alien.randomOffset = randomOffset;
 	alien.attackPath = &attackPath;
+	// Randomly shoot lasers
+	alien.gameState.fireTimer = (1.f / prefab.fireRate) * randomOffset;
 	InitActionSequence(alien.actionSeq, enterPath, false);
 	return alien;
 }
 
 
-void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig)
+void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gameConfig, AlienWave& wave)
 {
 	const Image& image = GetImage( alien.prefab->anim.images[alien.animState.frame] );
 	alien.body.size = { (float)image.width, (float)image.height };
@@ -144,10 +148,25 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			}
 			break;
 		case Alien::State::parking:
-			ParkAlien(alien);
+			ParkAlien(alien, wave);
+			break;
+		case Alien::State::ready:
+			// Wait for all aliens in a wave to be ready
+			// FIXME not 100% robust
+			// Use a bitmask ??
+			if (wave.numReadyAliens >= wave.numAliveAliens)
+			{
+				alien.state = Alien::State::attacking;
+			}
 			break;
 		case Alien::State::attacking:
 			TickAlien(alien, alien.actionSeq);
+			break;
+		case Alien::State::dying:
+			assert(wave.numAliveAliens >= 0);
+			--wave.numAliveAliens;
+			alien.state = Alien::State::dead;
+			alien.body.velocity = { 0.f, 0.f };
 			break;
 		case Alien::State::dead:
 			// Wait
@@ -182,8 +201,8 @@ bool AlienHit(Alien& alien)
 
 void AlienDestroy(Alien& alien)
 {
-	if (alien.state != Alien::State::dead) 
+	if (alien.state != Alien::State::dying) 
 	{
-		alien.state = Alien::State::dead;
+		alien.state = Alien::State::dying;
 	}
 }

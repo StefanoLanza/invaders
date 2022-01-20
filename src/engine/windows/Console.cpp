@@ -72,7 +72,7 @@ bool Console::Initialize(int width, int height, int fontSize)
 	SetConsoleMode(inputHandle, ENABLE_EXTENDED_FLAGS);
 
 	const HWND hwnd = GetConsoleWindow();
-	DisableMaximize(hwnd);
+	DisableCaption(hwnd);
 
 	SetConsoleFontSize(consoleHandle, fontSize);
 
@@ -236,41 +236,61 @@ void Console::DrawBorder(int x0, int y0, int width, int height, Color color)
 	const int b = std::min(bounds.y, y0 + height);
 
 
-	CHAR_INFO* canvasPtr = canvas.data() + t * bounds.x;
+	CHAR_INFO* dst = canvas.data() + t * bounds.x;
 	CHAR_INFO ch; 
 	ch.Attributes = charColors[(int)color];
 	
-	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[0]);
 	if (y0 == t)
 	{
-		for (int col = l; col < r; ++col)
+		if (x0 == l)
 		{
-			canvasPtr[col] = ch;
+			ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[3]);
+			dst[l] = ch;
+		}
+		ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[4]);
+		for (int col = l + 1; col < r - 1; ++col)
+		{
+			dst[col] = ch;
+		}
+		if (x0 + width == r) 
+		{
+			ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[5]);
+			dst[r - 1] = ch;
 		}
 	}
-	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[2]);
 	if (b == y0 + height)
 	{
 		const int offs = (b - t - 1) * bounds.x;
-		for (int col = l; col < r; ++col)
+		if (x0 == l)
 		{
-			canvasPtr[col + offs] = ch;
+			ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[7]);
+			dst[l + offs] = ch;
+		}
+		ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[4]);
+		for (int col = l + 1; col < r - 1; ++col)
+		{
+			dst[col + offs] = ch;
+		}
+		if (x0 + width == r) 
+		{
+			ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[8]);
+			dst[r - 1 + offs] = ch;
 		}
 	}
-
-	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[1]);
 	if (l == x0)
 	{
+		ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[6]);
 		for (int row = 1; row < (b - t - 1); ++row)
 		{
-			canvasPtr[row * bounds.x + l] = ch;
+			dst[row * bounds.x + l] = ch;
 		}
 	}
 	if (r == x0 + width)
 	{
+		ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[6]);
 		for (int row = 1; row < (b - t - 1); ++row)
 		{
-			canvasPtr[row * bounds.x + r - 1] = ch;
+			dst[row * bounds.x + r - 1] = ch;
 		}
 	}
 }
