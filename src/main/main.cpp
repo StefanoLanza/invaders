@@ -199,7 +199,7 @@ int INIParser(void* user, [[maybe_unused]] const char* section, const char* name
 	GameConfig& config = *(GameConfig*)user;
 	PARSE_INT(consoleWidth, 1, 1000);
 	PARSE_INT(consoleHeight, 1, 1000);
-	PARSE_INT(fontSize, 1, 100);
+	PARSE_INT(fontSize, 2, 18);
 	PARSE_FLOAT(playerFireRate, 0.f, 1000.f);
 	PARSE_FLOAT(playerLaserVelocity, 0.f, 1000.f);
 	PARSE_FLOAT(alienWaveSpeedInc, 0.f, 100.f);
@@ -227,13 +227,13 @@ bool ReadGameConfig(GameConfig& config, const char* iniFileName)
 
 void RegisterGameStates(Game& game)
 {
-	RegisterGameState(game, &startMenuData, StartMenu, DisplayStartMenu, EnterStartMenu);
-	RegisterGameState(game, &introScreenData, IntroScreen, DisplayIntroScreen, EnterIntroScreen);
-	RegisterGameState(game, &game, PlayGame, DisplayPlayGame, EnterPlayGame);
-	RegisterGameState(game, nullptr, PauseScreen, DisplayPauseScreen, nullptr);
-	RegisterGameState(game, nullptr, GameOverMenu, DisplayGameOver, nullptr);
-	RegisterGameState(game, nullptr, VictoryScreen, DisplayVictoryScreen, nullptr);
-	RegisterGameState(game, nullptr, nullptr, nullptr, nullptr);
+	RegisterStartMenu(game);
+	RegisterGameState(game, &introScreenData, IntroScreen, DisplayIntroScreen, EnterIntroScreen, nullptr);
+	RegisterGameState(game, &game, PlayGame, DisplayPlayGame, EnterPlayGame, nullptr);
+	RegisterPauseScreen(game);
+	RegisterGameState(game, nullptr, GameOverMenu, DisplayGameOver, nullptr, nullptr);
+	RegisterGameState(game, nullptr, VictoryScreen, DisplayVictoryScreen, nullptr, nullptr);
+	RegisterGameState(game, nullptr, nullptr, nullptr, nullptr, nullptr);
 }
 
 }

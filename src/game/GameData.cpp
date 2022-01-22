@@ -407,11 +407,6 @@ constexpr Animation boss2Anim =
 	.duration = 0.25f,
 };
 
-// Action sequences
-constexpr const char* circleSeq = {
-	"llddbbeerrffttdd"
-};
-
 
 constexpr float enterSpeed = 100.f;
 constexpr float normalSpeed = 12.f;
@@ -437,21 +432,19 @@ constexpr AlienPrefab alienPrefabs[] =
 	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .speed= normalSpeed, .enterSpeed = enterSpeed,
 	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim,   },
 	{ .anim = alien0Anim, .color = Color::blue, .hits = 1, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim,   },
-//	{ .anim = alien3Anim, .color = Color::violet, .hits = 4, .speed= normalSpeed, .vspeed = downSpeed,
-//	.fireRate = normalFire, .laserSpeed = laserSpeed, .aimAtPlayer =  doNotAim, .actionPlan = &testPlan },
-//  { .anim = alien3Anim, .color = Color::violet, .hits = 4, .speed= normalSpeed, .fireRate = normalFire, .laserSpeed =  laserSpeed, .aimAtPlayer =  doNotAim, },
 	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
 	{ .anim = alien1Anim, .color = Color::red, .hits = 2, .speed= normalSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   doNotAim,   },
 	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
 	{ .anim = alien2Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
 	{ .anim = boss0Anim,  .color = Color::violet, .hits = 10,.speed= 40.f,  .enterSpeed = enterSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed, .aimAtPlayer =  aim, },
 
-	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
-	{ .anim = alien4Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien3Anim, .color = Color::blue, .hits = 1, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien3Anim, .color = Color::blue, .hits = 1, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
+	{ .anim = alien4Anim, .color = Color::red, .hits = 2, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
+	{ .anim = alien4Anim, .color = Color::red, .hits = 2, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
 	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =   aim,  },
 	{ .anim = alien5Anim, .color = Color::yellow, .hits = 3, .speed= midSpeed, .enterSpeed = enterSpeed, .fireRate = fastFire, .laserSpeed = laserSpeed, .aimAtPlayer =  aim, },
-
-//	{ boss1Anim,  Color::violet, 12, nullSeq, boss1Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed,},
+	{ .anim = boss1Anim,  .color = Color::violet, .hits = 12, .speed = 42.f, .enterSpeed = enterSpeed, .fireRate = bossFireRate, .laserSpeed = fastLaserSpeed,},
 
 //	{ boss2Anim,  Color::violet, 14, nullSeq, boss2Seq, 40.f, 20.f, bossFireRate, fastLaserSpeed, },
 };
@@ -491,7 +484,7 @@ constexpr AlienWaveInfo wave1 =
 	.start_y = 4.0,
 };
 
-const AlienWaveInfo wave2 =
+constexpr AlienWaveInfo wave2 =
 {
 	.mask = 
 	"22223333"
@@ -520,7 +513,7 @@ const AlienWaveInfo wave2 =
 	.start_y = 4.0,
 };
 
-const AlienWaveInfo wave3 =
+constexpr AlienWaveInfo wave3 =
 {
 	.mask = 
 		"22223333"
@@ -553,7 +546,7 @@ const AlienWaveInfo wave3 =
 	.start_y = 4.0,
 };
 
-const AlienWaveInfo wave4 = 
+constexpr AlienWaveInfo wave4 = 
 {
 	.mask = 
 		"2--6--3"
@@ -582,7 +575,35 @@ const AlienWaveInfo wave4 =
 	.start_y = 4.0,
 };
 
-const AlienWaveInfo testWave = 
+constexpr AlienWaveInfo wave5 =
+{
+	.mask = 
+	"9999::::"
+	"77778888"
+	"77778888",
+	.enterDelay = {
+		110,100,90,80,80,90,100,110,
+		70,60,50,40,40,50,60,70,
+		30,20,10,0,0,10,20,30,
+	},
+	.enterPath = {
+		4,4,4,4,5,5,5,5,
+		4,4,4,4,5,5,5,5,
+		4,4,4,4,5,5,5,5,
+	},
+	.attackPath = {
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+		0,0,0,0,1,1,1,1,
+	},
+	.numCols = 8,
+	.numRows = 3,
+	.dx = 12.f, 
+	.dy = 4.f, 
+	.start_y = 4.0,
+};
+
+constexpr AlienWaveInfo testWave = 
 {
 	.mask = 
 	"---0--0---"
@@ -614,7 +635,7 @@ const AlienWaveInfo testWave =
 	.start_y = 4.0,
 };
 
-const char* const hudMessages[] =
+constexpr const char* const hudMessages[] =
 {
 	"Here they come!",
 	"Destroy all aliens!",
@@ -624,17 +645,17 @@ const char* const hudMessages[] =
 };
 constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
 
-const Event stage1Events[] =
+constexpr Event stage1Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnWave, 0.f, &wave2, }, // FIXME
+	{ GameEventId::spawnWave, 0.f, &wave1, },
 	{ GameEventId::hideScore, 0.f, nullptr, },
 	{ GameEventId::hideStage, 1.f, nullptr },
 	{ GameEventId::showScore, 2.f, nullptr, },
 	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 
-const Event stage2Events[] =
+constexpr Event stage2Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::spawnWave, 0.f, &wave2, },
@@ -644,7 +665,7 @@ const Event stage2Events[] =
 	{ GameEventId::message, 4.f, hudMessages[1], },
 };
 
-const Event stage3Events[] =
+constexpr Event stage3Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::spawnWave, 0.f, &wave3, },
@@ -654,7 +675,7 @@ const Event stage3Events[] =
 	{ GameEventId::message, 4.f, hudMessages[2], },
 };
 
-const Event stage4Events[] =
+constexpr Event stage4Events[] =
 {
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::spawnWave, 0.f, &wave4, },
@@ -664,9 +685,20 @@ const Event stage4Events[] =
 	{ GameEventId::message, 4.f, "Boss", },
 };
 
+constexpr Event stage5Events[] =
+{
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::spawnWave, 0.f, &wave5, },
+	{ GameEventId::hideScore, 0.f, nullptr, },
+	{ GameEventId::hideStage, 1.f, nullptr },
+	{ GameEventId::showScore, 2.f, nullptr, },
+	{ GameEventId::message, 4.f, hudMessages[0], },
+};
+
 
 constexpr Stage stages[] =
 {
+	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
 	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
 	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
 	{ stage3Events, static_cast<int>(std::size(stage3Events)) },

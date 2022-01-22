@@ -2,11 +2,12 @@
 #include <engine/Base.h>
 #include "GameStates.h"
 #include "Game.h"
+#include "GameStateMgr.h"
+#include "Images.h"
+#include "PlayField.h"
 #include <engine/Input.h>
 #include <engine/Console.h>
-#include "Images.h"
 #include <engine/MessageLog.h>
-#include "PlayField.h"
 #include "Images.h"
 #include <cassert>
 #include <cstring>
@@ -30,7 +31,6 @@ const wchar_t invadersTxt[] =
 const Image ikaImg = { ikaLogo, nullptr, 20, 4 };
 const Image raidersImg = { raidersTxt, nullptr, 46, 6 };
 const Image invadersImg = { invadersTxt, nullptr, 48, 4 };
-}
 
 
 #if XMAS_EDITION
@@ -192,17 +192,42 @@ void DisplayStartMenu(Console& console, const void* data_)
 #if XMAS_EDITION
 	console.DisplayText("Christmas Edition", 0, 20, blink > 0.f ? Color::redIntense : Color::red, TextAlignment::centered);
 #endif
+
+#if 1
+	static const char* str[] =
+	{
+		"ONE PLAYER GAME",
+		"TWO PLAYERS GAME",
+		"QUIT"
+	};
+	const int textCol = 70;
+	const int textRow = 30;
+	for (int r = 0; r < (int)std::size(str); ++r)
+	{
+		console.DisplayText(str[r], textCol, textRow + r * 2, Color::white);
+	}
+	console.DisplayText(">", textCol - 3, textRow + data.selection * 2, Color::white);
+
+#else
 	const int textCol = 50;
 	const int textRow = 30;
 	console.DrawImage(GetImage(GameImageId::cursor), textCol, textRow + data.selection * 6, Color::white, ImageAlignment::left, ImageAlignment::top);
 	console.DrawImage(GetImage(GameImageId::press1), textCol + 8, textRow, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
 	console.DrawImage(GetImage(GameImageId::press2), textCol + 8, textRow + 6, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
 	console.DrawImage(GetImage(GameImageId::pressESC), textCol + 8, textRow + 12, Color::lightBlue, ImageAlignment::left, ImageAlignment::top);
-
+#endif
 #if XMAS_EDITION
 	console.DrawImage(GetImage(GameImageId::gift), 4, 0, Color::whiteIntense, ImageAlignment::left, ImageAlignment::bottom);
 	console.DrawImage(GetImage(GameImageId::happyHolidays), 30, 8, blink ? Color::redIntense : Color::red, ImageAlignment::centered, ImageAlignment::bottom);
 	console.DrawImage(GetImage(GameImageId::xmasLeaf), 12, 4, Color::greenIntense, ImageAlignment::right, ImageAlignment::top);
 #endif
+}
+
+
+}
+
+void RegisterStartMenu(Game& game)
+{
+	RegisterGameState(game, &startMenuData, StartMenu, DisplayStartMenu, EnterStartMenu, nullptr);	
 }
 
