@@ -15,6 +15,7 @@ struct Explosion;
 struct PowerUp;
 struct Wall;
 struct Particle;
+struct Asteroid;
 struct GameConfig;
 struct RenderItem;
 class CollisionSpace;
@@ -38,15 +39,12 @@ public:
 	bool NoAliens() const;
 	bool NoParticles() const;
 
-	void GetRenderItems(std::vector<RenderItem>& ritems);
+	void GetRenderItems(std::vector<RenderItem>& ritems) const;
 	const Vector2D& GetBounds() const;
 
 	void Restart();
 
-	void SpawnPlayerLaser(const Laser& laser);
-
-	//
-	void SpawnAlienLaser(const Laser& laser);
+	void AddLaser(const Laser& laser);
 
 	void AddPlayerShip(const PlayerShip& playerShip);
 
@@ -60,15 +58,11 @@ public:
 
 	void SpawnBomb();
 
-	void AddWall(const Vector2D& position);
-
 	void KillPlayers();
 
 	void RemoveDead();
 
 	void DestroyAll();
-
-	void DestroyWalls();
 
 	void DestroyAllLasers();
 
@@ -88,6 +82,7 @@ public:
 	std::vector<PowerUp>     powerUps;
 	std::vector<Wall>        walls;
 	std::vector<Particle>    particles;
+	std::vector<Asteroid>    asteroids;
 	std::vector<Star>        stars;
 
 	Vector2D                 bounds;

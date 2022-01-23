@@ -7,6 +7,7 @@
 #include "PowerUp.h"
 #include "Wall.h"
 #include "Particle.h"
+#include "Asteroid.h"
 #include "GameConfig.h"
 #include <engine/Console.h>
 #include <engine/Utils.h>
@@ -51,13 +52,7 @@ void PlayField::Restart()
 }
 
 
-void PlayField::SpawnPlayerLaser(const Laser& laser)
-{
-	lasers.push_back(laser);
-}
-
-//
-void PlayField::SpawnAlienLaser(const Laser& laser)
+void PlayField::AddLaser(const Laser& laser)
 {
 	lasers.push_back(laser);
 }
@@ -121,12 +116,6 @@ void PlayField::SpawnBomb()
 }
 
 
-void PlayField::AddWall(const Vector2D& position)
-{
-	walls.push_back(NewWall(position, config.wallMaxHits));
-}
-
-
 void PlayField::KillPlayers()
 {
 	for (PlayerShip& player : players)
@@ -136,9 +125,10 @@ void PlayField::KillPlayers()
 }
 	
 
-void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
+void PlayField::GetRenderItems(std::vector<RenderItem>& ritems) const
 {
-	ritems.reserve(stars.size() + particles.size() + walls.size() + players.size() + aliens.size() + lasers.size() + explosions.size() + powerUps.size() );
+	ritems.reserve(stars.size() + particles.size() + walls.size() + players.size() + aliens.size() + lasers.size() + 
+		explosions.size() + powerUps.size() + asteroids.size() );
 	ritems.clear();
 
 	for (const Star& star : stars)
@@ -153,6 +143,10 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 	for (const auto& particle : particles)
 	{
 		ritems.push_back( { particle.pos, { GameImageId::particle, particle.color }});
+	}
+	for (const auto& asteroid : asteroids)
+	{
+		ritems.push_back( { asteroid.body.pos, asteroid.visual });
 	}
 	for (const auto& wall : walls)
 	{
@@ -169,9 +163,9 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems)
 			}
 		}
 	}
-	for (const auto& alienShip : aliens)
+	for (const auto& alien : aliens)
 	{
-		ritems.push_back( AlienGetRenderItem(alienShip));
+		ritems.push_back( { alien.body.pos, alien.visual });
 	}
 	for (const auto& laser : lasers)
 	{
@@ -212,6 +206,7 @@ void PlayField::RemoveDead()
 		[](const Wall& wall){ return wall.state == Wall::State::dead; } );
 	Utils::RemoveElements(explosions, [=](const Explosion& explosion){ return IsExplosionOver(explosion); });
 	Utils::RemoveElements(particles, [=](const Particle& particle){ return particle.life < 0; });
+	Utils::RemoveElements(asteroids, [=](const Asteroid& asteroid){ return asteroid.state == Asteroid::State::dead; });
 }
 
 
@@ -239,12 +234,7 @@ void PlayField::DestroyAll()
 	alienWaves.clear();
 	particles.clear();
 	stars.clear();
-}
-
-
-void PlayField::DestroyWalls()
-{
-	walls.clear();
+	asteroids.clear();
 }
 
 

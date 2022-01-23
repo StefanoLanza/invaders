@@ -238,8 +238,8 @@ LR"(
   ▀▄   ▄▀  
  ▄█▀███▀█▄ 
 ███▄▄█▄▄███
- ▄▀ ▀ ▀ ▀▄ 
-  ▀▀   ▀▀  
+  ▄▀▀ ▀▀▄  
+   ▀▀ ▀▀   
 )";
 
 const wchar_t boss1_0Str[] = 
@@ -322,6 +322,18 @@ LR"(
  ▀▄ ▄▀ 
 ▀▀█▀█▀▀
  ▀   ▀ 
+)";
+
+const wchar_t asteroid0_Str[] = 
+LR"(
+  ▄▄ 
+ ▀██▀
+)";
+
+const wchar_t asteroid1_Str[] = 
+LR"(
+  ▄▄ 
+ ▀██▀
 )";
 
 const wchar_t DbonusStr[] = 
@@ -598,6 +610,8 @@ const Image gameImages[numGameImages] =
 	{ playerShipStr, playerShip2_Colors, 11, 3 },
 	{ explosion0_Str,	nullptr, 7, 3 },
 	{ explosion1_Str,	nullptr, 7, 3 },
+	{ asteroid0_Str,	nullptr, 5, 2 },
+	{ asteroid1_Str,	nullptr, 5, 2 },
 	{ DbonusStr, nullptr, 5,	3 },
 	{ TbonusStr, nullptr, 5,	3 },
 	{ SbonusStr, nullptr, 5, 3 },

@@ -118,7 +118,6 @@ void EnterStartMenu(void* data_, Game& game, int currentState)
 #endif
 	data.t = 0.f;
 	data.selection = 0;
-	game.world.DestroyAll();
 }
 
 

@@ -180,11 +180,6 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	alien.body.pos = Mad(alien.body.pos, velocity, dt);
 }
 
-RenderItem AlienGetRenderItem(const Alien& alien)
-{
-	return { alien.body.pos, alien.visual };
-}
-
 
 Collider AlienGetCollider(Alien& alien)
 {

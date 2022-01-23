@@ -39,15 +39,17 @@ void DrawGameState(const Game& game, Console& console)
 void EnterGameState(Game& game, int newStateIndex)
 {
 	assert(newStateIndex >= 0 && newStateIndex < (int)game.states.size());
+
+	// Exit current state
 	if (game.stateId >= 0)
 	{
 		const GameState& currState = game.states[game.stateId];
 		if (currState.exit)
 		{
-			currState.exit(currState.data);
+			currState.exit(currState.data, newStateIndex);
 		}
 	}
-
+	// Enter new state
 	const GameState& newState = game.states[newStateIndex];
 	if (newState.enter && newStateIndex != game.stateId)
 	{

@@ -3,6 +3,8 @@
 #include <engine/Input.h>
 #include <engine/Console.h>
 #include "GameStateMgr.h"
+#include "Game.h"
+#include "PlayField.h"
 #include "Images.h"
 #include <cassert>
 #include <cstring>
@@ -43,6 +45,7 @@ int PauseScreen(Game& game, void* data_, float dt)
 		}
 		else if (data.selection == 1)
 		{
+			game.world.DestroyAll();
 			newState = GameStateId::start;
 		}
 	}

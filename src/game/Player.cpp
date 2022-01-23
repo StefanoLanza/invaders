@@ -32,18 +32,18 @@ void PlayerShootLasers(PlayerShip& ship, float dt, PlayField& world, float laser
 		const Vector2D laserPos_m = { ship.body.pos.x, ship.body.pos.y - ship.body.size.y * 0.5f };
 		if (ship.doubleFire)
 		{
-			world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-			world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.AddLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.AddLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
 		}
 		else if (ship.tripleFire)
 		{
-			world.SpawnPlayerLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-			world.SpawnPlayerLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
-			world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.AddLaser( NewLaser(laserPos_l, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.AddLaser( NewLaser(laserPos_r, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
+			world.AddLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );
 		}
 		else // single fire
 		{
-			world.SpawnPlayerLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );  // straight
+			world.AddLaser( NewLaser(laserPos_m, { 0, -l }, laserVisual, ship.id, ColliderId::playerLaser) );  // straight
 		}
 		++ship.laserShots;
 	}

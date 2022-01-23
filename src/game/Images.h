@@ -30,6 +30,8 @@ enum GameImageId : ImageId
 	player2,
 	explosion0,
 	explosion1,
+	asteroid0,
+	asteroid1,
 	dPowerUp,
 	tPowerUp,
 	sPowerUp,

@@ -11,6 +11,7 @@ struct PathEntry
 
 constexpr size_t maxPathLen = 50;
 constexpr size_t maxAliensPerWave = 60;
+constexpr size_t maxAsteroids = 40;
 
 struct Path
 {
@@ -33,6 +34,19 @@ struct AlienWaveInfo
 };
 
 
+struct AsteroidShowerDef
+{
+	const int enterDelay[maxAsteroids];
+	//const char dir[maxAsteroids];
+	int count;
+	float speed;
+	float start_x;
+	float start_y;
+	float dx;
+	int cols;
+};
+
+
 using EventId = int;
 
 enum GameEventId : EventId
@@ -43,7 +57,8 @@ enum GameEventId : EventId
 	hideStage,
 	showScore,
 	hideScore,
-	spawnWave,
+	spawnAlienWave,
+	spawnAsteroids,
 };
 
 struct Event;

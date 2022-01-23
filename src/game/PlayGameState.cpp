@@ -11,6 +11,7 @@
 #include "Wall.h"
 #include "Particle.h"
 #include "Explosion.h"
+#include "Asteroid.h"
 #include "GameData.h"
 #include "AIModule.h"
 
@@ -31,7 +32,8 @@ namespace
 
 struct PlayGameStateData
 {
-	MessageLog* messageLog;
+	PlayField*     world;
+	MessageLog*    messageLog;
 	CollisionSpace collisionSpace;
 	int            stageIndex = -1;
 	bool           showStage;
@@ -65,7 +67,6 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world);
 void RestartGame(PlayGameStateData& stateData, Game& game);
 void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
-void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config);
 void Start(Game& game, const GameConfig& config, Game::Mode mode);
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode);
 void DisplayLivesAndScores(const Game& game, Console& console);
@@ -74,18 +75,11 @@ void DisplayLivesAndScores(const Game& game, Console& console);
 void CreateStars(PlayField& world, size_t count)
 {
 	world.stars.resize(count);
-	float lastX = -1;
 	for (Star& star : world.stars) 
 	{
-		float x = 0.f;
-		do
-		{
-			x = 8.f + world.rndFloat01(world.rGen) * (world.bounds.x - 16.f);
-		} while (std::abs(x - lastX) < 2.f);
-		lastX = x;
 		const float rand = world.rndFloat01(world.rGen);
-		float y = rand * world.bounds.y;
-		star.pos = {x,y};
+		star.pos.x = world.rndFloat01(world.rGen) * world.bounds.x;
+		star.pos.y = rand * world.bounds.y;
 		star.t = rand;
 		star.speed = rand > 0.5f ? 6.f : 3.f;
 	}
@@ -109,104 +103,6 @@ void AnimateStars(PlayField& world, float dt)
 	}
 }
 
-}
-
-
-void EnterPlayGame(void* data, Game& game, int currentState)
-{
-	timeline.SetCallback([&game](const Event& event) { 
-		ProcessEvent(event, game.messageLog, game.world, game.config); });
-
-	playGameStateData.messageLog = &game.messageLog;
-	if (currentState != (int)GameStateId::paused)
-	{
-		RestartGame(playGameStateData, game);
-		CreateStars(game.world, 30);
-	}
-}
-
-// TODO
-/*
-void ExitPlayGame() {
-	world.DestorYall();
-}
-*/
-
-
-int PlayGame(Game& game, void* data, float dt)
-{
-	PlayField& world = game.world;
-	if (world.GetPlayers().empty())
-	{
-		game.messageLog.Clear();
-		return (int)GameStateId::over;
-	}
-
-	AnimateStars(game.world, dt);
-
-	// Update score and lives
-	for (const auto& player : world.GetPlayers())
-	{
-		assert(player.id < game.maxPlayers);
-		game.playerScore[player.id] = player.score;
-		game.playerLives[player.id] = player.lives;
-	}
-
-	if (timeline.IsOver() && world.NoAliens() && world.NoParticles())
-	{
-		if (playGameStateData.stageIndex < GetNumStages() - 1)
-		{
-			// Next level
-			SetLevel(playGameStateData.stageIndex + 1, playGameStateData, world);
-			return (int)GameStateId::play;
-		}
-		else
-		{
-			return (int)GameStateId::victory;
-		}
-	}
-	timeline.Advance(dt);
-
-	if (KeyJustPressed(KeyCode::escape))
-	{
-		return (int)GameStateId::paused;
-	}
-	if (! playGameStateData.showStage)
-	{
-		TickPlayers(world, dt);
-	}
-	UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
-	world.RemoveDead();
-	CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
-
-	return (int)GameStateId::play;
-}
-
-
-void DisplayPlayGame(Console& console, const void* data)
-{
-	const Game& game = *static_cast<const Game*>(data);
-	if (playGameStateData.showStage && 0) //FIXME
-	{
-		const IVector2D& bounds = console.GetBounds();
-		const int boxWidth = 40;
-		const int boxHeight = 10;
-		const int top = (bounds.y - boxHeight) / 2; // centered
-		const int left = (bounds.x - boxWidth) / 2;
-		console.DrawRectangle(left, top, boxWidth, boxHeight, Color::black);
-		ImageId imageId = (playGameStateData.stageIndex + (int)GameImageId::_1);
-		console.DrawImage(GetImage(imageId), 0, 2, Color::green, ImageAlignment::centered, ImageAlignment::centered);
-		console.DrawImage(GetImage(GameImageId::stage), 0, -3, Color::green, ImageAlignment::centered, ImageAlignment::centered);
-	}
-	if (playGameStateData.showScore)
-	{
-		DisplayLivesAndScores(game, console);
-	}
-}
-
-
-namespace
-{
 
 void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, float velocity, int life, Color color, float randomOffset)
 {
@@ -476,36 +372,6 @@ void RestartGame(PlayGameStateData& stateData, Game& game)
 }
 
 
-void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig)
-{
-	switch (event.id)
-	{
-		case GameEventId::showStage:
-			playGameStateData.showStage = true;
-			break;
-		case GameEventId::hideStage:
-			playGameStateData.showStage = false;
-			break;
-		case GameEventId::showScore:
-			playGameStateData.showScore = true;
-			break;
-		case GameEventId::hideScore:
-			playGameStateData.showScore = false;
-			break;
-		case GameEventId::message:
-			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);
-			break;
-		case GameEventId::spawnWave:
-			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
-			break;
-		case GameEventId::wait:
-			break;
-		default:
-			break;
-	};
-}
-
-
 void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameConfig& config)
 {
 	const int waveIndex = (int)world.alienWaves.size();
@@ -543,6 +409,58 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 
 	wave.numAliveAliens = wave.numAliens;
 	world.alienWaves.push_back(wave);
+}
+
+
+void SpawnAsteroids(const AsteroidShowerDef& def, PlayField& world, const GameConfig& config)
+{
+	float x = def.start_x;
+	int col = 0;
+	for (int k = 0; k < def.count; ++k)
+	{
+		Vector2D pos { x, def.start_y };
+		Asteroid asteroid = NewAsteroid(pos, def.enterDelay[k]);
+		world.asteroids.push_back(asteroid);
+		x += def.dx;
+		if (col >= def.cols)
+		{
+			col = 0;
+			x = def.start_x;
+		}
+	}
+}
+
+
+void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig)
+{
+	switch (event.id)
+	{
+		case GameEventId::showStage:
+			playGameStateData.showStage = true;
+			break;
+		case GameEventId::hideStage:
+			playGameStateData.showStage = false;
+			break;
+		case GameEventId::showScore:
+			playGameStateData.showScore = true;
+			break;
+		case GameEventId::hideScore:
+			playGameStateData.showScore = false;
+			break;
+		case GameEventId::message:
+			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);
+			break;
+		case GameEventId::spawnAlienWave:
+			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
+			break;
+		case GameEventId::spawnAsteroids:
+			SpawnAsteroids(*(const AsteroidShowerDef*)event.data, world, gameConfig);
+			break;
+		case GameEventId::wait:
+			break;
+		default:
+			break;
+	};
 }
 
 
@@ -629,4 +547,106 @@ void DisplayLivesAndScores(const Game& game, Console& console)
 }
 
 
+void EnterPlayGame(void* data, Game& game, int currentState)
+{
+	playGameStateData.world = &game.world;
+	playGameStateData.messageLog = &game.messageLog;
+
+	timeline.SetCallback([&game](const Event& event) { 
+		ProcessEvent(event, game.messageLog, game.world, game.config); });
+
+	if (currentState != (int)GameStateId::paused)
+	{
+		RestartGame(playGameStateData, game);
+		CreateStars(game.world, 30);
+	}
+}
+
+void ExitPlayGame(void* data, int newState) 
+{
+	if (newState != (int)GameStateId::paused)
+	{
+		playGameStateData.world->DestroyAll();
+	}
+}
+
+
+int PlayGame(Game& game, void* data, float dt)
+{
+	PlayField& world = game.world;
+	if (world.GetPlayers().empty())
+	{
+		game.messageLog.Clear();
+		return (int)GameStateId::over;
+	}
+
+	AnimateStars(game.world, dt);
+
+	// Update score and lives
+	for (const auto& player : world.GetPlayers())
+	{
+		assert(player.id < game.maxPlayers);
+		game.playerScore[player.id] = player.score;
+		game.playerLives[player.id] = player.lives;
+	}
+
+	if (timeline.IsOver() && world.NoAliens() && world.NoParticles())
+	{
+		if (playGameStateData.stageIndex < GetNumStages() - 1)
+		{
+			// Next level
+			SetLevel(playGameStateData.stageIndex + 1, playGameStateData, world);
+			return (int)GameStateId::play;
+		}
+		else
+		{
+			return (int)GameStateId::victory;
+		}
+	}
+	timeline.Advance(dt);
+
+	if (KeyJustPressed(KeyCode::escape))
+	{
+		return (int)GameStateId::paused;
+	}
+	if (! playGameStateData.showStage)
+	{
+		TickPlayers(world, dt);
+	}
+	UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
+	world.RemoveDead();
+	CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
+
+	return (int)GameStateId::play;
+}
+
+
+void DisplayPlayGame(Console& console, const void* data)
+{
+	const Game& game = *static_cast<const Game*>(data);
+	if (playGameStateData.showStage && 0) //FIXME
+	{
+		const IVector2D& bounds = console.GetBounds();
+		const int boxWidth = 40;
+		const int boxHeight = 10;
+		const int top = (bounds.y - boxHeight) / 2; // centered
+		const int left = (bounds.x - boxWidth) / 2;
+		console.DrawRectangle(left, top, boxWidth, boxHeight, Color::black);
+		ImageId imageId = (playGameStateData.stageIndex + (int)GameImageId::_1);
+		console.DrawImage(GetImage(imageId), 0, 2, Color::green, ImageAlignment::centered, ImageAlignment::centered);
+		console.DrawImage(GetImage(GameImageId::stage), 0, -3, Color::green, ImageAlignment::centered, ImageAlignment::centered);
+	}
+	if (playGameStateData.showScore)
+	{
+		DisplayLivesAndScores(game, console);
+	}
+}
+
+
+}
+
+
+void RegisterPlayState(Game& game)
+{
+	RegisterGameState(game, &game, PlayGame, DisplayPlayGame, EnterPlayGame, ExitPlayGame);
 }

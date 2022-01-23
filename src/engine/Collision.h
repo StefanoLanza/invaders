@@ -4,6 +4,7 @@
 #include "Vector2D.h"
 
 
+// FIXME Not in engine
 enum class ColliderId : uint8
 {
 	player,
@@ -12,6 +13,7 @@ enum class ColliderId : uint8
 	alienLaser,
 	powerUp,
 	wall,
+	asteroid,
 	count
 };
 

@@ -80,7 +80,6 @@ Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomO
 	const Path& enterPath, int enterDelay,  
 	const Path& attackPath);
 void AlienDestroy(Alien& alien);
-RenderItem AlienGetRenderItem(const Alien& alien);
 Collider AlienGetCollider(Alien& alien);
 void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& config, AlienWave& wave);
 bool AlienHit(Alien& alien);

@@ -8,7 +8,7 @@ class Console;
 struct GameState
 {
 	using Enter = void (*)(void* data, Game& game, int currentState);
-	using Exit = void (*)(void* data);
+	using Exit = void (*)(void* data, int newState);
 	using Run = int (*)(Game& game, void* data, float dt);
 	using Draw = void (*)(Console& renderer, const void* data);
 

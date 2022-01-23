@@ -88,7 +88,7 @@ void AlienScript(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			}
 			if (shoot)
 			{
-				world.SpawnAlienLaser( NewLaser(laserPos, laserVel, {GameImageId::alienLaser, Color::greenIntense}, -1, ColliderId::alienLaser));
+				world.AddLaser( NewLaser(laserPos, laserVel, {GameImageId::alienLaser, Color::greenIntense}, -1, ColliderId::alienLaser));
 			}
 		}
 		alien.gameState.fireTimer += (1.f / alien.prefab->fireRate); // reset it

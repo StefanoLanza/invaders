@@ -229,7 +229,7 @@ void RegisterGameStates(Game& game)
 {
 	RegisterStartMenu(game);
 	RegisterGameState(game, &introScreenData, IntroScreen, DisplayIntroScreen, EnterIntroScreen, nullptr);
-	RegisterGameState(game, &game, PlayGame, DisplayPlayGame, EnterPlayGame, nullptr);
+	RegisterPlayState(game);
 	RegisterPauseScreen(game);
 	RegisterGameState(game, nullptr, GameOverMenu, DisplayGameOver, nullptr, nullptr);
 	RegisterGameState(game, nullptr, VictoryScreen, DisplayVictoryScreen, nullptr, nullptr);
