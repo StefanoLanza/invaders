@@ -192,7 +192,7 @@ void KillPlayer(PlayerShip& player)
 }
 
 
-Collider GetCollisionArea(PlayerShip& ship)
+Collider GetCollider(PlayerShip& ship)
 {
 	return { &ship, ColliderId::player, ship.body.prevPos, ship.body.pos, ship.body.size };
 }

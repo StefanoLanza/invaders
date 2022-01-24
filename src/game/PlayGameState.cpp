@@ -58,9 +58,11 @@ void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const Col
 void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameStateData& stateData);
 // Collision callbacks
 void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1);
+void Collision_LaserVSAsteroid(void* ctx, void* ud0, void* ud1);
 void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1);
+void Collision_PlayerVSAsteroid(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1);
 void Collision_LaserVSWall(void* ctx, void* ud0, void* ud1);
 void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
@@ -170,15 +172,18 @@ void UpdateWorld(PlayField& world, float dt, const AIModule& aiModule, const Col
 			aiModule.alienScript(alien, scriptArgs);
 		}
 	}
+	for (auto& asteroid : world.asteroids)
+	{
+		UpdateAsteroid(asteroid, dt, world.bounds);
+	}
 }
 
 void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameStateData& stateData)
 {
-	// Collision detection
 	collisionSpace.Clear();
 	for (auto& player : world.players)
 	{
-		collisionSpace.Add(GetCollisionArea(player));
+		collisionSpace.Add(GetCollider(player));
 	}
 	for (auto& alien : world.aliens)
 	{
@@ -194,7 +199,11 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	}
 	for (auto& wall : world.walls)
 	{
-		collisionSpace.Add(GetCollisionArea(wall));
+		collisionSpace.Add(GetCollider(wall));
+	}
+	for (auto& asteroid : world.asteroids)
+	{
+		collisionSpace.Add(GetCollider(asteroid));
 	}
 
 	static const CollisionCallbackInfo callbacks[] = 
@@ -205,6 +214,8 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		{ ColliderId::playerLaser, ColliderId::alienLaser, Collision_LaserVSLaser },
 		{ ColliderId::playerLaser, ColliderId::wall, Collision_LaserVSWall },
 		{ ColliderId::player, ColliderId::alien, Collision_PlayerVSAlien },
+		{ ColliderId::player, ColliderId::asteroid, Collision_PlayerVSAsteroid },
+		{ ColliderId::playerLaser, ColliderId::asteroid, Collision_LaserVSAsteroid },
 	};
 
 	CollisionContext context =
@@ -228,6 +239,19 @@ void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1)
 	SpawnParticles(*context.world, pos, 7, 32.f, 30, Color::yellowIntense, 0.5f);
 	DestroyLaser(alienLaser);
 	DestroyLaser(playerLaser);
+}
+
+
+void Collision_LaserVSAsteroid(void* ctx, void* ud0, void* ud1)
+{
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
+	Laser& playerLaser = *static_cast<Laser*>(ud0);
+	Asteroid& asteroid = *static_cast<Asteroid*>(ud1);
+	// Spawn explosion, kill this and the alien laser
+	Vector2D pos = Lerp(playerLaser.body.pos, asteroid.body.pos, 0.5f);
+	SpawnParticles(*context.world, pos, 7, 32.f, 30, Color::yellowIntense, 0.5f);
+	DestroyLaser(playerLaser);
+	DestroyAsteroid(asteroid); // FIXME hits
 }
 
 
@@ -303,6 +327,17 @@ void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1)
 	PowerUp& powerUp = *(PowerUp*)ud1;
 	ActivatePowerUp(player, powerUp, *context.messageLog, *context.world, *context.gameConfig);
 	PowerUpDestroy(powerUp);
+}
+
+
+void Collision_PlayerVSAsteroid(void* ctx, void* ud0, void* ud1)
+{
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
+	PlayerShip& player = *(PlayerShip*)ud0;
+	Asteroid& asteroid = *(Asteroid*)ud1;
+	PlayerHit(player);
+	DestroyAsteroid(asteroid);
+	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, Color::yellowIntense, 0.f);
 }
 
 
@@ -414,19 +449,15 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 
 void SpawnAsteroids(const AsteroidShowerDef& def, PlayField& world, const GameConfig& config)
 {
-	float x = def.start_x;
-	int col = 0;
+	world.asteroids.reserve(world.asteroids.size() + def.count);
+	int enterDelay = 0;
 	for (int k = 0; k < def.count; ++k)
 	{
-		Vector2D pos { x, def.start_y };
-		Asteroid asteroid = NewAsteroid(pos, def.enterDelay[k]);
+		const AsteroidDef& adef = GetAsteroidDef(def.mask[k] - '0');
+		Vector2D pos { adef.start_x, adef.start_y };
+		Asteroid asteroid = NewAsteroid(pos, { adef.speed_x, adef.speed_y }, enterDelay);
 		world.asteroids.push_back(asteroid);
-		x += def.dx;
-		if (col >= def.cols)
-		{
-			col = 0;
-			x = def.start_x;
-		}
+		enterDelay += def.delay;
 	}
 }
 

@@ -22,6 +22,7 @@ struct Asteroid
 
 struct Collider;
 
-Asteroid NewAsteroid(const Vector2D& initialPos, int enterDelay);
+Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, int enterDelay);
 void UpdateAsteroid(Asteroid& asteroid, float dt, Vector2D worldBounds);
-Collider GetCollisionArea(Asteroid& asteroid);
+Collider GetCollider(Asteroid& asteroid);
+void DestroyAsteroid(Asteroid& asteroid);

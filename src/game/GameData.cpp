@@ -665,21 +665,61 @@ constexpr AlienWaveInfo wave7 =
 	.start_y = 4.0,
 };
 
+
+constexpr AsteroidDef asteroidDef0 = 
+{
+	.start_x = -4,
+	.start_y = -6,
+	.speed_x = 8.f,
+	.speed_y = 48.f,
+};
+
+constexpr AsteroidDef asteroidDef1 = 
+{
+	.start_x = 55,
+	.start_y = -6,
+	.speed_x = 4.f,
+	.speed_y = 50.f,
+};
+
+constexpr AsteroidDef asteroidDef2 = 
+{
+	.start_x = 110,
+	.start_y = -6,
+	.speed_x = -4.f,
+	.speed_y = 46.f,
+};
+
+constexpr AsteroidDef asteroidDef3 = 
+{
+	.start_x = 164,
+	.start_y = -6,
+	.speed_x = -8.f,
+	.speed_y = 44.f,
+};
+
+constexpr const AsteroidDef* asteroidDefs[] =
+{
+	&asteroidDef0,
+	&asteroidDef1,
+	&asteroidDef2,
+	&asteroidDef3,
+};
+
 constexpr AsteroidShowerDef asteroids0 = 
 {
-	.enterDelay = {
-		120,130,140,150,150,140,130,120,
-		80,90,100,110,110,100,90,80,
-		40,50,60,70,70,60,50,40,
-		0,10,20,30,30,20,10,0,
+	.mask = {
+		"0321"
+		"0123"
+		"0321"
+		"3102"
+		"0321"
+		"3102"
+		"0321"
+		"0123"
 	},
-	//const char dir[maxAsteroids];
 	.count = 32,
-	.speed = 12,
-	.start_x = 16, // FIXME
-	.start_y = 16,
-	.dx = 8.f,
-	.cols = 32
+	.delay = 30,
 };
 
 constexpr AlienWaveInfo testWave = 
@@ -756,7 +796,6 @@ constexpr Event stage3Events[] =
 
 constexpr Event stage4Events[] =
 {
-	{ GameEventId::spawnAsteroids, 0.f, &asteroids0, },
 	{ GameEventId::showStage, 0.f, nullptr },
 	{ GameEventId::spawnAlienWave, 0.f, &wave4, },
 	{ GameEventId::hideScore, 0.f, nullptr, },
@@ -796,8 +835,20 @@ constexpr Event stage7Events[] =
 };
 
 
+constexpr Event testStageEvents[] =
+{
+	{ GameEventId::spawnAsteroids, 0.f, &asteroids0, },
+	{ GameEventId::showStage, 0.f, nullptr },
+	{ GameEventId::hideScore, 0.f, nullptr, },
+	{ GameEventId::hideStage, 1.f, nullptr },
+	{ GameEventId::showScore, 2.f, nullptr, },
+	{ GameEventId::message, 4.f, "Avoid the asteroids!", },
+};
+
+
 constexpr Stage stages[] =
 {
+	{ testStageEvents, static_cast<int>(std::size(testStageEvents)) },
 	{ stage4Events, static_cast<int>(std::size(stage4Events)) },
 	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
 	{ stage6Events, static_cast<int>(std::size(stage6Events)) },
@@ -847,4 +898,9 @@ const Path& GetEnterPath(int index)
 const Path& GetAttackPath(int index) 
 {
 	return *attackPaths[index];
+}
+
+const AsteroidDef& GetAsteroidDef(int index)
+{
+	return *asteroidDefs[index];
 }

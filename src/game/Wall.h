@@ -23,5 +23,5 @@ struct Wall
 
 
 Wall NewWall(const Vector2D& pos, int maxHits);
-Collider GetCollisionArea(Wall& wall);
+Collider GetCollider(Wall& wall);
 void HitWall(Wall& wall);

@@ -60,5 +60,5 @@ struct PlayerShip
 PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input);
 void PlayerHit(PlayerShip& player);
 void KillPlayer(PlayerShip& player);
-Collider GetCollisionArea(PlayerShip& ship);
+Collider GetCollider(PlayerShip& ship);
 void Move(PlayerShip& ship, float dt, const Vector2D& worldBounds, PlayField& world, const GameConfig& gameConfig);

@@ -34,16 +34,20 @@ struct AlienWaveInfo
 };
 
 
-struct AsteroidShowerDef
+struct AsteroidDef
 {
-	const int enterDelay[maxAsteroids];
-	//const char dir[maxAsteroids];
-	int count;
-	float speed;
 	float start_x;
 	float start_y;
-	float dx;
-	int cols;
+	float speed_x;
+	float speed_y;
+};
+
+
+struct AsteroidShowerDef
+{
+	const char* mask;
+	int count;
+	int delay;
 };
 
 
@@ -97,3 +101,4 @@ int GetNumAlienPrefabs();
 const PlayerPrefab& GetPlayerPrefab(int index);
 const Path& GetEnterPath(int index);
 const Path& GetAttackPath(int index);
+const AsteroidDef& GetAsteroidDef(int index);
