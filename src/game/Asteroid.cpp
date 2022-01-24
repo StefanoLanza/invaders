@@ -7,7 +7,7 @@
 
 constexpr Animation asteroidAnim = 
 {
-	{ GameImageId::asteroid0, GameImageId::asteroid1 }, .12f
+	{ GameImageId::asteroid0, GameImageId::asteroid0 }, .12f
 };
 
 
@@ -18,9 +18,10 @@ Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, int enterDel
 	a.body.prevPos = pos;
 	a.body.velocity = velocity;
 	a.body.size = GetImageSize(GameImageId::asteroid0);
-	a.visual = { GameImageId::asteroid0, Color::yellowIntense };
+	a.visual = { GameImageId::asteroid0, Color::white };
 	a.enterDelay = enterDelay;
 	a.state = Asteroid::State::falling;
+	a.hits = 2;
 	return a;
 }
 
@@ -59,4 +60,13 @@ Collider GetCollider(Asteroid& asteroid)
 void DestroyAsteroid(Asteroid& asteroid)
 {
 	asteroid.state = Asteroid::State::dead;
+}
+
+void HitAsteroid(Asteroid& asteroid)
+{
+	--asteroid.hits;
+	if (asteroid.hits <= 0)
+	{
+		asteroid.state = Asteroid::State::dead;
+	}
 }

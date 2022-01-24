@@ -39,6 +39,7 @@ enum GameImageId : ImageId
 	iPowerUp,
 	shield,
 	particle,
+	asteroidParticle,
 	solidWall,
 	brittleWall,
 	bomb,

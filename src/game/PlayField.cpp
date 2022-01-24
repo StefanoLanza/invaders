@@ -35,17 +35,6 @@ const std::vector<PlayerShip>& PlayField::GetPlayers() const
 }
 
 
-bool PlayField::NoAliens() const
-{
-	return aliens.empty();
-}
-
-
-bool PlayField::NoParticles() const
-{
-	return particles.empty();
-}
-
 void PlayField::Restart()
 {
 	rndPowerUp.Reset();
@@ -142,7 +131,7 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems) const
 	// Note: order is important. Latter elements cover the former ones on screen
 	for (const auto& particle : particles)
 	{
-		ritems.push_back( { particle.pos, { GameImageId::particle, particle.color }});
+		ritems.push_back( { particle.pos, { particle.imageId, particle.color }});
 	}
 	for (const auto& asteroid : asteroids)
 	{

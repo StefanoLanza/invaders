@@ -15,8 +15,9 @@ struct Asteroid
 	Body       body;
 	Visual     visual;
 	AnimState  animState;
-	int        enterDelay;
 	State      state;
+	int        enterDelay;
+	int        hits;
 };
 
 
@@ -25,4 +26,5 @@ struct Collider;
 Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, int enterDelay);
 void UpdateAsteroid(Asteroid& asteroid, float dt, Vector2D worldBounds);
 Collider GetCollider(Asteroid& asteroid);
+void HitAsteroid(Asteroid& asteroid);
 void DestroyAsteroid(Asteroid& asteroid);

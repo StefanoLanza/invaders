@@ -106,7 +106,7 @@ void AnimateStars(PlayField& world, float dt)
 }
 
 
-void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, float velocity, int life, Color color, float randomOffset)
+void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, float velocity, int life, GameImageId imageId, Color color, float randomOffset)
 {
 	float angle = two_pi * randomOffset;
 	float dangle = two_pi / (float)particleCount;
@@ -122,6 +122,7 @@ void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, fl
 		velocity *= 1.1f; // randomize
 		p.accel = Vector2D {0.f, 0.f };
 		p.life = life;
+		p.imageId = imageId;
 		p.color = color;
 		world.particles.push_back(p);
 	}
@@ -236,7 +237,7 @@ void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1)
 	Laser& alienLaser = *static_cast<Laser*>(ud1);
 	// Spawn explosion, kill this and the alien laser
 	Vector2D pos = Lerp(playerLaser.body.pos, alienLaser.body.pos, 0.5f);
-	SpawnParticles(*context.world, pos, 7, 32.f, 30, Color::yellowIntense, 0.5f);
+	SpawnParticles(*context.world, pos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, 0.5f);
 	DestroyLaser(alienLaser);
 	DestroyLaser(playerLaser);
 }
@@ -249,9 +250,12 @@ void Collision_LaserVSAsteroid(void* ctx, void* ud0, void* ud1)
 	Asteroid& asteroid = *static_cast<Asteroid*>(ud1);
 	// Spawn explosion, kill this and the alien laser
 	Vector2D pos = Lerp(playerLaser.body.pos, asteroid.body.pos, 0.5f);
-	SpawnParticles(*context.world, pos, 7, 32.f, 30, Color::yellowIntense, 0.5f);
 	DestroyLaser(playerLaser);
-	DestroyAsteroid(asteroid); // FIXME hits
+	HitAsteroid(asteroid);
+	const GameImageId imageId = (asteroid.state == Asteroid::State::dead) ? GameImageId::asteroidParticle : GameImageId::particle;
+	const Color color = (asteroid.state == Asteroid::State::dead) ? asteroid.visual.color : Color::yellowIntense;
+	const float randomOffset = (asteroid.state == Asteroid::State::dead) ? 0.5f : 0.f;
+	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, imageId, color, randomOffset);
 }
 
 
@@ -273,7 +277,7 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 		particleCount = 7;
 		particleColor = Color::yellowIntense;
 	}
-	SpawnParticles(*context.world, alien.body.pos, particleCount, 32.f, 30, particleColor, alien.randomOffset);
+	SpawnParticles(*context.world, alien.body.pos, particleCount, 32.f, 30, GameImageId::particle, particleColor, alien.randomOffset);
 
 	// Spawn random power ups
 	++context.stateData->numHits;
@@ -301,7 +305,7 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 	{
 		explosionPos = Add(explosionPos, { 0.f, -3.f} );
 	}
-	SpawnParticles(*context.world, explosionPos, 7, 32.f, 30, Color::yellowIntense, 0.f);
+	SpawnParticles(*context.world, explosionPos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, 0.f);
 }
 
 
@@ -316,7 +320,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	{
 		PlayerHit(player);
 	}
-	SpawnParticles(*context.world, alien.body.pos, 7, 32.f, 30, Color::yellowIntense, alien.randomOffset);
+	SpawnParticles(*context.world, alien.body.pos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, alien.randomOffset);
 }
 
 
@@ -337,7 +341,7 @@ void Collision_PlayerVSAsteroid(void* ctx, void* ud0, void* ud1)
 	Asteroid& asteroid = *(Asteroid*)ud1;
 	PlayerHit(player);
 	DestroyAsteroid(asteroid);
-	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, Color::yellowIntense, 0.f);
+	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, GameImageId::asteroidParticle, asteroid.visual.color, 0.f);
 }
 
 
@@ -621,7 +625,7 @@ int PlayGame(Game& game, void* data, float dt)
 		game.playerLives[player.id] = player.lives;
 	}
 
-	if (timeline.IsOver() && world.NoAliens() && world.NoParticles())
+	if (timeline.IsOver() && world.aliens.empty() && world.particles.empty() && world.asteroids.empty())
 	{
 		if (playGameStateData.stageIndex < GetNumStages() - 1)
 		{

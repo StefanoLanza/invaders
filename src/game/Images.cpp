@@ -326,9 +326,10 @@ LR"(
 
 const wchar_t asteroid0_Str[] = 
 LR"(
-  ▄▄  
-▄████▄
- ▀██▀ 
+  ▄▄▄▄  
+▄█████▄ 
+███████▀
+ ▀▀▀▀▀  
 )";
 
 const wchar_t asteroid1_Str[] = 
@@ -395,7 +396,10 @@ const wchar_t particleStr[] =
 LR"(
 .
 )";
-
+const wchar_t asteroidParticleStr[] =
+LR"(
+■
+)";
 const wchar_t planetStr[] = 
 LR"(
      ~+                          
@@ -612,7 +616,7 @@ const Image gameImages[numGameImages] =
 	{ playerShipStr, playerShip2_Colors, 11, 3 },
 	{ explosion0_Str,	nullptr, 7, 3 },
 	{ explosion1_Str,	nullptr, 7, 3 },
-	{ asteroid0_Str,	nullptr, 6, 3 },
+	{ asteroid0_Str,	nullptr, 8, 4 },
 	{ asteroid1_Str,	nullptr, 6, 3 },
 	{ DbonusStr, nullptr, 5,	3 },
 	{ TbonusStr, nullptr, 5,	3 },
@@ -621,6 +625,7 @@ const Image gameImages[numGameImages] =
 	{ IbonusStr, nullptr, 5, 3 },
 	{ shieldStr, nullptr, 15, 1 },
 	{ particleStr, nullptr, 1, 1 },
+	{ asteroidParticleStr, nullptr, 1, 1 },
 	{ solidWallStr,	nullptr, 4, 2 },
 	{ brittleWallStr, nullptr, 4, 2 },
 	{ bombStr, nullptr, 5, 3 },
