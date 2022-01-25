@@ -668,58 +668,29 @@ constexpr AlienWaveInfo wave7 =
 
 constexpr AsteroidDef asteroidDef0 = 
 {
-	.start_x = -4,
-	.start_y = -6,
-	.speed_x = 8.f,
-	.speed_y = 48.f,
+	.imageId = GameImageId::asteroid1,
 };
 
 constexpr AsteroidDef asteroidDef1 = 
 {
-	.start_x = 55,
-	.start_y = -6,
-	.speed_x = 4.f,
-	.speed_y = 50.f,
-};
-
-constexpr AsteroidDef asteroidDef2 = 
-{
-	.start_x = 110,
-	.start_y = -6,
-	.speed_x = -4.f,
-	.speed_y = 46.f,
-};
-
-constexpr AsteroidDef asteroidDef3 = 
-{
-	.start_x = 164,
-	.start_y = -6,
-	.speed_x = -8.f,
-	.speed_y = 44.f,
+	.imageId = GameImageId::asteroid0,
 };
 
 constexpr const AsteroidDef* asteroidDefs[] =
 {
 	&asteroidDef0,
 	&asteroidDef1,
-	&asteroidDef2,
-	&asteroidDef3,
 };
 
 constexpr AsteroidShowerDef asteroids0 = 
 {
-	.mask = {
-		"0321"
-		"0123"
-		"0321"
-		"3102"
-		"0321"
-		"3102"
-		"0321"
-		"0123"
-	},
-	.count = 32,
-	.delay = 30,
+	.count = 100,
+	.delay = 10,
+	.start_y = -6.f,
+	.minSpeed_x = -30.f,
+	.maxSpeed_x = 30.f,
+	.minSpeed_y = 70.f,
+	.maxSpeed_y = 90.f,
 };
 
 constexpr AlienWaveInfo testWave = 

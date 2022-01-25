@@ -233,8 +233,3 @@ void PlayField::DestroyAllLasers()
 }
 
 
-void PlayField::DestroyAllExplosions()
-{
-	explosions.clear();
-}
-

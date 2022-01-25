@@ -36,18 +36,19 @@ struct AlienWaveInfo
 
 struct AsteroidDef
 {
-	float start_x;
-	float start_y;
-	float speed_x;
-	float speed_y;
+	ImageId imageId;
 };
 
 
 struct AsteroidShowerDef
 {
-	const char* mask;
 	int count;
 	int delay;
+	float start_y;
+	float minSpeed_x;
+	float maxSpeed_x;
+	float minSpeed_y;
+	float maxSpeed_y;
 };
 
 

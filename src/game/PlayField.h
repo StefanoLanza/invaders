@@ -64,8 +64,6 @@ public:
 
 	void DestroyAllLasers();
 
-	void DestroyAllExplosions();
-
 	void AddScore(int score, int playerId);
 
 	std::default_random_engine& rGen;

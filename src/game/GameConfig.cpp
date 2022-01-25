@@ -16,7 +16,7 @@ GameConfig::GameConfig()
 	// Explosions
 	explosionTimer = 0.25f;
 	// Power ups
-	powerUpHits = 10;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
+	powerUpHits = 12;  // destroyed enemies have a 10% chance to drop a power-up that moves towards the bottom of the screen).
 	powerUpVelocity = 8.f;
 	powerUpShieldTime = 10.f;
 	powerUpFireBoost = 1.5f;

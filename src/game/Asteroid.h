@@ -8,13 +8,13 @@ struct Asteroid
 {
 	enum class State
 	{
+		idle,
 		falling,
 		dead
 	};
 
 	Body       body;
 	Visual     visual;
-	AnimState  animState;
 	State      state;
 	int        enterDelay;
 	int        hits;
@@ -23,7 +23,7 @@ struct Asteroid
 
 struct Collider;
 
-Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, int enterDelay);
+Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, ImageId imageId, int enterDelay);
 void UpdateAsteroid(Asteroid& asteroid, float dt, Vector2D worldBounds);
 Collider GetCollider(Asteroid& asteroid);
 void HitAsteroid(Asteroid& asteroid);

@@ -334,9 +334,10 @@ LR"(
 
 const wchar_t asteroid1_Str[] = 
 LR"(
-  ▄▄  
-▄████▄
- ▀██▀ 
+  ▄▄▄▄  
+▄█████▄ 
+▀███████
+  ▀▀▀▀▀ 
 )";
 
 const wchar_t DbonusStr[] = 
@@ -617,7 +618,7 @@ const Image gameImages[numGameImages] =
 	{ explosion0_Str,	nullptr, 7, 3 },
 	{ explosion1_Str,	nullptr, 7, 3 },
 	{ asteroid0_Str,	nullptr, 8, 4 },
-	{ asteroid1_Str,	nullptr, 6, 3 },
+	{ asteroid1_Str,	nullptr, 8, 4 },
 	{ DbonusStr, nullptr, 5,	3 },
 	{ TbonusStr, nullptr, 5,	3 },
 	{ SbonusStr, nullptr, 5, 3 },

@@ -11,42 +11,47 @@ constexpr Animation asteroidAnim =
 };
 
 
-Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, int enterDelay)
+Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, ImageId imageId, int enterDelay)
 {
 	Asteroid a;
 	a.body.pos = pos;
 	a.body.prevPos = pos;
 	a.body.velocity = velocity;
-	a.body.size = GetImageSize(GameImageId::asteroid0);
-	a.visual = { GameImageId::asteroid0, Color::white };
+	a.body.size = GetImageSize(imageId);
+	a.visual = { imageId, Color::white };
 	a.enterDelay = enterDelay;
-	a.state = Asteroid::State::falling;
-	a.hits = 2;
+	a.state = Asteroid::State::idle;
+	a.hits = 1;
 	return a;
 }
 
 
 void UpdateAsteroid(Asteroid& asteroid, float dt, Vector2D worldBounds)
 {
-	UpdateAnimation(asteroid.animState, asteroidAnim, dt);
-
-	--asteroid.enterDelay;
-	if (asteroid.enterDelay < 0)
+	switch (asteroid.state) 
 	{
-		asteroid.visual.imageId = asteroidAnim.images[asteroid.animState.frame];
-		asteroid.body.size = GetImageSize(asteroid.visual.imageId);
-		if (asteroid.state == Asteroid::State::falling)
+	case Asteroid::State::idle:
+		--asteroid.enterDelay;
+		if (asteroid.enterDelay < 0)
 		{
-			asteroid.body.prevPos = asteroid.body.pos;
-			constexpr float aspectRatio = 0.5f; // console chars are two times taller than wide
-			Vector2D velocity = asteroid.body.velocity;
-			velocity.y *= aspectRatio;
-			asteroid.body.pos = Mad(asteroid.body.pos, velocity, dt);
+			asteroid.state = Asteroid::State::falling;
 		}
+		break;
+	case Asteroid::State::falling:
+	{
+		asteroid.body.prevPos = asteroid.body.pos;
+		constexpr float aspectRatio = 0.5f; // console chars are two times taller than wide
+		Vector2D velocity = asteroid.body.velocity;
+		velocity.y *= aspectRatio;
+		asteroid.body.pos = Mad(asteroid.body.pos, velocity, dt);
 		if (asteroid.body.pos.y >= worldBounds.y)
 		{
 			asteroid.state = Asteroid::State::dead;
 		}
+		break;
+	}
+	case Asteroid::State::dead:
+		break;
 	}
 }
 

@@ -39,7 +39,6 @@ struct PlayGameStateData
 	bool           showStage;
 	bool           showScore;
 	int            numHits;
-	bool           canPlay;
 };
 PlayGameStateData playGameStateData;
 Timeline timeline;
@@ -65,6 +64,7 @@ void Collision_PlayerVSPowerUp(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSAsteroid(void* ctx, void* ud0, void* ud1);
 void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1);
 void Collision_LaserVSWall(void* ctx, void* ud0, void* ud1);
+void Collision_AsteroidVSAsteroid(void* ctx, void* ud0, void* ud1);
 void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& messageLog, PlayField& world, const GameConfig& gameConfig);
 void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world);
 void RestartGame(PlayGameStateData& stateData, Game& game);
@@ -204,7 +204,10 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 	}
 	for (auto& asteroid : world.asteroids)
 	{
-		collisionSpace.Add(GetCollider(asteroid));
+		if (asteroid.state == Asteroid::State::falling) 
+		{
+			collisionSpace.Add(GetCollider(asteroid));
+		}
 	}
 
 	static const CollisionCallbackInfo callbacks[] = 
@@ -217,6 +220,7 @@ void CheckCollisions(PlayField& world, CollisionSpace& collisionSpace, PlayGameS
 		{ ColliderId::player, ColliderId::alien, Collision_PlayerVSAlien },
 		{ ColliderId::player, ColliderId::asteroid, Collision_PlayerVSAsteroid },
 		{ ColliderId::playerLaser, ColliderId::asteroid, Collision_LaserVSAsteroid },
+		{ ColliderId::asteroid, ColliderId::asteroid, Collision_AsteroidVSAsteroid },
 	};
 
 	CollisionContext context =
@@ -258,6 +262,16 @@ void Collision_LaserVSAsteroid(void* ctx, void* ud0, void* ud1)
 	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, imageId, color, randomOffset);
 }
 
+void Collision_AsteroidVSAsteroid(void* ctx, void* ud0, void* ud1)
+{
+	const CollisionContext& context = *static_cast<CollisionContext*>(ctx);
+	Asteroid& asteroid0 = *static_cast<Asteroid*>(ud0);
+	Asteroid& asteroid1 = *static_cast<Asteroid*>(ud1);
+	Vector2D pos = Lerp(asteroid0.body.pos, asteroid1.body.pos, 0.5f);
+	DestroyAsteroid(asteroid0);
+	DestroyAsteroid(asteroid1);
+	SpawnParticles(*context.world, pos, 7, 32.f, 30, GameImageId::asteroidParticle, asteroid0.visual.color, 0.f);
+}
 
 void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 {
@@ -394,12 +408,10 @@ void ActivatePowerUp(PlayerShip& player, const PowerUp& powerUp, MessageLog& mes
 void SetLevel(int levelIndex, PlayGameStateData& data, PlayField& world)
 {
 	world.DestroyAllLasers();
-	world.DestroyAllExplosions();
 	data.stageIndex = levelIndex;
 	data.showStage = true;
 	data.showScore = false;
 	data.numHits = 0;
-	data.canPlay = false;
 	timeline.SetEvents(GetStage(levelIndex).events, GetStage(levelIndex).numEvents);
 }
 
@@ -455,11 +467,16 @@ void SpawnAsteroids(const AsteroidShowerDef& def, PlayField& world, const GameCo
 {
 	world.asteroids.reserve(world.asteroids.size() + def.count);
 	int enterDelay = 0;
+	std::uniform_int_distribution<int> rndInt(0, 1);
 	for (int k = 0; k < def.count; ++k)
 	{
-		const AsteroidDef& adef = GetAsteroidDef(def.mask[k] - '0');
-		Vector2D pos { adef.start_x, adef.start_y };
-		Asteroid asteroid = NewAsteroid(pos, { adef.speed_x, adef.speed_y }, enterDelay);
+		int a = rndInt(world.rGen);
+		float x = world.rndFloat01(world.rGen) * world.bounds.x;
+		float sx = std::lerp(def.minSpeed_x, def.maxSpeed_x, world.rndFloat01(world.rGen));
+		float sy = std::lerp(def.minSpeed_y, def.maxSpeed_y, world.rndFloat01(world.rGen));
+		const AsteroidDef& adef = GetAsteroidDef(a);
+		Vector2D pos { x, def.start_y };
+		Asteroid asteroid = NewAsteroid(pos, { sx, sy }, adef.imageId, enterDelay);
 		world.asteroids.push_back(asteroid);
 		enterDelay += def.delay;
 	}
@@ -644,10 +661,7 @@ int PlayGame(Game& game, void* data, float dt)
 	{
 		return (int)GameStateId::paused;
 	}
-	if (! playGameStateData.showStage)
-	{
-		TickPlayers(world, dt);
-	}
+	TickPlayers(world, dt);
 	UpdateWorld(world, dt, game.scriptModule, playGameStateData.collisionSpace);
 	world.RemoveDead();
 	CheckCollisions(world, playGameStateData.collisionSpace, playGameStateData);
@@ -659,7 +673,7 @@ int PlayGame(Game& game, void* data, float dt)
 void DisplayPlayGame(Console& console, const void* data)
 {
 	const Game& game = *static_cast<const Game*>(data);
-	if (playGameStateData.showStage && 0) //FIXME
+	if (playGameStateData.showStage)
 	{
 		const IVector2D& bounds = console.GetBounds();
 		const int boxWidth = 40;
