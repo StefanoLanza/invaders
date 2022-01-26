@@ -5,11 +5,21 @@
 
 using EventId = int;
 
+
+union EventData
+{
+	bool        bvalue;
+	float       fvalue;
+	int         ivalue;
+	const char* str;
+	const void* data;
+};
+
 struct Event
 {
 	EventId     id;
 	float       time;
-	const void* data;
+	EventData   data;
 };
 
 using EventCbk = std::function<void(const Event&)>;

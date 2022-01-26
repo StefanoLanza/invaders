@@ -2,6 +2,7 @@
 
 #include <engine/Vector2D.h>
 #include <engine/Random.h>
+#include <engine/Colors.h>
 #include <vector>
 #include <random>
 #include <memory>
@@ -24,8 +25,8 @@ struct AIModule;
 struct Star
 {
 	Vector2D pos;
-	float    t;
 	float    speed;
+	Color    color;
 };
 
 class PlayField

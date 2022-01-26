@@ -63,7 +63,7 @@ void ClearPowerUps(PlayerShip& player)
 }
 
 
-PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input_)
+PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, Input* input)
 {
 	PlayerShip player;
 	player.body.pos = initialPos;
@@ -76,7 +76,7 @@ PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab,
 	player.state = PlayerShip::State::normal;
 	player.speedBoost = 1.f;
 	player.score = 0;
-	player.input = std::move(input_);
+	player.input = input;
 	player.powerUpTimer = 0.f;
 	player.shieldTime = 0.f;
 	player.invulnerabilityTime = 0.f;

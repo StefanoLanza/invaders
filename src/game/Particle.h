@@ -4,7 +4,6 @@
 #include <engine/Colors.h>
 
 using ImageId = int;
-enum GameImageId : ImageId;
 
 struct Particle
 {
@@ -13,5 +12,5 @@ struct Particle
 	Vector2D accel;
 	int      life;
 	Color    color;
-	GameImageId imageId;
+	ImageId  imageId;
 };

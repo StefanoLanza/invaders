@@ -64,6 +64,7 @@ enum GameEventId : EventId
 	hideScore,
 	spawnAlienWave,
 	spawnAsteroids,
+	setStarsSpeed,
 };
 
 struct Event;
@@ -103,3 +104,4 @@ const PlayerPrefab& GetPlayerPrefab(int index);
 const Path& GetEnterPath(int index);
 const Path& GetAttackPath(int index);
 const AsteroidDef& GetAsteroidDef(int index);
+int GetNumAsteroidDefs();

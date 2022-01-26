@@ -20,11 +20,10 @@
 #include <engine/MessageLog.h>
 #include <engine/Console.h>
 #include <engine/CollisionSpace.h>
+#include <engine/span.h>
 
 #include <cassert>
 #include <functional>
-
-extern const wchar_t consoleSymbols[];
 
 namespace
 {
@@ -39,9 +38,13 @@ struct PlayGameStateData
 	bool           showStage;
 	bool           showScore;
 	int            numHits;
+	float          starSpeed = 1.f;
 };
 PlayGameStateData playGameStateData;
 Timeline timeline;
+KeyboardInput input0 { KeyCode::left, KeyCode::right, KeyCode::rctrl };
+KeyboardInput input1 { KeyCode::A, KeyCode::D, KeyCode::lctrl };
+
 
 struct CollisionContext
 {
@@ -82,31 +85,31 @@ void CreateStars(PlayField& world, size_t count)
 		const float rand = world.rndFloat01(world.rGen);
 		star.pos.x = world.rndFloat01(world.rGen) * world.bounds.x;
 		star.pos.y = rand * world.bounds.y;
-		star.t = rand;
-		star.speed = rand > 0.5f ? 6.f : 3.f;
+		star.speed = rand > 0.5f ? 12.f : 6.f;
+		star.color = rand > 0.5f ? Color::whiteIntense : Color::white;
 	}
 }
 
-void AnimateStars(PlayField& world, float dt)
+void AnimateStars(span<Star> stars, float dt, float speedMul, const Vector2D& worldBounds)
 {
-	for (Star& star : world.stars)
+	dt *= speedMul;
+	for (Star& star : stars)
 	{
 		star.pos.y += star.speed * dt;
-		star.t += dt;
-		if (star.t > 1.f) 
-		{ 
-			star.t -= 1.f;
-		}
 		// Wrap
-		if (star.pos.y > world.bounds.y)
+		if (star.pos.y < 0.f)
 		{
-			star.pos.y -= world.bounds.y;
+			star.pos.y += worldBounds.y;
+		}
+		else if (star.pos.y > worldBounds.y)
+		{
+			star.pos.y -= worldBounds.y;
 		}
 	}
 }
 
 
-void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, float velocity, int life, GameImageId imageId, Color color, float randomOffset)
+void SpawnParticles(std::vector<Particle>& particles, const Vector2D& pos, int particleCount, float velocity, int life, ImageId imageId, Color color, float randomOffset)
 {
 	float angle = two_pi * randomOffset;
 	float dangle = two_pi / (float)particleCount;
@@ -124,7 +127,7 @@ void SpawnParticles(PlayField& world, const Vector2D& pos, int particleCount, fl
 		p.life = life;
 		p.imageId = imageId;
 		p.color = color;
-		world.particles.push_back(p);
+		particles.push_back(p);
 	}
 }
 
@@ -241,7 +244,7 @@ void Collision_LaserVSLaser(void* ctx, void* ud0, void* ud1)
 	Laser& alienLaser = *static_cast<Laser*>(ud1);
 	// Spawn explosion, kill this and the alien laser
 	Vector2D pos = Lerp(playerLaser.body.pos, alienLaser.body.pos, 0.5f);
-	SpawnParticles(*context.world, pos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, 0.5f);
+	SpawnParticles(context.world->particles, pos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, 0.5f);
 	DestroyLaser(alienLaser);
 	DestroyLaser(playerLaser);
 }
@@ -256,10 +259,10 @@ void Collision_LaserVSAsteroid(void* ctx, void* ud0, void* ud1)
 	Vector2D pos = Lerp(playerLaser.body.pos, asteroid.body.pos, 0.5f);
 	DestroyLaser(playerLaser);
 	HitAsteroid(asteroid);
-	const GameImageId imageId = (asteroid.state == Asteroid::State::dead) ? GameImageId::asteroidParticle : GameImageId::particle;
+	const ImageId imageId = (asteroid.state == Asteroid::State::dead) ? GameImageId::asteroidParticle : GameImageId::particle;
 	const Color color = (asteroid.state == Asteroid::State::dead) ? asteroid.visual.color : Color::yellowIntense;
 	const float randomOffset = (asteroid.state == Asteroid::State::dead) ? 0.5f : 0.f;
-	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, imageId, color, randomOffset);
+	SpawnParticles(context.world->particles, asteroid.body.pos, 7, 32.f, 30, imageId, color, randomOffset);
 }
 
 void Collision_AsteroidVSAsteroid(void* ctx, void* ud0, void* ud1)
@@ -270,7 +273,7 @@ void Collision_AsteroidVSAsteroid(void* ctx, void* ud0, void* ud1)
 	Vector2D pos = Lerp(asteroid0.body.pos, asteroid1.body.pos, 0.5f);
 	DestroyAsteroid(asteroid0);
 	DestroyAsteroid(asteroid1);
-	SpawnParticles(*context.world, pos, 7, 32.f, 30, GameImageId::asteroidParticle, asteroid0.visual.color, 0.f);
+	SpawnParticles(context.world->particles, pos, 7, 32.f, 30, GameImageId::asteroidParticle, asteroid0.visual.color, 0.f);
 }
 
 void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
@@ -291,7 +294,7 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 		particleCount = 7;
 		particleColor = Color::yellowIntense;
 	}
-	SpawnParticles(*context.world, alien.body.pos, particleCount, 32.f, 30, GameImageId::particle, particleColor, alien.randomOffset);
+	SpawnParticles(context.world->particles, alien.body.pos, particleCount, 32.f, 30, GameImageId::particle, particleColor, alien.randomOffset);
 
 	// Spawn random power ups
 	++context.stateData->numHits;
@@ -319,7 +322,7 @@ void Collision_PlayerVSLaser(void* ctx, void* ud0, void* ud1)
 	{
 		explosionPos = Add(explosionPos, { 0.f, -3.f} );
 	}
-	SpawnParticles(*context.world, explosionPos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, 0.f);
+	SpawnParticles(context.world->particles, explosionPos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, 0.f);
 }
 
 
@@ -334,7 +337,7 @@ void Collision_PlayerVSAlien(void* ctx, void* ud0, void* ud1)
 	{
 		PlayerHit(player);
 	}
-	SpawnParticles(*context.world, alien.body.pos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, alien.randomOffset);
+	SpawnParticles(context.world->particles, alien.body.pos, 7, 32.f, 30, GameImageId::particle, Color::yellowIntense, alien.randomOffset);
 }
 
 
@@ -355,7 +358,7 @@ void Collision_PlayerVSAsteroid(void* ctx, void* ud0, void* ud1)
 	Asteroid& asteroid = *(Asteroid*)ud1;
 	PlayerHit(player);
 	DestroyAsteroid(asteroid);
-	SpawnParticles(*context.world, asteroid.body.pos, 7, 32.f, 30, GameImageId::asteroidParticle, asteroid.visual.color, 0.f);
+	SpawnParticles(context.world->particles, asteroid.body.pos, 7, 32.f, 30, GameImageId::asteroidParticle, asteroid.visual.color, 0.f);
 }
 
 
@@ -467,12 +470,14 @@ void SpawnAsteroids(const AsteroidShowerDef& def, PlayField& world, const GameCo
 {
 	world.asteroids.reserve(world.asteroids.size() + def.count);
 	int enterDelay = 0;
-	std::uniform_int_distribution<int> rndInt(0, 1);
+	std::uniform_int_distribution<int> rndInt(0,GetNumAsteroidDefs() - 1);
 	for (int k = 0; k < def.count; ++k)
 	{
 		int a = rndInt(world.rGen);
-		float x = world.rndFloat01(world.rGen) * world.bounds.x;
-		float sx = std::lerp(def.minSpeed_x, def.maxSpeed_x, world.rndFloat01(world.rGen));
+		float r01 = world.rndFloat01(world.rGen);
+		float s01 = r01 < 0.5f ? (0.5f + r01) : (r01 - 0.5f);
+		float x =  r01 * world.bounds.x;
+		float sx = std::lerp(def.minSpeed_x, def.maxSpeed_x, s01);
 		float sy = std::lerp(def.minSpeed_y, def.maxSpeed_y, world.rndFloat01(world.rGen));
 		const AsteroidDef& adef = GetAsteroidDef(a);
 		Vector2D pos { x, def.start_y };
@@ -500,15 +505,18 @@ void ProcessEvent(const Event& event, MessageLog& messageLog, PlayField& world, 
 			playGameStateData.showScore = false;
 			break;
 		case GameEventId::message:
-			messageLog.AddMessage((const char*)event.data, Color::yellowIntense);
+			messageLog.AddMessage(event.data.str, Color::yellowIntense);
 			break;
 		case GameEventId::spawnAlienWave:
-			SpawnAlienWave(*(const AlienWaveInfo*)event.data, world, gameConfig);
+			SpawnAlienWave(*(const AlienWaveInfo*)event.data.data, world, gameConfig);
 			break;
 		case GameEventId::spawnAsteroids:
-			SpawnAsteroids(*(const AsteroidShowerDef*)event.data, world, gameConfig);
+			SpawnAsteroids(*(const AsteroidShowerDef*)event.data.data, world, gameConfig);
 			break;
 		case GameEventId::wait:
+			break;
+		case GameEventId::setStarsSpeed:
+			playGameStateData.starSpeed = event.data.fvalue;
 			break;
 		default:
 			break;
@@ -542,35 +550,21 @@ void Start(Game& game, const GameConfig& config, Game::Mode mode)
 void CreatePlayers(Game& game, PlayField& world, Game::Mode mode)
 {
 	const Vector2D worldBounds = game.world.GetBounds();
-	std::unique_ptr<Input> input0, input1;
-
 	const PlayerPrefab& prefab0 = GetPlayerPrefab(0);
 	const PlayerPrefab& prefab1 = GetPlayerPrefab(1);
 	const Vector2D player0Size = GetImageSize(prefab0.imageId);
 	const Vector2D player1Size = GetImageSize(prefab1.imageId);
 
-	if (mode == Game::Mode::p1 || mode == Game::Mode::p1p2)
+	if (mode == Game::Mode::p1)
 	{
-		input0 = std::make_unique<KeyboardInput>(KeyCode::left, KeyCode::right, KeyCode::rctrl);
-	}
-	else
-	{
-		input0 = std::make_unique<RndInput>(game.rGen);
-	}
-	if (mode == Game::Mode::p1p2)
-	{
-		input1 = std::make_unique<KeyboardInput>(KeyCode::A, KeyCode::D, KeyCode::lctrl);
-	}
-	if (input1)
-	{
-		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 - player0Size.x, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, std::move(input0) ) );
-		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 + player1Size.x, worldBounds.y - player1Size.y * 0.45f }, prefab1, 1, std::move(input1) ) );
-		game.numPlayers = 2;
-	}
-	else
-	{
-		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, std::move(input0) ) );
+		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, &input0) );
 		game.numPlayers = 1;
+	}
+	else
+	{
+		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 - player0Size.x, worldBounds.y - player0Size.y * 0.45f }, prefab0, 0, &input0) );
+		world.AddPlayerShip( NewPlayerShip( { worldBounds.x / 2 + player1Size.x, worldBounds.y - player1Size.y * 0.45f }, prefab1, 1, &input1) );
+		game.numPlayers = 2;
 	}
 }
 
@@ -632,7 +626,7 @@ int PlayGame(Game& game, void* data, float dt)
 		return (int)GameStateId::over;
 	}
 
-	AnimateStars(game.world, dt);
+	AnimateStars({world.stars.data(), world.stars.size()}, dt, playGameStateData.starSpeed, world.bounds);
 
 	// Update score and lives
 	for (const auto& player : world.GetPlayers())

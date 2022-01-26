@@ -256,8 +256,8 @@ LR"(
    ▄███▄   
  ▄▀█████▀▄ 
 ██▄▄███▄▄██
- ▄▀▀   ▀▀▄ 
-  ▀     ▀  
+▄▀▀     ▀▀▄
+ ▀       ▀ 
 )";
 
 const wchar_t boss2_0Str[] = 
@@ -326,18 +326,26 @@ LR"(
 
 const wchar_t asteroid0_Str[] = 
 LR"(
-  ▄▄▄▄  
-▄█████▄ 
+  ▄▄▄   
+▄██████▄
 ███████▀
  ▀▀▀▀▀  
 )";
 
 const wchar_t asteroid1_Str[] = 
 LR"(
-  ▄▄▄▄  
-▄█████▄ 
+  ▄▄▄   
+▄██████▄
 ▀███████
   ▀▀▀▀▀ 
+)";
+
+const wchar_t asteroid2_Str[] = 
+LR"(
+   ▄▄▄  
+▄██████▄
+▀██████▀
+  ▀▀▀   
 )";
 
 const wchar_t DbonusStr[] = 
@@ -393,14 +401,22 @@ const wchar_t shieldStr[] =
 LR"(
 ■ ■ ■■■■■■■ ■ ■
 )";
+
 const wchar_t particleStr[] =
 LR"(
-.
+*
 )";
+
 const wchar_t asteroidParticleStr[] =
 LR"(
 ■
 )";
+
+const wchar_t starStr[] =
+LR"(
+.
+)";
+
 const wchar_t planetStr[] = 
 LR"(
      ~+                          
@@ -619,6 +635,7 @@ const Image gameImages[numGameImages] =
 	{ explosion1_Str,	nullptr, 7, 3 },
 	{ asteroid0_Str,	nullptr, 8, 4 },
 	{ asteroid1_Str,	nullptr, 8, 4 },
+	{ asteroid2_Str,	nullptr, 8, 4 },
 	{ DbonusStr, nullptr, 5,	3 },
 	{ TbonusStr, nullptr, 5,	3 },
 	{ SbonusStr, nullptr, 5, 3 },
@@ -627,6 +644,7 @@ const Image gameImages[numGameImages] =
 	{ shieldStr, nullptr, 15, 1 },
 	{ particleStr, nullptr, 1, 1 },
 	{ asteroidParticleStr, nullptr, 1, 1 },
+	{ starStr, nullptr, 1, 1 },
 	{ solidWallStr,	nullptr, 4, 2 },
 	{ brittleWallStr, nullptr, 4, 2 },
 	{ bombStr, nullptr, 5, 3 },

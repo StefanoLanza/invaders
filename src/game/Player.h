@@ -53,11 +53,11 @@ struct PlayerShip
 	bool       hasShield;
 	Color      shieldColor;
 	// Dependencies
-	std::shared_ptr<Input> input;
+	Input*     input;
 };
 
 
-PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, std::shared_ptr<Input> input);
+PlayerShip NewPlayerShip(const Vector2D& initialPos, const PlayerPrefab& prefab, int id, Input* input);
 void PlayerHit(PlayerShip& player);
 void KillPlayer(PlayerShip& player);
 Collider GetCollider(PlayerShip& ship);

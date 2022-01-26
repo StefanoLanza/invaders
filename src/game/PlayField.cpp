@@ -124,7 +124,7 @@ void PlayField::GetRenderItems(std::vector<RenderItem>& ritems) const
 	{
 		RenderItem ritem;
 		ritem.pos = star.pos;
-		ritem.visual = { GameImageId::particle, star.t > 0.5f ? Color::whiteIntense : Color::white };
+		ritem.visual = { GameImageId::star, star.color };
 		ritems.push_back(ritem);
 	}
 

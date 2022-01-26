@@ -5,21 +5,31 @@
 
 Random::Random(int numValues, std::default_random_engine& rGen) :
 	rGen { rGen },
-	numValues { numValues },
+	weights (numValues, 0),
+	defaultWeights (numValues, numValues), 	// set default weights
 	last { -1 }
 {
-	assert(numValues > 0 && numValues < maxValues);
+	assert(numValues > 0);
 	Reset();
 }
 
+Random::Random(int numValues, const int* defaultWeights, std::default_random_engine& rGen) :
+	rGen { rGen },
+	weights (numValues, 0),
+	defaultWeights (defaultWeights, defaultWeights + numValues), 	// set default weights
+	last { -1 }
+{
+	assert(numValues > 0);
+	Reset();
+}
 
 void Random::Reset()
 {
+	std::copy(defaultWeights.begin(), defaultWeights.end(), weights.begin());
 	sumWeights = 0;
-	for (int i = 0; i < numValues; ++i) 
+	for (int w : weights) 
 	{
-		weights[i] = numValues;
-		sumWeights += weights[i];
+		sumWeights += w;
 	}
 	assert(sumWeights > 0);
 	last = -1;
@@ -38,7 +48,7 @@ int Random::Next()
 	do
 	{
 		int r = rndInt(rGen);
-		for (int i = 0; i < numValues; ++i)
+		for (int i = 0; i < (int)weights.size(); ++i)
 		{
 			if (r < weights[i])
 			{

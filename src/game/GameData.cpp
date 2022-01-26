@@ -668,18 +668,24 @@ constexpr AlienWaveInfo wave7 =
 
 constexpr AsteroidDef asteroidDef0 = 
 {
-	.imageId = GameImageId::asteroid1,
+	.imageId = GameImageId::asteroid0,
 };
 
 constexpr AsteroidDef asteroidDef1 = 
 {
-	.imageId = GameImageId::asteroid0,
+	.imageId = GameImageId::asteroid1,
+};
+
+constexpr AsteroidDef asteroidDef2 = 
+{
+	.imageId = GameImageId::asteroid2,
 };
 
 constexpr const AsteroidDef* asteroidDefs[] =
 {
 	&asteroidDef0,
 	&asteroidDef1,
+	&asteroidDef2,
 };
 
 constexpr AsteroidShowerDef asteroids0 = 
@@ -734,100 +740,111 @@ constexpr const char* const hudMessages[] =
 	"Keep moving!",
 };
 constexpr int numHUDMessages = static_cast<int>(std::size(hudMessages));
+constexpr float defaultStarSpeed = 1.f;
+constexpr float fastStarSpeed = 4.f;
 
 constexpr Event stage1Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave1, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, hudMessages[0], },
+	{ GameEventId::showStage, 0.f, },
+	{ GameEventId::setStarsSpeed, 0.f, { .fvalue = fastStarSpeed}, },
+	{ GameEventId::spawnAlienWave, 0.f, { .data = &wave1 },},
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f, },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::setStarsSpeed, 2.f, { .fvalue = defaultStarSpeed }, },
+	{ GameEventId::message, 2.f, {.str = hudMessages[0] }, },
 };
 
 constexpr Event stage2Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave2, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, hudMessages[1], },
+	{ GameEventId::showStage, 0.f, },
+	{ GameEventId::setStarsSpeed, 0.f, { .fvalue = fastStarSpeed}, },
+	{ GameEventId::spawnAlienWave, 0.f, { .data = &wave2} ,},
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f, },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::setStarsSpeed, 2.f, { .fvalue = defaultStarSpeed }, },
+	{ GameEventId::message, 2.f, {.str = hudMessages[1] }, },
 };
 
 constexpr Event stage3Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave3, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, hudMessages[2], },
+	{ GameEventId::showStage, 0.f, },
+	{ GameEventId::setStarsSpeed, 0.f, { .fvalue = fastStarSpeed}, },
+	{ GameEventId::spawnAlienWave, 0.f, { .data = &wave3 },},
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f, },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::setStarsSpeed, 2.f, { .fvalue = defaultStarSpeed }, },
+	{ GameEventId::message, 2.f, {.str = hudMessages[2] }, },
 };
 
 constexpr Event stage4Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave4, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, "Boss", },
+	{ GameEventId::showStage, 0.f, },
+	{ GameEventId::setStarsSpeed, 0.f, {.fvalue = fastStarSpeed }, },
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f, },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::setStarsSpeed, 2.f, {.fvalue = defaultStarSpeed }, },
+	{ GameEventId::spawnAsteroids, 2.f, {.data = &asteroids0 },},
+	{ GameEventId::message, 2.f, {.str = "Avoid the asteroids!" }, },
 };
 
 constexpr Event stage5Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave5, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, hudMessages[0], },
+	{ GameEventId::showStage, 0.f, },
+	{ GameEventId::setStarsSpeed, 0.f, {.fvalue = fastStarSpeed }, },
+	{ GameEventId::spawnAlienWave, 0.f, { .data = &wave4 },},
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f, },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::setStarsSpeed, 2.f, {.fvalue = defaultStarSpeed }, },
+	{ GameEventId::message, 2.f, {.str = "Boss" }, },
 };
 
 constexpr Event stage6Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave6, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, hudMessages[1], },
+	{ GameEventId::showStage, 0.f,  },
+	{ GameEventId::spawnAlienWave, 0.f, &wave5, },
+	{ GameEventId::hideScore, 0.f,  },
+	{ GameEventId::hideStage, 1.f,  },
+	{ GameEventId::showScore, 2.f,  },
+	{ GameEventId::message, 4.f, hudMessages[0], },
 };
 
 constexpr Event stage7Events[] =
 {
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::spawnAlienWave, 0.f, &wave7, },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, hudMessages[2], },
+	{ GameEventId::showStage, 0.f,  },
+	{ GameEventId::spawnAlienWave, 0.f, &wave6, },
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f,  },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::message, 4.f, hudMessages[1], },
 };
 
-
-constexpr Event testStageEvents[] =
+constexpr Event stage8Events[] =
 {
-	{ GameEventId::spawnAsteroids, 0.f, &asteroids0, },
-	{ GameEventId::showStage, 0.f, nullptr },
-	{ GameEventId::hideScore, 0.f, nullptr, },
-	{ GameEventId::hideStage, 1.f, nullptr },
-	{ GameEventId::showScore, 2.f, nullptr, },
-	{ GameEventId::message, 4.f, "Avoid the asteroids!", },
+	{ GameEventId::showStage, 0.f,  },
+	{ GameEventId::spawnAlienWave, 0.f, &wave7, },
+	{ GameEventId::hideScore, 0.f, },
+	{ GameEventId::hideStage, 1.f,  },
+	{ GameEventId::showScore, 2.f, },
+	{ GameEventId::message, 4.f, hudMessages[2], },
 };
 
 
 constexpr Stage stages[] =
 {
-	{ testStageEvents, static_cast<int>(std::size(testStageEvents)) },
-	{ stage4Events, static_cast<int>(std::size(stage4Events)) },
-	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
-	{ stage6Events, static_cast<int>(std::size(stage6Events)) },
-	{ stage7Events, static_cast<int>(std::size(stage7Events)) },
+	//{ testStageEvents, static_cast<int>(std::size(testStageEvents)) },
 	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
 	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
 	{ stage3Events, static_cast<int>(std::size(stage3Events)) },
 	{ stage4Events, static_cast<int>(std::size(stage4Events)) },
+	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
+	{ stage6Events, static_cast<int>(std::size(stage6Events)) },
+	{ stage7Events, static_cast<int>(std::size(stage7Events)) },
+	{ stage8Events, static_cast<int>(std::size(stage8Events)) },
 };
 
 }
@@ -874,4 +891,9 @@ const Path& GetAttackPath(int index)
 const AsteroidDef& GetAsteroidDef(int index)
 {
 	return *asteroidDefs[index];
+}
+
+int GetNumAsteroidDefs()
+{
+	return (int)std::size(asteroidDefs);
 }
