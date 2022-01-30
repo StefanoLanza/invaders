@@ -38,7 +38,7 @@ struct ActionSeq
 
 struct AlienWave {
 	int numAliens;
-	float speed;
+	int speedRate; // 1..100
 	float fireRate;
 	int numReadyAliens;
 	int numAliveAliens;
@@ -72,8 +72,6 @@ struct Alien
 	float randomOffset; // [0,1]
 };
 
-
-struct Path;
 
 // Public API
 Alien NewAlien(const Vector2D& gridPos, const AlienPrefab& prefab, float randomOffset, 

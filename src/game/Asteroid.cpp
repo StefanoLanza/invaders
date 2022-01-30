@@ -18,7 +18,7 @@ Asteroid NewAsteroid(const Vector2D& pos, const Vector2D& velocity, ImageId imag
 	a.body.prevPos = pos;
 	a.body.velocity = velocity;
 	a.body.size = GetImageSize(imageId);
-	a.visual = { imageId, Color::white };
+	a.visual = { imageId, Color::grey };
 	a.enterDelay = enterDelay;
 	a.state = Asteroid::State::idle;
 	a.hits = 1;

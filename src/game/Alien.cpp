@@ -54,7 +54,7 @@ void FollowPath(Alien& alien, const PathEntry& entry, float speed)
 	alien.body.velocity = velocity;
 }
 
-bool TickAlien(Alien& alien, ActionSeq& seq) 
+bool TickAlien(Alien& alien, ActionSeq& seq, int speedRate) 
 {
 	if (seq.a <= -1)
 	{
@@ -64,8 +64,8 @@ bool TickAlien(Alien& alien, ActionSeq& seq)
 	--seq.duration;
 	if (seq.duration == 0)
 	{
-		seq.duration = seq.seq[seq.a].duration;
-		FollowPath(alien, seq.seq[seq.a], alien.gameState.speed);
+		seq.duration = seq.seq[seq.a].duration * speedRate / 100;
+		FollowPath(alien, seq.seq[seq.a], alien.gameState.speed * (100.f / (float)speedRate));
 		++seq.a;
 		if (seq.a >= seq.length)
 		{
@@ -142,7 +142,7 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 	{
 		case Alien::State::entering:
 			--alien.enterDelay;
-			if (alien.enterDelay < 0 && ! TickAlien(alien, alien.actionSeq))
+			if (alien.enterDelay < 0 && ! TickAlien(alien, alien.actionSeq, 100))
 			{
 				alien.state = Alien::State::parking;
 			}
@@ -160,11 +160,13 @@ void AlienUpdate(Alien& alien, float dt, PlayField& world, const GameConfig& gam
 			}
 			break;
 		case Alien::State::attacking:
-			TickAlien(alien, alien.actionSeq);
+			TickAlien(alien, alien.actionSeq, wave.speedRate);
 			break;
 		case Alien::State::dying:
 			assert(wave.numAliveAliens >= 0);
 			--wave.numAliveAliens;
+			wave.speedRate -= 2; // speed up attacks
+			//wave.fireRate += gameConfig.alienWaveFireRateInc;
 			alien.state = Alien::State::dead;
 			alien.body.velocity = { 0.f, 0.f };
 			break;

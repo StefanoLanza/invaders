@@ -320,31 +320,30 @@ constexpr Path boss0AttackPath
 	.startx = 0, 
 	.starty = 0,
 	.entries = {
-		// brrblrbll
-		{ dir_s, 30 },
-		{ dir_e, 60 },
-		{ dir_s, 30 },
-		{ dir_w, 30 },
-		{ dir_e, 30 },
-		{ dir_s, 30 },
-		{ dir_w, 60 },
-		// rlltlrr
-		{ dir_e, 30 },
-		{ dir_w, 60 },
-		{ dir_n, 30 },
-		{ dir_w, 30 },
-		{ dir_e, 60 },
-		// tlltrltrr
-		{ dir_n, 30 },
-		{ dir_w, 60 },
-		{ dir_n, 30 },
-		{ dir_e, 30 },
-		{ dir_w, 30 },
-		{ dir_e, 60 },
 		// lrrl
 		{ dir_w, 30 },
 		{ dir_e, 60 },
 		{ dir_w, 30 },
+
+		{ dir_s, 30 },
+		{ dir_e, 60 },
+		{ dir_sw,30 },
+		{ dir_se, 30 },
+		{ dir_w, 60 },
+
+		// Random lateral movement
+		{ dir_w, 60 },
+		{ dir_e, 30 },
+		{ dir_w, 30 },
+		{ dir_e, 60 },
+
+		// Come back north, from from other side
+		{ dir_w, 60 },
+		{ dir_ne, 30 },
+		{ dir_nw,30 },
+		{ dir_e, 60 },
+		{ dir_n, 30 },
+
 		pathEnd
 	},
 };
@@ -369,22 +368,22 @@ constexpr Animation alien0Anim =
 constexpr Animation alien1Anim = 
 {
 	.images = { GameImageId::alien1_0, GameImageId::alien1_1 }, 
-	.duration = .5f,
+	.duration = .45f,
 };
 constexpr Animation alien2Anim = 
 {
 	.images = { GameImageId::alien2_0, GameImageId::alien2_1 }, 
-	.duration = .5f,
+	.duration = .4f,
 };
 constexpr Animation alien3Anim = 
 {
 	.images = { GameImageId::alien3_0, GameImageId::alien3_1 }, 
-	.duration = .5f,
+	.duration = .35f,
 };
 constexpr Animation alien4Anim = 
 {
 	.images = { GameImageId::alien4_0, GameImageId::alien4_1 }, 
-	.duration = .5f,
+	.duration = .3f,
 };
 constexpr Animation alien5Anim = 
 {
@@ -692,7 +691,7 @@ constexpr AsteroidShowerDef asteroids0 =
 {
 	.count = 100,
 	.delay = 10,
-	.start_y = -6.f,
+	.start_y = -7.f,
 	.minSpeed_x = -30.f,
 	.maxSpeed_x = 30.f,
 	.minSpeed_y = 70.f,
@@ -806,37 +805,38 @@ constexpr Event stage5Events[] =
 constexpr Event stage6Events[] =
 {
 	{ GameEventId::showStage, 0.f,  },
-	{ GameEventId::spawnAlienWave, 0.f, &wave5, },
+	{ GameEventId::spawnAlienWave, 0.f, { .data = &wave5 }, },
 	{ GameEventId::hideScore, 0.f,  },
 	{ GameEventId::hideStage, 1.f,  },
 	{ GameEventId::showScore, 2.f,  },
-	{ GameEventId::message, 4.f, hudMessages[0], },
+	{ GameEventId::message, 4.f, {.str = hudMessages[0] }, },
 };
 
 constexpr Event stage7Events[] =
 {
 	{ GameEventId::showStage, 0.f,  },
-	{ GameEventId::spawnAlienWave, 0.f, &wave6, },
+	{ GameEventId::spawnAlienWave, 0.f, { .data = &wave6 }, },
 	{ GameEventId::hideScore, 0.f, },
 	{ GameEventId::hideStage, 1.f,  },
 	{ GameEventId::showScore, 2.f, },
-	{ GameEventId::message, 4.f, hudMessages[1], },
+	{ GameEventId::message, 4.f, {.str = hudMessages[1] }, },
 };
 
 constexpr Event stage8Events[] =
 {
 	{ GameEventId::showStage, 0.f,  },
-	{ GameEventId::spawnAlienWave, 0.f, &wave7, },
+	{ GameEventId::spawnAlienWave, 0.f,{ .data =  &wave7 }, },
 	{ GameEventId::hideScore, 0.f, },
 	{ GameEventId::hideStage, 1.f,  },
 	{ GameEventId::showScore, 2.f, },
-	{ GameEventId::message, 4.f, hudMessages[2], },
+	{ GameEventId::message, 4.f, {.str = hudMessages[2] }, },
 };
 
 
 constexpr Stage stages[] =
 {
 	//{ testStageEvents, static_cast<int>(std::size(testStageEvents)) },
+//	{ stage5Events, static_cast<int>(std::size(stage5Events)) },
 	{ stage1Events, static_cast<int>(std::size(stage1Events)) },
 	{ stage2Events, static_cast<int>(std::size(stage2Events)) },
 	{ stage3Events, static_cast<int>(std::size(stage3Events)) },

@@ -11,6 +11,7 @@ enum class Color
 	yellow,
 	yellowIntense,
 	black,
+	grey,
 	white,
 	whiteIntense,
 	lightBlue,

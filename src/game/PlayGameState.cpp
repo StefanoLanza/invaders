@@ -287,8 +287,7 @@ void Collision_AlienVSLaser(void* ctx, void* ud0, void* ud1)
 	Color particleColor = Color::redIntense;
 	if (AlienHit(alien)) {
 		AlienWave& wave = context.world->alienWaves[alien.waveIndex];
-		wave.speed += gameConfig.alienWaveSpeedInc;
-		wave.fireRate += gameConfig.alienWaveFireRateInc;
+		//wave.speed += gameConfig.alienWaveSpeedInc;
 		AlienDestroy(alien);
 		context.world->AddScore( gameConfig.alienDestroyedScore, playerLaser.ownerId);
 		particleCount = 7;
@@ -431,7 +430,7 @@ void SpawnAlienWave(const AlienWaveInfo& waveInfo, PlayField& world, const GameC
 	const int waveIndex = (int)world.alienWaves.size();
 	AlienWave wave {};
 	wave.numAliens = 0;
-	wave.speed = 0.f;
+	wave.speedRate = 100;
 	wave.fireRate = 0.f;
 	wave.numReadyAliens = 0;
 
