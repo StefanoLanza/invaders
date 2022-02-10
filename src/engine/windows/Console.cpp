@@ -40,7 +40,8 @@ constexpr WORD charColors[colorCount] =
 
 Console::Console() :
 	consoleHandle {nullptr},
-	bounds {0,0}
+	bounds {0,0},
+	viewport {}
 {
 }
 
@@ -58,7 +59,6 @@ bool Console::Initialize(int width, int height, int fontSize)
 {
 	assert(width > 0);
 	assert(height > 0);
-	height += hudRows;
 	bounds = { width, height };
 	canvas.resize(width * height);
 	consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -87,6 +87,8 @@ bool Console::Initialize(int width, int height, int fontSize)
 	info.dwSize = 100;
 	info.bVisible = FALSE;
 	SetConsoleCursorInfo(consoleHandle, &info);
+
+	SetDefaultViewport();
 
 	return true;
 }
@@ -152,28 +154,40 @@ void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAl
 	CHAR_INFO* const dst = canvas.data();
 	if (hAlignment == ImageAlignment::centered)
 	{
-		x0 = (bounds.x - image.width) / 2 + x0;
+		x0 = (viewport.right - viewport.left - image.width) / 2 + x0 + viewport.left;
 	}
 	else if (hAlignment == ImageAlignment::right)
 	{
-		x0 = bounds.x - image.width - x0;
+		x0 = viewport.right - image.width - x0 + viewport.left;
+	}
+	else
+	{
+		x0 += viewport.left;
 	}
 	if (vAlignment == ImageAlignment::centered)
 	{
-		y0 = (bounds.y - image.height) / 2 + y0;
+		y0 = (viewport.bottom - viewport.top - image.height) / 2 + y0 + viewport.top;
 	}
 	else if (vAlignment == ImageAlignment::bottom)
 	{
-		y0 = bounds.y - image.height - y0;
+		y0 = viewport.bottom - image.height - y0 + viewport.top;
+	}
+	else
+	{
+		y0 += viewport.top;
 	}
 	// Clip
-	const int l = std::max(0, x0);
-	const int r = std::min(bounds.x, x0 + image.width);
-	const int b = std::max(0, y0);
-	const int t = std::min(bounds.y, y0 + image.height);
+	const int l = std::max(viewport.left, x0);
+	const int r = std::min(viewport.right, x0 + image.width);
+	const int t = std::max(viewport.top, y0);
+	const int b = std::min(viewport.bottom, y0 + image.height);
+	if (l >= r)
+	{
+		return;
+	}
 	const WORD attrib = charColors[(int)color];
 
-	for (int y = b; y < t; ++y)
+	for (int y = t; y < b; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
@@ -192,13 +206,18 @@ void Console::DrawImage(const Image& image, int x0, int y0, Color color, ImageAl
 void Console::DrawColoredImage(const Image& image, int x0, int y0)
 {
 	CHAR_INFO* const dst = canvas.data();
+	x0 += viewport.left;
+	y0 += viewport.top;
 	// Clip
-	const int l = std::max(0, x0);
-	const int r = std::min(bounds.x, x0 + image.width);
-	const int b = std::max(0, y0);
-	const int t = std::min(bounds.y, y0 + image.height);
-
-	for (int y = b; y < t; ++y)
+	const int l = std::max(viewport.left, x0);
+	const int r = std::min(viewport.right, x0 + image.width);
+	const int t = std::max(viewport.top, y0);
+	const int b = std::min(viewport.bottom, y0 + image.height);
+	if (l >= r)
+	{
+		return;
+	}
+	for (int y = t; y < b; ++y)
 	{
 		for (int x = l; x < r; ++x)
 		{
@@ -216,7 +235,7 @@ void Console::DrawColoredImage(const Image& image, int x0, int y0)
 
 void Console::DrawChar(wchar_t ch, int x, int y, Color color)
 {
-	if (x < 0 || x >= bounds.x || y < 0 || y >= bounds.y)
+	if (x < viewport.left || x >= viewport.right || y < viewport.top || y >= viewport.bottom)
 	{
 		return;
 	}
@@ -231,10 +250,10 @@ extern const wchar_t consoleSymbols[];
 void Console::DrawBorder(int x0, int y0, int width, int height, Color color)
 {
 	// Clip
-	const int l = std::max(0, x0);
-	const int r = std::min(bounds.x, x0 + width);
-	const int t = std::max(0, y0);
-	const int b = std::min(bounds.y, y0 + height);
+	const int l = std::max(viewport.left, x0);
+	const int r = std::min(viewport.right, x0 + width);
+	const int t = std::max(viewport.top, y0);
+	const int b = std::min(viewport.bottom, y0 + height);
 
 
 	CHAR_INFO* dst = canvas.data() + t * bounds.x;
@@ -302,10 +321,10 @@ void Console::DrawRectangle(int x0, int y0, int width, int height, Color color)
 	CHAR_INFO* const dst = canvas.data();
 
 	// Clip
-	const int l = std::max(0, x0);
-	const int r = std::min(bounds.x, x0 + width);
-	const int t = std::max(0, y0);
-	const int b = std::min(bounds.y, y0 + height);
+	const int l = std::max(viewport.left, x0);
+	const int r = std::min(viewport.right, x0 + width);
+	const int t = std::max(viewport.top, y0);
+	const int b = std::min(viewport.bottom, y0 + height);
 
 	CHAR_INFO ch; 
 	ch.Char.UnicodeChar = static_cast<WCHAR>(consoleSymbols[1]);

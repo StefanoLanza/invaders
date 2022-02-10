@@ -79,9 +79,10 @@ int main()
 		return 1;
 	}
 
+	constexpr int hudRows = 2;
 	std::default_random_engine rGen;
 	MessageLog messageLog;
-	const Vector2D worldSize { (float)gameConfig.consoleWidth, (float)gameConfig.consoleHeight };
+	const Vector2D worldSize { (float)gameConfig.consoleWidth, (float)(gameConfig.consoleHeight - hudRows) };
 	PlayField world { worldSize, gameConfig, rGen };
 	Game game = NewGame(world, gameConfig, rGen, messageLog, aiModule);
 	RegisterGameStates(game);
@@ -132,7 +133,9 @@ int main()
 
 				world.GetRenderItems(renderItems);
 				console.Clear(Color::black);
+				console.SetViewport({0, hudRows, console.GetBounds().x, console.GetBounds().y});
 				console.DrawSprites(renderItems.data(), (int)renderItems.size());
+				console.SetDefaultViewport();
 				console.DisplayMessages(messageLog);
 				DrawGameState(game, console);
 				console.DrawCanvas();

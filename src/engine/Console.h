@@ -33,6 +33,14 @@ enum class TextAlignment
 	right
 };
 
+struct Viewport
+{
+	int left;
+	int top;
+	int right;
+	int bottom;
+};
+
 
 class Console
 {
@@ -41,6 +49,8 @@ public:
 	Console();
 	~Console();
 
+	void SetViewport(const Viewport& viewport);
+	void SetDefaultViewport();
 	bool IsMinimized() const;
 	const IVector2D& GetBounds() const;
 	bool Initialize(int width, int height, int fontSize);
@@ -58,11 +68,10 @@ public:
 	void DrawRectangle(int x, int y, int width, int height, Color color);
 	void DrawChar(wchar_t ch, int x, int y, Color color); 
 
-public:
-
-	static constexpr int hudRows = 4; // rows reserved for the HUD
+private:
 
 	void* consoleHandle;
 	IVector2D bounds;
 	std::vector<CHAR_INFO> canvas;
+	Viewport viewport;
 };
