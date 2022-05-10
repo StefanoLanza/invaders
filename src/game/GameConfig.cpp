@@ -4,7 +4,7 @@ GameConfig::GameConfig()
 {
 	// Console
 	consoleWidth = 160;
-	consoleHeight = 54;
+	consoleHeight = 50;
 	fontSize = 13;
 	// Player
 	playerFireRate = 0.2f;

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-../premake5 gmake -cc=gcc
+../premake5 --cc=gcc gmake 

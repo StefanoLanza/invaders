@@ -61,7 +61,6 @@ bool Console::Initialize(int width, int height, int fontSize)
 {
 	assert(width > 0);
 	assert(height > 0);
-	height += hudRows;
 	bounds = { width, height };
 	initscr();
 	consoleHandle = newwin(height, width, (LINES - height) / 2, (COLS - width) / 2);
@@ -108,7 +107,7 @@ void Console::DrawCanvas()
 	WINDOW* win = static_cast<WINDOW*>(consoleHandle);
 
 	const cchar_t* s = canvas.data();
-	for (int y = 0; y < bounds.y + hudRows; ++y) {
+	for (int y = 0; y < bounds.y; ++y) {
 		mvwadd_wchnstr(win, y, 0, s, bounds.x);
 		s += bounds.x;
 	}
